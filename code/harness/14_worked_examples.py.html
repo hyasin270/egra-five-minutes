@@ -1,0 +1,217 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/14_worked_examples.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/14_worked_examples.py</h1><p class=lede>Harness step 14: worked examples — one page per scored window showing every artefact behind the score.</p><p class="meta">Raw file: <a href="../../src/harness/14_worked_examples.py">harness/14_worked_examples.py</a></p><pre><code>&quot;&quot;&quot;Harness step 14: worked examples — one page per scored window showing every artefact behind the score.
+For each chosen window: the printed text the child was supposed to read, the 60-s clip (uploaded to a Drive folder shared
+with the Taleemabad domain; child audio never goes on the public site), the speech-to-text transcript, the enumerator&#x27;s
+per-word marks, the round-1 alignment verdicts, every model&#x27;s per-word verdicts, and the resulting counts side by side.
+Output: harness/examples/*.html + index.html (copied into the site by build_site.py).
+Run: uv run --with pandas --with google-api-python-client --with google-auth python harness/14_worked_examples.py [n_per_subtask]
+&quot;&quot;&quot;
+import os, sys, json, glob, html, subprocess, random, io
+import pandas as pd
+sys.path.insert(0, &#x27;harness&#x27;)
+import importlib.util
+spec = importlib.util.spec_from_file_location(&#x27;rs&#x27;, &#x27;harness/06_reading_score.py&#x27;); rs = importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+N_PER = int(sys.argv[1]) if len(sys.argv) &gt; 1 else 4
+OUT = &#x27;harness/examples&#x27;; os.makedirs(OUT, exist_ok=True); os.makedirs(&#x27;harness/examples/_clips&#x27;, exist_ok=True)
+SUBS = {&#x27;orf_urd&#x27;: (&#x27;Urdu story (60 s)&#x27;, &#x27;orf&#x27;, &#x27;urd&#x27;), &#x27;orf_eng&#x27;: (&#x27;English story (60 s)&#x27;, &#x27;orf&#x27;, &#x27;eng&#x27;), &#x27;idwrd_urd&#x27;: (&#x27;Urdu word list (60 s)&#x27;, &#x27;idwrd&#x27;, &#x27;urd&#x27;)}
+SHORT = {&#x27;google/gemini-3.1-pro-preview&#x27;: &#x27;Gemini 3.1 Pro · audio&#x27;, &#x27;google/gemini-3.8-flash&#x27;: &#x27;Gemini 3.8 Flash · audio&#x27;, &#x27;google/gemini-3.5-flash-lite&#x27;: &#x27;Gemini 3.5 Flash-Lite · audio&#x27;, &#x27;google/gemini-2.5-flash&#x27;: &#x27;Gemini 2.5 Flash · audio&#x27;,
+         &#x27;openai/gpt-audio&#x27;: &#x27;GPT audio · audio&#x27;, &#x27;openai/gpt-audio-mini&#x27;: &#x27;GPT audio mini · audio&#x27;, &#x27;xiaomi/mimo-v2.5&#x27;: &#x27;MiMo 2.5 · audio&#x27;, &#x27;nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free&#x27;: &#x27;Nemotron omni · audio&#x27;, &#x27;mistralai/voxtral-small-24b-2507&#x27;: &#x27;Voxtral small · audio&#x27;,
+         &#x27;anthropic/claude-sonnet-5&#x27;: &#x27;Claude Sonnet 5 · transcript&#x27;, &#x27;openai/gpt-5-mini&#x27;: &#x27;GPT-5 mini · transcript&#x27;, &#x27;google/gemini-3-flash-preview&#x27;: &#x27;Gemini 3 Flash · transcript&#x27;, &#x27;deepseek/deepseek-v3.2&#x27;: &#x27;DeepSeek 3.2 · transcript&#x27;}
+ORDER = list(SHORT)
+random.seed(21)
+
+# ---- Drive folder for the clips (rumi@hellorumi.ai&#x27;s Drive, shared with the domain)
+def drive_client():
+    from google.oauth2 import service_account
+    from googleapiclient.discovery import build
+    sa = os.environ.get(&#x27;GOOGLE_SERVICE_ACCOUNT_PATH&#x27;) or &#x27;keys/google_service_account.json&#x27;
+    if not os.path.isabs(sa):
+        sa = os.path.join(ROOT, sa)
+    creds = service_account.Credentials.from_service_account_file(sa, scopes=[&#x27;https://www.googleapis.com/auth/drive&#x27;], subject=&#x27;rumi@hellorumi.ai&#x27;)
+    return build(&#x27;drive&#x27;, &#x27;v3&#x27;, credentials=creds)
+
+def ensure_folder(drive):
+    q = &quot;name=&#x27;EGRA harness worked examples (child clips)&#x27; and mimeType=&#x27;application/vnd.google-apps.folder&#x27; and trashed=false&quot;
+    r = drive.files().list(q=q, fields=&#x27;files(id,webViewLink)&#x27;).execute()[&#x27;files&#x27;]
+    if r:
+        return r[0][&#x27;id&#x27;], r[0][&#x27;webViewLink&#x27;]
+    f = drive.files().create(body={&#x27;name&#x27;: &#x27;EGRA harness worked examples (child clips)&#x27;, &#x27;mimeType&#x27;: &#x27;application/vnd.google-apps.folder&#x27;}, fields=&#x27;id,webViewLink&#x27;).execute()
+    for dom in (&#x27;taleemabad.com&#x27;, &#x27;hellorumi.ai&#x27;, &#x27;niete.edu.pk&#x27;):
+        try:
+            drive.permissions().create(fileId=f[&#x27;id&#x27;], body={&#x27;type&#x27;: &#x27;domain&#x27;, &#x27;role&#x27;: &#x27;reader&#x27;, &#x27;domain&#x27;: dom}, fields=&#x27;id&#x27;).execute()
+        except Exception as ex:
+            print(&#x27;permission&#x27;, dom, str(ex)[:80])
+    return f[&#x27;id&#x27;], f[&#x27;webViewLink&#x27;]
+
+def upload(drive, folder_id, path, name):
+    from googleapiclient.http import MediaFileUpload
+    r = drive.files().list(q=f&quot;name=&#x27;{name}&#x27; and &#x27;{folder_id}&#x27; in parents and trashed=false&quot;, fields=&#x27;files(id,webViewLink)&#x27;).execute()[&#x27;files&#x27;]
+    if r:
+        return r[0][&#x27;webViewLink&#x27;]
+    f = drive.files().create(body={&#x27;name&#x27;: name, &#x27;parents&#x27;: [folder_id]}, media_body=MediaFileUpload(path, mimetype=&#x27;audio/mpeg&#x27;), fields=&#x27;id,webViewLink&#x27;).execute()
+    return f[&#x27;webViewLink&#x27;]
+
+# ---- helpers
+def chip(word, v):
+    cls = {&#x27;correct&#x27;: &#x27;ok&#x27;, &#x27;wrong&#x27;: &#x27;bad&#x27;, &#x27;sub&#x27;: &#x27;bad&#x27;, &#x27;omit&#x27;: &#x27;skip&#x27;, &#x27;skipped&#x27;: &#x27;skip&#x27;, None: &#x27;na&#x27;}.get(v, &#x27;na&#x27;)
+    return f&#x27;&lt;span class=&quot;w {cls}&quot;&gt;{html.escape(str(word))}&lt;/span&gt;&#x27;
+
+def row_html(label, ref, verdicts, note=&#x27;&#x27;, lang=&#x27;urd&#x27;):
+    cells = &#x27;&#x27;.join(chip(ref[i], verdicts[i] if i &lt; len(verdicts) else None) for i in range(len(ref)))
+    return f&#x27;&lt;div class=&quot;vrow&quot;&gt;&lt;div class=&quot;lab&quot;&gt;{html.escape(label)}&lt;/div&gt;&lt;div class=&quot;chips{&quot; ltr&quot; if lang == &quot;eng&quot; else &quot;&quot;}&quot;&gt;{cells}&lt;/div&gt;{(&quot;&lt;div class=note&gt;&quot; + html.escape(note) + &quot;&lt;/div&gt;&quot;) if note else &quot;&quot;}&lt;/div&gt;&#x27;
+
+HOWTO = &#x27;&#x27;&#x27;&lt;div class=&quot;box&quot;&gt;&lt;strong&gt;How to read this page.&lt;/strong&gt; Section 1 is the printed text the child had in front of them, numbered in reading order. Section 2 is the 60-second clip, timed from the child&#x27;s first word. Section 3 is what the speech-to-text service typed from that clip; the microphone hears the enumerator too, so prompts like &quot;shabash&quot; can appear between the child&#x27;s words. Section 4 has one row per scorer with a colour chip for every printed word: the enumerator row is the live tablet marking, the official score; the baseline row is the first automatic method, which matches transcript words to printed words by spelling; each model row is that model&#x27;s own judgement from the audio or from the transcript. Red where the enumerator has green means the scorer flagged too much; green where the enumerator has red means it waved a mistake through; grey means skipped or never reached; faded means no verdict. &quot;Attempted&quot; is the furthest word reached. Section 5&#x27;s &quot;difference from enumerator&quot; is each scorer&#x27;s correct count minus the enumerator&#x27;s: near zero is good, a large positive number is too lenient, a large negative number too harsh. Section 6 is the second human&#x27;s re-listen.&lt;/div&gt;&#x27;&#x27;&#x27;
+
+CSS = &quot;&quot;&quot;body{font:15px/1.55 Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:0 20px 60px;color:#1D2025;background:#F9FAFB}.wrap{max-width:1100px;margin:0 auto}
+h1{color:#001F3F;font-size:26px}h2{color:#001F3F;font-size:19px;margin-top:34px;border-top:3px solid #F06E42;display:inline-block;padding-top:10px}
+.meta{color:#6B7590;font-size:13px}table{border-collapse:collapse;font-size:13.5px;margin:12px 0}th,td{padding:6px 10px;border-bottom:1px solid #E9EDF4;text-align:left}th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:#6B7590}
+.vrow{display:grid;grid-template-columns:200px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid #E9EDF4;align-items:start}.lab{font-weight:600;color:#001F3F;font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:4px;direction:rtl}.chips.ltr{direction:ltr}
+.w{border:1px solid #D9DEE8;border-radius:4px;padding:1px 6px;font-size:13px;background:#fff}.w.ok{background:#E6F7EC;border-color:#21C45D}.w.bad{background:#FDEDE6;border-color:#F06E42;color:#B23A12;text-decoration:line-through}.w.skip{background:#F3F4F6;color:#9AA3B5}.w.na{opacity:.4}
+.note{grid-column:2;font-size:12.5px;color:#6B7590}.legend span{margin-right:12px}.box{background:#fff;border:1px solid #D9DEE8;padding:12px 14px;margin:10px 0}code{background:#EEF2F9;padding:1px 5px;border-radius:3px}
+nav a{margin-right:16px;font-size:13.5px}&quot;&quot;&quot;
+
+def page(title, body):
+    return f&#x27;&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;{html.escape(title)}&lt;/title&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Noto+Nastaliq+Urdu&amp;display=swap&quot;&gt;&lt;style&gt;{CSS}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;&lt;nav&gt;&lt;a href=&quot;../index.html&quot;&gt;EGRA in Five Minutes&lt;/a&gt;&lt;a href=&quot;index.html&quot;&gt;All worked examples&lt;/a&gt;&lt;a href=&quot;../harness/results.html&quot;&gt;Evaluation&lt;/a&gt;&lt;/nav&gt;{body}&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&#x27;
+
+if __name__ == &#x27;__main__&#x27;:
+    refs = {s: json.load(open(f&#x27;harness/reference/{s}.json&#x27;))[&#x27;ref&#x27;] for s in SUBS}
+    # candidate windows: count models with a usable result per (file, sub) from the cached JSONs (the CSV can be stale)
+    cov = {}
+    for p in glob.glob(&#x27;harness/windows/*__*__*.json&#x27;):
+        parts = os.path.basename(p).split(&#x27;__&#x27;)
+        if len(parts) &lt; 4:
+            continue
+        f, sub = parts[2], parts[3].replace(&#x27;.json&#x27;, &#x27;&#x27;)
+        try:
+            if json.load(open(p)).get(&#x27;result&#x27;):
+                cov.setdefault((f, sub), set()).add(parts[1])
+        except Exception:
+            pass
+    picks = []
+    for sub in SUBS:
+        cands = [f for (f, ss), ms in cov.items() if ss == sub and len(ms) &gt;= 8]
+        random.shuffle(cands)
+        def ecount(f):
+            gt = json.load(open(&#x27;harness/gt/&#x27; + f)); sc = gt[&#x27;scores&#x27;]; pre, lang = SUBS[sub][1], SUBS[sub][2]
+            return float(sc.get(f&#x27;{pre}_60s_correct_{lang}&#x27;) or sc.get(f&#x27;{pre}_reading_correct_{lang}&#x27;) or 0)
+        chosen = sorted(cands[:N_PER * 3], key=ecount)
+        step = max(1, len(chosen) // N_PER)
+        picks += [(sub, f[:20]) for f in chosen[::step][:N_PER]]
+    print(&#x27;candidates per subtask&#x27;, {sub: sum(1 for (f, ss), ms in cov.items() if ss == sub and len(ms) &gt;= 8) for sub in SUBS})
+    drive = None; folder_link = None
+    try:
+        drive = drive_client(); folder_id, folder_link = ensure_folder(drive)
+    except Exception as ex:
+        print(&#x27;Drive unavailable, clips will be local only:&#x27;, str(ex)[:120])
+    index_rows = []
+    for k, (sub, fshort) in enumerate(picks, 1):
+        title, pre, lang = SUBS[sub]; ref = refs[sub]
+        segp = next(p for p in glob.glob(&#x27;harness/segments_llm/google_gemini-2.5-pro__*.json&#x27;) if os.path.basename(p).split(&#x27;__&#x27;)[1].startswith(fshort))
+        r = json.load(open(segp)); f = r[&#x27;file&#x27;]; s = next(x for x in r[&#x27;segments&#x27;] if x[&#x27;sub&#x27;] == sub)
+        gt = json.load(open(&#x27;harness/gt/&#x27; + f)); sc = gt[&#x27;scores&#x27;]; flags = gt[&#x27;items&#x27;].get(sub) or []
+        trp = &#x27;harness/whisper_en/&#x27; + f if lang == &#x27;eng&#x27; else &#x27;harness/soniox/&#x27; + f
+        tr = json.load(open(trp)); wt = rs.words_with_time(rs.child_tokens(tr, s[&#x27;start_s&#x27;], s[&#x27;end_s&#x27;])); t0 = wt[0][1]; hyp = [x for x, t in wt if t - t0 &lt;= 60.5]
+        st, ins = rs.align(ref, hyp); att_b = rs.last_attempted(st)
+        e_corr = sc.get(f&#x27;{pre}_60s_correct_{lang}&#x27;) or sc.get(f&#x27;{pre}_reading_correct_{lang}&#x27;); e_att = sc.get(f&#x27;{pre}_60s_attempted_{lang}&#x27;) or sc.get(f&#x27;{pre}_reading_attempted_{lang}&#x27;)
+        # clip
+        clip = f&#x27;harness/examples/_clips/ex{k:02d}_{sub}.mp3&#x27;
+        if not os.path.exists(clip):
+            subprocess.run([&#x27;ffmpeg&#x27;, &#x27;-y&#x27;, &#x27;-loglevel&#x27;, &#x27;error&#x27;, &#x27;-ss&#x27;, f&#x27;{max(0, t0 - 0.5):.2f}&#x27;, &#x27;-to&#x27;, f&#x27;{t0 + 61:.2f}&#x27;, &#x27;-i&#x27;, &#x27;audio/&#x27; + f.replace(&#x27;.json&#x27;, &#x27;&#x27;), &#x27;-ar&#x27;, &#x27;16000&#x27;, &#x27;-ac&#x27;, &#x27;1&#x27;, &#x27;-b:a&#x27;, &#x27;48k&#x27;, clip], check=True)
+        link = upload(drive, folder_id, clip, os.path.basename(clip)) if drive else None
+        # QA reviewer verdict for this subtask
+        qa_line = &#x27;&#x27;
+        NICE = {&#x27;correct&#x27;: &#x27;agreed with the enumerator&#x27;, &#x27;incorrect&#x27;: &#x27;disagreed with the enumerator&#x27;, &#x27;unknown&#x27;: &#x27;could not tell from the audio&#x27;}
+        for q in gt.get(&#x27;qa&#x27;, []):
+            try:
+                v = json.loads(q[&#x27;verdicts&#x27;]).get(sub, {})
+                fields = {kk: vv for kk, vv in v.items() if not kk.startswith(&#x27;__&#x27;)}
+                if not fields or all(str(vv) in (&#x27;None&#x27;, &#x27;&#x27;) for vv in fields.values()):
+                    continue
+                parts = []
+                for kk, vv in fields.items():
+                    what = &#x27;the correct count&#x27; if &#x27;correct&#x27; in kk else (&#x27;the attempted count&#x27; if &#x27;attempt&#x27; in kk else kk)
+                    parts.append(f&#x27;on {what} the reviewer {NICE.get(str(vv), str(vv))}&#x27;)
+                proto = v.get(&#x27;__protocol_followed&#x27;)
+                qa_line = &#x27;The second human (&#x27; + html.escape(str(q.get(&#x27;reviewer&#x27;))) + &#x27;) re-listened: &#x27; + &#x27;; &#x27;.join(parts) + (&#x27;; the enumerator followed the protocol&#x27; if proto is True else (&#x27;; the reviewer flagged a protocol slip&#x27; if proto is False else &#x27;&#x27;)) + &#x27;.&#x27;
+                try:
+                    cm = json.loads(q.get(&#x27;comments&#x27;) or &#x27;{}&#x27;).get(sub)
+                    if cm:
+                        qa_line += &#x27; Reviewer comment: “&#x27; + html.escape(str(cm)) + &#x27;”&#x27;
+                except Exception:
+                    pass
+            except Exception:
+                pass
+        # model rows
+        e_att_i = int(float(e_att or 0)); e_corr_i = int(float(e_corr or 0))
+        enum_verd = [(&#x27;correct&#x27; if fl == 0 else &#x27;wrong&#x27;) if (i &lt; e_att_i and fl is not None) else &#x27;skipped&#x27; for i, fl in enumerate(flags)]
+        rows_html = [row_html(&#x27;Enumerator (tablet, live)&#x27;, ref, enum_verd, f&#x27;{e_corr_i} correct of {e_att_i} attempted in 60 s (words after the 60-second point are grey: the export records 0 for both &quot;correct&quot; and &quot;never reached&quot;, so they are only known up to the attempted count)&#x27;, lang),
+                     row_html(&#x27;Baseline: speech-to-text + spelling alignment&#x27;, ref, st, f&#x27;{sum(1 for x in st[:att_b] if x == &quot;correct&quot;)} correct of {att_b} attempted; {ins} extra words the child said are ignored&#x27;, lang)]
+        counts = [(&#x27;Enumerator&#x27;, e_corr_i, e_att_i), (&#x27;Baseline: speech-to-text + alignment&#x27;, sum(1 for x in st[:att_b] if x == &#x27;correct&#x27;), att_b)]
+        n_models = 0; n_noanswer = 0
+        for model in ORDER:
+            for arm in (&#x27;audio&#x27;, &#x27;text&#x27;):
+                p = f&quot;harness/windows/{arm}__{model.replace(&#x27;/&#x27;, &#x27;_&#x27;)}__{f}__{sub}.json&quot;
+                if not os.path.exists(p):
+                    continue
+                res = json.load(open(p)); j = res.get(&#x27;result&#x27;); n_models += 1
+                if not j:
+                    n_noanswer += 1
+                    rows_html.append(row_html(SHORT.get(model, model), ref, [], &#x27;The model returned no usable answer for this window (its reply was not in the requested format).&#x27;, lang))
+                    counts.append((SHORT.get(model, model), None, None)); continue
+                verd = [x.get(&#x27;v&#x27;) for x in j.get(&#x27;words&#x27;, [])]; att = max((i + 1 for i, v in enumerate(verd) if v != &#x27;skipped&#x27;), default=0)
+                mc = sum(1 for v in verd[:att] if v == &#x27;correct&#x27;); note = str(j.get(&#x27;notes&#x27;, &#x27;&#x27;) or &#x27;&#x27;)
+                rows_html.append(row_html(SHORT.get(model, model), ref, verd, f&#x27;{mc} correct of {att} attempted · model note: {note[:140]}{&quot;…&quot; if len(note) &gt; 140 else &quot;&quot;}&#x27;, lang))
+                counts.append((SHORT.get(model, model), mc, att))
+        ct = &#x27;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Scorer&lt;/th&gt;&lt;th&gt;Words correct&lt;/th&gt;&lt;th&gt;Words attempted (furthest word reached)&lt;/th&gt;&lt;th&gt;Difference from enumerator (correct)&lt;/th&gt;&lt;th&gt;Difference (attempted)&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27; + &#x27;&#x27;.join(
+            (f&#x27;&lt;tr&gt;&lt;td&gt;{html.escape(str(n))}&lt;/td&gt;&lt;td&gt;{c}&lt;/td&gt;&lt;td&gt;{a}&lt;/td&gt;&lt;td&gt;{c - e_corr_i:+}&lt;/td&gt;&lt;td&gt;{a - e_att_i:+}&lt;/td&gt;&lt;/tr&gt;&#x27; if c is not None else f&#x27;&lt;tr&gt;&lt;td&gt;{html.escape(str(n))}&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;no usable answer&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&#x27;) for n, c, a in counts) + &#x27;&lt;/tbody&gt;&lt;/table&gt;&#x27;
+        body = f&#x27;&#x27;&#x27;&lt;h1&gt;Worked example {k}: {html.escape(title)}&lt;/h1&gt;
+&lt;p class=&quot;meta&quot;&gt;Recording {html.escape(f[:12])}… · grade {int(float(gt.get(&quot;grade&quot;) or 0))} · age {int(float(gt.get(&quot;age&quot;) or 0))} · enumerator #{int(__import__(&quot;hashlib&quot;).md5(str(gt.get(&quot;enumerator&quot;)).encode()).hexdigest()[:4], 16) % 97:02d} · window {s[&quot;start_s&quot;]:.0f}–{s[&quot;end_s&quot;]:.0f} s of the session, 60-s clock from the child&#x27;s first word at {t0:.1f} s&lt;/p&gt;
+{HOWTO}
+&lt;h2&gt;1. What the child was supposed to read&lt;/h2&gt;&lt;div class=&quot;box chips{&quot; ltr&quot; if lang == &quot;eng&quot; else &quot;&quot;}&quot; style=&quot;display:flex;flex-wrap:wrap;gap:6px;font-size:16px&quot;&gt;{&quot; &quot;.join(f&#x27;&lt;span class=&quot;w&quot;&gt;{i + 1}. {html.escape(x)}&lt;/span&gt;&#x27; for i, x in enumerate(ref))}&lt;/div&gt;
+&lt;p class=&quot;meta&quot;&gt;The study export holds only right/wrong flags, not the text itself, so this text was reconstructed from 30 children&#x27;s reads with an LLM; a word or two of it may itself be wrong, which would show up as the same &quot;mistake&quot; in every scorer&#x27;s row.&lt;/p&gt;
+&lt;h2&gt;2. The child&#x27;s audio&lt;/h2&gt;&lt;div class=&quot;box&quot;&gt;{&quot;&lt;a href=&quot; + chr(34) + link + chr(34) + &quot;&gt;Play the 60-second clip (Drive, Taleemabad accounts)&lt;/a&gt;&quot; if link else &quot;Clip kept in the private project folder: &quot; + html.escape(clip)}&lt;br&gt;&lt;span class=&quot;meta&quot;&gt;8 kHz classroom recording from the May 2026 study, upsampled. Folder: {(&quot;&lt;a href=&quot; + chr(34) + folder_link + chr(34) + &quot;&gt;worked-examples clips&lt;/a&gt;&quot;) if folder_link else &quot;—&quot;}&lt;/span&gt;&lt;/div&gt;
+&lt;h2&gt;3. What the speech-to-text service heard&lt;/h2&gt;&lt;div class=&quot;box&quot; style=&quot;{&quot;direction:rtl;font-family:&#x27;Noto Nastaliq Urdu&#x27;,serif;font-size:17px;line-height:2&quot; if lang == &quot;urd&quot; else &quot;&quot;}&quot;&gt;{html.escape(&quot; &quot;.join(hyp))}&lt;/div&gt;
+&lt;p class=&quot;meta&quot;&gt;{&quot;whisper-1 forced to English&quot; if lang == &quot;eng&quot; else &quot;Soniox stt-async-v3, Urdu hint&quot;} · {len(hyp)} words inside the 60-s window. The enumerator&#x27;s own words (prompts, &quot;shabash&quot;) are included when they fall inside the window.&lt;/p&gt;
+&lt;h2&gt;4. Every scorer&#x27;s verdict on every word&lt;/h2&gt;
+&lt;p class=&quot;legend&quot;&gt;&lt;span class=&quot;w ok&quot;&gt;read correctly&lt;/span&gt; &lt;span class=&quot;w bad&quot;&gt;wrong&lt;/span&gt; &lt;span class=&quot;w skip&quot;&gt;skipped or not reached&lt;/span&gt; &lt;span class=&quot;w na&quot;&gt;no verdict&lt;/span&gt;&lt;/p&gt;
+&lt;div class=&quot;box&quot;&gt;{&quot;&quot;.join(rows_html)}&lt;/div&gt;
+&lt;h2&gt;5. The counts&lt;/h2&gt;{ct}
+&lt;h2&gt;6. The second human&lt;/h2&gt;&lt;div class=&quot;box&quot;&gt;{qa_line if qa_line else &quot;No re-listen was recorded for this subtask.&quot;}&lt;/div&gt;&#x27;&#x27;&#x27;
+        open(f&#x27;{OUT}/ex{k:02d}.html&#x27;, &#x27;w&#x27;).write(page(f&#x27;Worked example {k}&#x27;, body))
+        index_rows.append(f&#x27;&lt;tr&gt;&lt;td&gt;&lt;a href=&quot;ex{k:02d}.html&quot;&gt;Example {k}&lt;/a&gt;&lt;/td&gt;&lt;td&gt;{html.escape(title)}&lt;/td&gt;&lt;td&gt;grade {int(float(gt.get(&quot;grade&quot;) or 0))}&lt;/td&gt;&lt;td&gt;{e_corr_i} / {e_att_i}&lt;/td&gt;&lt;td&gt;{n_models} models{f&quot; ({n_noanswer} gave no usable answer)&quot; if n_noanswer else &quot;&quot;}&lt;/td&gt;&lt;/tr&gt;&#x27;)
+        print(&#x27;example&#x27;, k, sub, f[:12], &#x27;enum&#x27;, e_corr, &#x27;link&#x27;, bool(link))
+    rv = open(&#x27;harness/examples/REVIEW.md&#x27;).read() if os.path.exists(&#x27;harness/examples/REVIEW.md&#x27;) else &#x27;&#x27;
+    def section(name):
+        import re as _re
+        m = _re.search(r&#x27;## &#x27; + name + r&#x27;\n(.*?)(?=\n## |\Z)&#x27;, rv, _re.S)
+        return &#x27;&lt;div class=&quot;box&quot;&gt;&#x27; + &#x27;&#x27;.join(f&#x27;&lt;p&gt;{html.escape(para.strip())}&lt;/p&gt;&#x27; for para in m.group(1).strip().split(&#x27;\n\n&#x27;)) + &#x27;&lt;/div&gt;&#x27; if m else &#x27;&#x27;
+    HOWTO_INDEX = (&#x27;&lt;h2&gt;How to read a worked example&lt;/h2&gt;&#x27; + section(&#x27;How to read a worked example&#x27;) + &#x27;&lt;h2&gt;What these twelve pages show&lt;/h2&gt;&#x27; + section(&#x27;What these twelve pages show&#x27;)) if rv else &#x27;&#x27;
+    idx = f&#x27;&#x27;&#x27;&lt;h1&gt;Worked examples: how each score was produced&lt;/h1&gt;
+&lt;p&gt;Twelve real windows from the evaluation, chosen to span weak and strong readers. Each page shows the printed text, the child&#x27;s clip, the speech-to-text transcript, the enumerator&#x27;s live marks, the round-1 alignment verdicts, and every model&#x27;s per-word verdicts, then the counts side by side and the second human&#x27;s review. Nothing is summarised away: what you see is exactly what the scorer saw and what it returned.&lt;/p&gt;
+&lt;div class=&quot;box&quot;&gt;&lt;strong&gt;Where the audio lives.&lt;/strong&gt; The clips are children&#x27;s voices, so they are in a Drive folder readable by Taleemabad, hellorumi.ai and NIETE accounts, not on this public site: {(&quot;&lt;a href=&quot; + chr(34) + folder_link + chr(34) + &quot;&gt;open the folder&lt;/a&gt;&quot;) if folder_link else &quot;private project folder&quot;}.&lt;/div&gt;
+{HOWTO_INDEX}
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Page&lt;/th&gt;&lt;th&gt;Subtask&lt;/th&gt;&lt;th&gt;Grade&lt;/th&gt;&lt;th&gt;Enumerator: correct / attempted&lt;/th&gt;&lt;th&gt;Scorers shown&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{&quot;&quot;.join(index_rows)}&lt;/tbody&gt;&lt;/table&gt;
+&lt;p class=&quot;meta&quot;&gt;Generated by the harness (step 14) from cached model responses; rerunning it produces the same pages.&lt;/p&gt;&#x27;&#x27;&#x27;
+    open(f&#x27;{OUT}/index.html&#x27;, &#x27;w&#x27;).write(page(&#x27;Worked examples&#x27;, idx))
+    print(&#x27;done&#x27;, len(picks), &#x27;examples; folder&#x27;, folder_link)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

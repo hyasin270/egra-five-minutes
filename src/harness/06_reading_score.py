@@ -124,10 +124,12 @@ if __name__ == '__main__':
                              child_words=len(hyp60), grade=gt.get('grade'), conf=s.get('confidence')))
             # per-item comparison with the enumerator's flags (1 = incorrect)
             flags = gt['items'].get(sub)
-            if flags:
-                for i, stt in enumerate(status[:att]):
-                    if i < len(flags) and flags[i] is not None:
-                        item_rows.append(dict(sub=sub, machine_wrong=int(stt != 'correct'), enum_wrong=int(flags[i])))
+            if flags and e_att not in (None, ''):
+                # the export writes 0 for BOTH 'read correctly' and 'never reached': compare only words both sides reached
+                reach = min(att, int(float(e_att)), len(flags))
+                for i in range(reach):
+                    if flags[i] is not None:
+                        item_rows.append(dict(sub=sub, machine_wrong=int(status[i] != 'correct'), enum_wrong=int(flags[i])))
     df = pd.DataFrame(rows)
     df.to_csv('harness/reading_scores.csv', index=False)
     for sub, d in df.groupby('sub'):

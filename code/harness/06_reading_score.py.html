@@ -143,10 +143,12 @@ if __name__ == &#x27;__main__&#x27;:
                              child_words=len(hyp60), grade=gt.get(&#x27;grade&#x27;), conf=s.get(&#x27;confidence&#x27;)))
             # per-item comparison with the enumerator&#x27;s flags (1 = incorrect)
             flags = gt[&#x27;items&#x27;].get(sub)
-            if flags:
-                for i, stt in enumerate(status[:att]):
-                    if i &lt; len(flags) and flags[i] is not None:
-                        item_rows.append(dict(sub=sub, machine_wrong=int(stt != &#x27;correct&#x27;), enum_wrong=int(flags[i])))
+            if flags and e_att not in (None, &#x27;&#x27;):
+                # the export writes 0 for BOTH &#x27;read correctly&#x27; and &#x27;never reached&#x27;: compare only words both sides reached
+                reach = min(att, int(float(e_att)), len(flags))
+                for i in range(reach):
+                    if flags[i] is not None:
+                        item_rows.append(dict(sub=sub, machine_wrong=int(status[i] != &#x27;correct&#x27;), enum_wrong=int(flags[i])))
     df = pd.DataFrame(rows)
     df.to_csv(&#x27;harness/reading_scores.csv&#x27;, index=False)
     for sub, d in df.groupby(&#x27;sub&#x27;):
