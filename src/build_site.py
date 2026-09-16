@@ -161,6 +161,15 @@ def build():
         for fn in os.listdir(ch):
             if fn.endswith('.png'):
                 shutil.copy(os.path.join(ch, fn), os.path.join(OUT, 'charts', fn))
+    mk = os.path.join(ROOT, 'harness', 'mockups')
+    if os.path.isdir(mk):
+        os.makedirs(os.path.join(OUT, 'mockups'), exist_ok=True)
+        for fn in ('chat_cta.png', 'flow_urdu.png', 'flow_maths.png'):
+            if os.path.exists(os.path.join(mk, fn)):
+                shutil.copy(os.path.join(mk, fn), os.path.join(OUT, 'mockups', fn))
+    fj = os.path.join(ROOT, 'harness', 'flow', 'egra-review-flow.json')
+    if os.path.exists(fj):
+        os.makedirs(os.path.join(OUT, 'harness', 'flow'), exist_ok=True); shutil.copy(fj, os.path.join(OUT, 'harness', 'flow', 'egra-review-flow.json'))
     write(os.path.join(OUT, '.nojekyll'), '')
     print('built', OUT)
 
@@ -179,7 +188,7 @@ def build_files_section():
     for rel, desc in CSVS:
         if os.path.exists(os.path.join(ROOT, rel)):
             parts.append(f'<li><a href="tables/{rel}.html"><code>{rel}</code></a> — {html.escape(desc)} <span class="meta">(<a href="data/{rel}">csv</a>)</span></li>')
-    parts.append('</ul><h3>Worked examples</h3><p><a href="examples/index.html">Twelve real windows</a>, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator\'s marks and every model\'s per-word verdicts side by side.</p><h3>Private team data (Google Drive, Taleemabad accounts only)</h3><ul>'
+    parts.append('</ul><h3>The checking form</h3><p><a href="harness/flow/egra-review-flow.json">egra-review-flow.json</a>: the coach\'s checking screens as a WhatsApp Flow JSON draft (version 7.0, endpoint data model), built on the same pattern as the Islamabad observation form. The three screen pictures in the plan are rendered from this file\'s example data.</p><h3>Worked examples</h3><p><a href="examples/index.html">Twelve real windows</a>, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator\'s marks and every model\'s per-word verdicts side by side.</p><h3>Private team data (Google Drive, Taleemabad accounts only)</h3><ul>'
                  '<li><a href="https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG">The May 2026 study folder</a> — the 207 enumerator recordings (<code>AA_&lt;uuid&gt;_enumerator.m4a</code>), the SurveyCTO export <code>EGRA_EGMA client N=2233.xlsx</code> (one row per child, 1,364 columns), and the reviewer workbook <code>Data.xlsx</code> (1,462 QA re-listens). These hold child data and are not copied into this repository.</li>'
                  '<li><a href="https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D">The TIP assessments folder</a> — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.</li>'
                  '<li>The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): <code>06_Logs &amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/</code> in the Rumi workspace.</li></ul>')

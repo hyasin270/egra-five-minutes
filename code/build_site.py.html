@@ -180,6 +180,15 @@ def build():
         for fn in os.listdir(ch):
             if fn.endswith(&#x27;.png&#x27;):
                 shutil.copy(os.path.join(ch, fn), os.path.join(OUT, &#x27;charts&#x27;, fn))
+    mk = os.path.join(ROOT, &#x27;harness&#x27;, &#x27;mockups&#x27;)
+    if os.path.isdir(mk):
+        os.makedirs(os.path.join(OUT, &#x27;mockups&#x27;), exist_ok=True)
+        for fn in (&#x27;chat_cta.png&#x27;, &#x27;flow_urdu.png&#x27;, &#x27;flow_maths.png&#x27;):
+            if os.path.exists(os.path.join(mk, fn)):
+                shutil.copy(os.path.join(mk, fn), os.path.join(OUT, &#x27;mockups&#x27;, fn))
+    fj = os.path.join(ROOT, &#x27;harness&#x27;, &#x27;flow&#x27;, &#x27;egra-review-flow.json&#x27;)
+    if os.path.exists(fj):
+        os.makedirs(os.path.join(OUT, &#x27;harness&#x27;, &#x27;flow&#x27;), exist_ok=True); shutil.copy(fj, os.path.join(OUT, &#x27;harness&#x27;, &#x27;flow&#x27;, &#x27;egra-review-flow.json&#x27;))
     write(os.path.join(OUT, &#x27;.nojekyll&#x27;), &#x27;&#x27;)
     print(&#x27;built&#x27;, OUT)
 
@@ -198,7 +207,7 @@ def build_files_section():
     for rel, desc in CSVS:
         if os.path.exists(os.path.join(ROOT, rel)):
             parts.append(f&#x27;&lt;li&gt;&lt;a href=&quot;tables/{rel}.html&quot;&gt;&lt;code&gt;{rel}&lt;/code&gt;&lt;/a&gt; — {html.escape(desc)} &lt;span class=&quot;meta&quot;&gt;(&lt;a href=&quot;data/{rel}&quot;&gt;csv&lt;/a&gt;)&lt;/span&gt;&lt;/li&gt;&#x27;)
-    parts.append(&#x27;&lt;/ul&gt;&lt;h3&gt;Worked examples&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;examples/index.html&quot;&gt;Twelve real windows&lt;/a&gt;, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator\&#x27;s marks and every model\&#x27;s per-word verdicts side by side.&lt;/p&gt;&lt;h3&gt;Private team data (Google Drive, Taleemabad accounts only)&lt;/h3&gt;&lt;ul&gt;&#x27;
+    parts.append(&#x27;&lt;/ul&gt;&lt;h3&gt;The checking form&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;harness/flow/egra-review-flow.json&quot;&gt;egra-review-flow.json&lt;/a&gt;: the coach\&#x27;s checking screens as a WhatsApp Flow JSON draft (version 7.0, endpoint data model), built on the same pattern as the Islamabad observation form. The three screen pictures in the plan are rendered from this file\&#x27;s example data.&lt;/p&gt;&lt;h3&gt;Worked examples&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;examples/index.html&quot;&gt;Twelve real windows&lt;/a&gt;, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator\&#x27;s marks and every model\&#x27;s per-word verdicts side by side.&lt;/p&gt;&lt;h3&gt;Private team data (Google Drive, Taleemabad accounts only)&lt;/h3&gt;&lt;ul&gt;&#x27;
                  &#x27;&lt;li&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG&quot;&gt;The May 2026 study folder&lt;/a&gt; — the 207 enumerator recordings (&lt;code&gt;AA_&amp;lt;uuid&amp;gt;_enumerator.m4a&lt;/code&gt;), the SurveyCTO export &lt;code&gt;EGRA_EGMA client N=2233.xlsx&lt;/code&gt; (one row per child, 1,364 columns), and the reviewer workbook &lt;code&gt;Data.xlsx&lt;/code&gt; (1,462 QA re-listens). These hold child data and are not copied into this repository.&lt;/li&gt;&#x27;
                  &#x27;&lt;li&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D&quot;&gt;The TIP assessments folder&lt;/a&gt; — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.&lt;/li&gt;&#x27;
                  &#x27;&lt;li&gt;The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): &lt;code&gt;06_Logs &amp;amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/&lt;/code&gt; in the Rumi workspace.&lt;/li&gt;&lt;/ul&gt;&#x27;)

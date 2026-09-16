@@ -75,7 +75,6 @@
   .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
   .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
   .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
-  .phone{width:300px;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px;font-size:13px}
   .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
   .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
   .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
@@ -100,6 +99,11 @@
   .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
   @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
   @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
 </style>
 
 <div class="wrap">
@@ -221,7 +225,7 @@
     <li><div><strong>The English block, one voice note.</strong> Same pattern: story card, cue phrase, one minute of reading, two questions, then eight made-up words.</div></li>
     <li><div><strong>The maths block, one voice note plus one photo.</strong> The coach shows eight numbers for Ayesha to read aloud, then runs the one-minute quick-sums strip aloud. Then the coach hands Ayesha a small sheet with four written sums and one word problem to do while the coach fetches Bilal, and photographs the sheet when she is done.</div></li>
     <li><div><strong>The computer marks while the next child reads.</strong> Ayesha's three voice notes and photo upload when there is signal. If the school has no internet, they queue on the phone and go later. The computer's marks are ready in under a minute once uploaded.</div></li>
-    <li><div><strong>The checking screen.</strong> A form opens in WhatsApp showing the computer's marks for Ayesha, block by block: 31 words correct in 60 seconds, two of three questions right, and so on. The coach changes anything that looks wrong. Where the computer was unsure, the form says "listen and mark" with the clip attached, and the coach decides.</div></li>
+    <li><div><strong>The checking screen.</strong> Rumi replies in the chat with its counts and a button that opens a WhatsApp form, pre-filled block by block: 31 words correct in 60 seconds, one of three questions right, and so on. The coach changes anything that looks wrong. Where the computer was unsure, the field arrives empty and the coach fills it, replaying their own voice note in the chat if they need to.</div></li>
     <li><div><strong>Saved twice.</strong> We store what the computer said and what the coach said, side by side, plus the recordings. The coach's answer is the official one. The computer's answer is kept so we can measure how often it was right and improve it.</div></li>
   </ol>
   <figure>
@@ -265,7 +269,7 @@
     <li><div><strong>Mark the words.</strong> The computer already knows the story text (the item bank). It gives the 60-second clip and that text to an audio model (Gemini 3.8 Flash), which returns a verdict per word: read correctly, wrong, or not reached. In the evaluation this landed within five words of the enumerator for three children in four; a second method, lining the transcript up against the text by spelling, runs alongside as the fallback and as a check on the chips.</div></li>
     <li><div><strong>Mark the questions.</strong> The child's spoken answers to the three questions go to a text AI with the marking guide ("the answer should mention Bilal's father") and it returns right or wrong with its reason. It also notes which language the child answered in.</div></li>
     <li><div><strong>Check the coach.</strong> The same transcript shows whether the coach read the story twice, whether they prompted the child inside the timed minute, and how noisy the room was. In our test this caught a slip that a human reviewer had missed.</div></li>
-    <li><div><strong>Say how sure it is.</strong> Every mark carries a confidence. Marks above the bar we set from the experiment below appear as numbers on the checking screen; marks below it appear as "listen and mark".</div></li>
+    <li><div><strong>Say how sure it is.</strong> Every mark carries a confidence. Marks above the bar we set from the experiment below arrive pre-filled on the checking screen; marks below it arrive as empty fields the coach fills.</div></li>
     <li><div><strong>Fill the form.</strong> The marks become a pre-filled WhatsApp form for the coach.</div></li>
   </ol>
   <figure>
@@ -433,30 +437,21 @@
 
 <section id="form">
   <h2>The checking screen</h2>
-  <div class="cols">
-    <div class="prose">
-      <p>We reuse exactly how the lesson-observation form works today. The computer's answer is saved once and never changed (version 1). The WhatsApp form opens pre-filled from it. The coach's edits are saved as version 2 with a note of what changed. Only the coach who did the assessment can submit it.</p>
-      <p>Two changes for children: the form is per child, not per lesson, and each edit is saved item by item, because we need to know exactly where the computer was wrong in order to improve it.</p>
-      <p>Each screen is one block. Each subtask row shows the computer's count; the coach taps to change it. Where the computer was confident, the words it marked wrong appear as chips the coach can flip. Where it was not (letters, first sounds, and all per-word marks in version 1), the row says "listen and mark" with the clip attached. A "manual mode" switch lets a coach mark a whole block themselves; the audio is still recorded and marked in the background so we can keep measuring the computer.</p>
-    </div>
-    <div>
-      <div class="phone">
-        <div class="bar">Rumi · Student assessment · Ayesha (Gr 3) · 1 of 3</div>
-        <div class="screen-title">Urdu reading</div>
-        <div class="row"><span class="k">Words correct in 60 s</span><span class="v ai">31 <span class="pill coach">edit</span></span></div>
-        <div class="row"><span class="k">Words attempted</span><span class="v ai">34</span></div>
-        <div class="words"><span class="w">آج</span><span class="w">بلال</span><span class="w">اپنے</span><span class="w miss">والد</span><span class="w">کے</span><span class="w">ساتھ</span><span class="w">دریائے</span><span class="w miss">جہلم</span><span class="w">کے</span><span class="w">کنارے</span><span class="w fix">گیا</span><span class="w">…</span></div>
-        <div class="row"><span class="k">Question 1 · "کس کے ساتھ؟"</span><span class="v ai">✓</span></div>
-        <div class="row"><span class="k">Question 2 · "کیا بہہ رہا تھا؟"</span><span class="v ai">✗</span></div>
-        <div class="row"><span class="k">First sounds</span><span class="v"><span class="pill gold">listen &amp; mark</span></span></div>
-        <div class="row"><span class="k">Coach check</span><span class="v ai">story read twice ✓ · no hints ✓</span></div>
-        <div class="btn">Confirm Urdu · go to English</div>
-      </div>
-      <p style="font-size:12.5px;color:var(--muted);max-width:300px;margin-top:8px">Red chip = the computer marked it wrong. Yellow chip = the coach changed it. "Listen &amp; mark" = the computer was not sure enough; the coach decides.</p>
-    </div>
+  <div class="prose">
+    <p>This is the same mechanism the lesson-observation form uses in Islamabad today. There, after a coach sends a lesson recording, Rumi listens, fills in the observation form and sends a message with a button that says <em>فارم کھولیں</em> ("open the form"). Tapping it opens a WhatsApp Flow: a set of screens that WhatsApp itself draws, where every score is already filled in, the coach changes what they disagree with, taps Next through the screens, and submits. We reuse that exactly, with one form per child instead of per lesson.</p>
+    <p>A WhatsApp Flow is not a web page, so the design has to fit what Meta allows. What it can do: fields pre-filled from our server; number boxes; a row of tappable chips (at most 20); radio buttons; dropdowns; a photo picker that opens the camera; one button per screen; up to 50 elements per screen. What it cannot do: <strong>play audio</strong>. There is no sound inside a Flow at all. So the coach does not re-listen inside the form; the recording is their own voice note, already in the chat, and they play it there. Each screen's button sends its values to Rumi as soon as it is tapped, so closing the form to listen and opening it again loses nothing.</p>
+    <p>That rules out the per-word tap-to-mark passage an app could offer (a 60-word story would need 60 elements and there is no tap-on-text component). What fits is the pattern below: the counts as pre-filled numbers, the words the computer marked wrong as chips that start ticked (the coach unticks any the child actually read right), one radio-button question per comprehension item showing the question and what the child said, and a dropdown for the things the computer does not mark, such as first sounds and letters. Where the computer is not confident enough, the field arrives empty rather than pre-filled, and the coach fills it from memory or after replaying the note.</p>
+  </div>
+  <div class="cols3">
+    <figure><img src="mockups/chat_cta.png" alt="The chat: Rumi sends the child card, the coach sends the voice note, Rumi replies with the form button"><figcaption>1 · The chat. Rumi sends the card, the coach records one voice note for the whole five minutes, Rumi replies within two minutes with its counts and the <em>فارم کھولیں</em> button. The same message shape the observation form uses today.</figcaption></figure>
+    <figure><img src="mockups/flow_urdu.png" alt="Flow screen 1 of 3, Urdu: pre-filled counts, flagged-word chips, a radio-button comprehension question"><figcaption>2 · Screen 1 of 3, Urdu. The counts are pre-filled number boxes. The three words the computer heard wrong are ticked chips; untick one and it counts as right. Each story question shows the child's answer and three radio buttons. The green button saves this screen and moves to English.</figcaption></figure>
+    <figure><img src="mockups/flow_maths.png" alt="Flow screen 3 of 3, maths: dropdowns, a number box and a camera photo picker"><figcaption>3 · Screen 3 of 3, maths. Number reading and the word problems are dropdowns, the timed sums a number box, and the photo picker opens the camera for the child's written answers. Submit ends the child and Rumi sends the next card.</figcaption></figure>
+  </div>
+  <div class="prose">
+    <p>The full draft of the form, in the exact JSON format Meta accepts, is in the files section (<a href="harness/flow/egra-review-flow.json">egra-review-flow.json</a>). It uses only components that exist in Flow version 7.0, and every label is within Meta's length limits. The pictures above are drawn from that file's example data, not invented separately.</p>
+    <p>Storage is unchanged from the observation form: the computer's answer is saved once and never changed (version 1); the form opens pre-filled from it; the coach's submission is saved as version 2 with a note of what changed, item by item, because we need to know exactly where the computer was wrong to improve it. Only the coach who did the assessment can submit it.</p>
   </div>
 </section>
-
 <section id="data">
   <h2>Where everything is saved</h2>
   <div class="prose"><p>Good news: our database already has the right shape, built for the August ASER tool. We add no new tables for version 1, only a few columns. In plain terms:</p></div>
@@ -557,6 +552,7 @@
 <li><a href="code/harness/15_evaluation_doc.py.html"><code>harness/15_evaluation_doc.py</code></a> — Harness step 15: write the ONE canonical evaluation record (harness/HARNESS_RESULTS.md) from every cached result, <span class="meta">(<a href="src/harness/15_evaluation_doc.py">raw</a>)</span></li>
 <li><a href="code/harness/_chain_after_segmenter.sh.html"><code>harness/_chain_after_segmenter.sh</code></a> —  <span class="meta">(<a href="src/harness/_chain_after_segmenter.sh">raw</a>)</span></li>
 <li><a href="code/harness/_patch_plan_eval.py.html"><code>harness/_patch_plan_eval.py</code></a> — One-off: rewrite PLAN.html&#x27;s evaluation and stack sections into the single combined record. <span class="meta">(<a href="src/harness/_patch_plan_eval.py">raw</a>)</span></li>
+<li><a href="code/harness/_patch_plan_flow.py.html"><code>harness/_patch_plan_flow.py</code></a> — One-off: replace the invented checking-screen mockup with the accurate WhatsApp Flow design. <span class="meta">(<a href="src/harness/_patch_plan_flow.py">raw</a>)</span></li>
 <li><a href="code/harness/_patch_speechace.py.html"><code>harness/_patch_speechace.py</code></a> — One-off: fold the corrected SpeechAce numbers and the Azure-vs-SpeechAce recommendation into the record. <span class="meta">(<a href="src/harness/_patch_speechace.py">raw</a>)</span></li>
 <li><a href="code/harness/_r2_audio.sh.html"><code>harness/_r2_audio.sh</code></a> —  <span class="meta">(<a href="src/harness/_r2_audio.sh">raw</a>)</span></li>
 <li><a href="code/harness/_r2_scale.sh.html"><code>harness/_r2_scale.sh</code></a> —  <span class="meta">(<a href="src/harness/_r2_scale.sh">raw</a>)</span></li>
@@ -580,7 +576,7 @@
 <li><a href="tables/harness/maths_scores_google_gemini-2.5-pro.csv.html"><code>harness/maths_scores_google_gemini-2.5-pro.csv</code></a> — Maths from speech: machine vs enumerator counts per recording <span class="meta">(<a href="data/harness/maths_scores_google_gemini-2.5-pro.csv">csv</a>)</span></li>
 <li><a href="tables/harness/english_results.csv.html"><code>harness/english_results.csv</code></a> — English windows: SpeechAce and STT-diff vs enumerator per recording <span class="meta">(<a href="data/harness/english_results.csv">csv</a>)</span></li>
 <li><a href="tables/harness/segmenter_results.csv.html"><code>harness/segmenter_results.csv</code></a> — Rule-based segmenter (v1) results <span class="meta">(<a href="data/harness/segmenter_results.csv">csv</a>)</span></li>
-</ul><h3>Worked examples</h3><p><a href="examples/index.html">Twelve real windows</a>, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator's marks and every model's per-word verdicts side by side.</p><h3>Private team data (Google Drive, Taleemabad accounts only)</h3><ul><li><a href="https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG">The May 2026 study folder</a> — the 207 enumerator recordings (<code>AA_&lt;uuid&gt;_enumerator.m4a</code>), the SurveyCTO export <code>EGRA_EGMA client N=2233.xlsx</code> (one row per child, 1,364 columns), and the reviewer workbook <code>Data.xlsx</code> (1,462 QA re-listens). These hold child data and are not copied into this repository.</li><li><a href="https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D">The TIP assessments folder</a> — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.</li><li>The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): <code>06_Logs &amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/</code> in the Rumi workspace.</li></ul>
+</ul><h3>The checking form</h3><p><a href="harness/flow/egra-review-flow.json">egra-review-flow.json</a>: the coach's checking screens as a WhatsApp Flow JSON draft (version 7.0, endpoint data model), built on the same pattern as the Islamabad observation form. The three screen pictures in the plan are rendered from this file's example data.</p><h3>Worked examples</h3><p><a href="examples/index.html">Twelve real windows</a>, each showing the printed text, the clip (Drive, team accounts), the transcript, the enumerator's marks and every model's per-word verdicts side by side.</p><h3>Private team data (Google Drive, Taleemabad accounts only)</h3><ul><li><a href="https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG">The May 2026 study folder</a> — the 207 enumerator recordings (<code>AA_&lt;uuid&gt;_enumerator.m4a</code>), the SurveyCTO export <code>EGRA_EGMA client N=2233.xlsx</code> (one row per child, 1,364 columns), and the reviewer workbook <code>Data.xlsx</code> (1,462 QA re-listens). These hold child data and are not copied into this repository.</li><li><a href="https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D">The TIP assessments folder</a> — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.</li><li>The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): <code>06_Logs &amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/</code> in the Rumi workspace.</li></ul>
 </section>
 </div>
 </body></html>
