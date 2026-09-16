@@ -1194,11 +1194,46 @@ footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-si
 </tr>
 </tbody>
 </table>
-<h2 id="7-english-pronunciation-services">7. English pronunciation services</h2>
-<ul>
-<li><strong>SpeechAce</strong> (scripted endpoint, first 29 s of each window, quality &lt; 40 = wrong): count r 0.74 (word list) / 0.87 (story), MAE 8–11 words, per-word precision 0.21–0.25 on this 8 kHz audio. Median quality score 40–46 for words the enumerator accepted vs 30–34 for words she rejected: the separation exists but is weak.</li>
-<li><strong>Azure Pronunciation Assessment</strong>: not evaluated. Both documented keys return 401 from the Southeast Asia endpoint and the same key is on the production service, so English reading has been on the silent fallback path (P1 bug filed).</li>
-</ul>
+<h2 id="7-english-pronunciation-services-speechace-vs-azure">7. English pronunciation services: SpeechAce vs Azure</h2>
+<p>SpeechAce was run on the first 29 s of every English window (its scripted endpoint caps audio at 30 s on our plan; the reference was cut to the words the child reached). Compared on words both sides reached, quality score &lt; 40 = wrong:</p>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">count r</th>
+<th style="text-align: right;">MAE (words, 29-s window)</th>
+<th style="text-align: right;">per-word precision</th>
+<th style="text-align: right;">per-word recall</th>
+<th style="text-align: right;">F1</th>
+<th>Gemini 3.8 Flash on the full 60 s, same children</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>English word list</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.43</td>
+<td>count MAE 5.9, per-word F1 0.34</td>
+</tr>
+<tr>
+<td>English story</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.41</td>
+<td>count MAE 5.8, per-word F1 0.34</td>
+</tr>
+</tbody>
+</table>
+<p>So on English, SpeechAce's per-word marks are the best we measured (the audio LLMs are stronger on Urdu, where SpeechAce cannot run), its counts are on par, and it is the only scorer that also names the mispronounced sound. Costs: $0.008 per 15 s of audio (about 3 cents per 60-s window in two calls) plus a plan tier; en-US/en-GB dialect models only; every number here is on 8 kHz audio and should be re-measured on 16 kHz voice notes.</p>
+<p><strong>Azure Pronunciation Assessment</strong> was not evaluated: both documented keys return 401 and the same key is on the production service, so English reading has been on the silent fallback path (P1 bug filed). Given the SpeechAce result there is no reason to regenerate it: SpeechAce covers the same job with child-speech evidence, nonword phone-list scoring and a working key.</p>
 <h2 id="8-what-it-adds-up-to-the-stack-we-recommend">8. What it adds up to: the stack we recommend</h2>
 <table>
 <thead>
@@ -1253,10 +1288,10 @@ footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-si
 <td>Coach marks</td>
 </tr>
 <tr>
-<td>English phoneme detail</td>
-<td>Azure Pronunciation Assessment once the key is regenerated; SpeechAce for nonwords</td>
-<td>Only vendors with phoneme output; SpeechAce is weak on 8 kHz audio and should be re-measured on 16 kHz voice notes</td>
-<td>—</td>
+<td>English per-word marks and phoneme detail</td>
+<td><strong>SpeechAce</strong> scripted scoring, two 30-s calls per window, plus its phone-list endpoint for nonwords</td>
+<td>Best per-word F1 on English of anything tried (0.41–0.43), counts on par with Gemini, names the mispronounced sound; retire Azure rather than regenerate its dead key</td>
+<td>Gemini 3.8 Flash counts with coach-decided chips</td>
 </tr>
 <tr>
 <td>Coach protocol audit</td>

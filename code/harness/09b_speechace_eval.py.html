@@ -26,9 +26,11 @@ for p in glob.glob(&#x27;harness/english/speechace__*.json&#x27;):
     j=json.load(open(p)); f=os.path.basename(p).split(&#x27;__&#x27;)[1]; sub=os.path.basename(p).split(&#x27;__&#x27;)[2].replace(&#x27;.json&#x27;,&#x27;&#x27;)
     gtp=&#x27;harness/gt/&#x27;+f
     if not os.path.exists(gtp) or &#x27;text_score&#x27; not in j: continue
-    gt=json.load(open(gtp)); flags=gt[&#x27;items&#x27;].get(sub) or []
+    gt=json.load(open(gtp)); flags=gt[&#x27;items&#x27;].get(sub) or []; sc=gt[&#x27;scores&#x27;]
+    pre=&#x27;orf&#x27; if sub==&#x27;orf_eng&#x27; else &#x27;idwrd&#x27;; e_att=sc.get(f&#x27;{pre}_60s_attempted_eng&#x27;) or sc.get(f&#x27;{pre}_reading_attempted_eng&#x27;)
     ws=j[&#x27;text_score&#x27;][&#x27;word_score_list&#x27;]
-    pairs=[(w.get(&#x27;quality_score&#x27;) or 0, flags[i]) for i,w in enumerate(ws) if i&lt;len(flags) and flags[i] is not None]
+    reach=min(len(ws), int(float(e_att)) if e_att not in (None,&#x27;&#x27;) else len(ws), len(flags))
+    pairs=[(w.get(&#x27;quality_score&#x27;) or 0, flags[i]) for i,w in enumerate(ws[:reach]) if flags[i] is not None]
     if not pairs: continue
     n=len(pairs); enum_c=sum(1 for q,fl in pairs if fl==0)
     for thr in (40,50,60,70):

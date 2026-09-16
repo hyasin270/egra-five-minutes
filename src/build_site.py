@@ -101,9 +101,12 @@ def write(path, content):
     open(path, 'w', encoding='utf-8').write(content)
 
 def build():
-    if os.path.exists(OUT):
-        shutil.rmtree(OUT)
-    os.makedirs(OUT)
+    os.makedirs(OUT, exist_ok=True)
+    for name in os.listdir(OUT):  # clear everything except the site's own .git
+        if name == '.git':
+            continue
+        pth = os.path.join(OUT, name)
+        shutil.rmtree(pth) if os.path.isdir(pth) else os.remove(pth)
     urls_by_doc = collections.OrderedDict()
     # 1. docs
     for src, out, title, desc in DOCS:

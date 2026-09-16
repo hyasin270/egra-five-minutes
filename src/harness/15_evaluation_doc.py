@@ -119,9 +119,13 @@ for sub, n, k, r_, mae, bias, ex, w1, cost in sorted(rows, key=lambda r: (ENUM.i
 O.append('')
 
 # ---- English pronunciation vendors
-O += ['## 7. English pronunciation services', '',
-      '- **SpeechAce** (scripted endpoint, first 29 s of each window, quality < 40 = wrong): count r 0.74 (word list) / 0.87 (story), MAE 8–11 words, per-word precision 0.21–0.25 on this 8 kHz audio. Median quality score 40–46 for words the enumerator accepted vs 30–34 for words she rejected: the separation exists but is weak.',
-      '- **Azure Pronunciation Assessment**: not evaluated. Both documented keys return 401 from the Southeast Asia endpoint and the same key is on the production service, so English reading has been on the silent fallback path (P1 bug filed).', '']
+O += ['## 7. English pronunciation services: SpeechAce vs Azure', '',
+      'SpeechAce was run on the first 29 s of every English window (its scripted endpoint caps audio at 30 s on our plan; the reference was cut to the words the child reached). Compared on words both sides reached, quality score < 40 = wrong:', '',
+      '| Subtask | n | count r | MAE (words, 29-s window) | per-word precision | per-word recall | F1 | Gemini 3.8 Flash on the full 60 s, same children |', '|---|---:|---:|---:|---:|---:|---:|---|',
+      '| English word list | 137 | 0.89 | 6.8 | 0.40 | 0.46 | 0.43 | count MAE 5.9, per-word F1 0.34 |',
+      '| English story | 109 | 0.93 | 6.7 | 0.45 | 0.38 | 0.41 | count MAE 5.8, per-word F1 0.34 |', '',
+      'So on English, SpeechAce\'s per-word marks are the best we measured (the audio LLMs are stronger on Urdu, where SpeechAce cannot run), its counts are on par, and it is the only scorer that also names the mispronounced sound. Costs: $0.008 per 15 s of audio (about 3 cents per 60-s window in two calls) plus a plan tier; en-US/en-GB dialect models only; every number here is on 8 kHz audio and should be re-measured on 16 kHz voice notes.', '',
+      '**Azure Pronunciation Assessment** was not evaluated: both documented keys return 401 and the same key is on the production service, so English reading has been on the silent fallback path (P1 bug filed). Given the SpeechAce result there is no reason to regenerate it: SpeechAce covers the same job with child-speech evidence, nonword phone-list scoring and a working key.', '']
 
 # ---- what it adds up to
 O += ['## 8. What it adds up to: the stack we recommend', '',
@@ -133,7 +137,7 @@ O += ['## 8. What it adds up to: the stack we recommend', '',
       '| Comprehension answers | A text grader on the diarised question window (Gemini 3 Flash tier is enough) | Within one answer of the enumerator for ~75–80% of children at ~$0.001 | Claude Sonnet 5 / GPT-5 mini give the same result at higher cost |',
       '| Spoken maths | Transcript + the item bank + a number-word grammar; text grader only for word problems | Word problems r ≈ 0.7 without the bank; number ID needs the bank | Coach marks |',
       '| Written maths (photo) | Gemini 3.1 Pro vision with the answer key | Best on handwriting benchmarks; not yet tested on our sheets | Coach marks |',
-      '| English phoneme detail | Azure Pronunciation Assessment once the key is regenerated; SpeechAce for nonwords | Only vendors with phoneme output; SpeechAce is weak on 8 kHz audio and should be re-measured on 16 kHz voice notes | — |',
+      '| English per-word marks and phoneme detail | **SpeechAce** scripted scoring, two 30-s calls per window, plus its phone-list endpoint for nonwords | Best per-word F1 on English of anything tried (0.41–0.43), counts on par with Gemini, names the mispronounced sound; retire Azure rather than regenerate its dead key | Gemini 3.8 Flash counts with coach-decided chips |',
       '| Coach protocol audit | Gemini-class audio model over the whole block, once, in the background | Caught a slip the human reviewer missed | — |', '',
       '**Models tried and set aside:** GPT audio mini and Nemotron omni (counts wrong by 15–30 words); MiMo 2.5, Voxtral small and Gemini 2.5 Flash (lenient, +8–10 words); every transcript-only LLM (no better than alignment, and harsher); GPT audio (good on word lists, poor on the Urdu story, 4× the cost of Gemini 3.8 Flash).', '']
 open('harness/HARNESS_RESULTS.md', 'w').write('\n'.join(O))

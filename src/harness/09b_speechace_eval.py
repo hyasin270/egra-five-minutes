@@ -7,9 +7,11 @@ for p in glob.glob('harness/english/speechace__*.json'):
     j=json.load(open(p)); f=os.path.basename(p).split('__')[1]; sub=os.path.basename(p).split('__')[2].replace('.json','')
     gtp='harness/gt/'+f
     if not os.path.exists(gtp) or 'text_score' not in j: continue
-    gt=json.load(open(gtp)); flags=gt['items'].get(sub) or []
+    gt=json.load(open(gtp)); flags=gt['items'].get(sub) or []; sc=gt['scores']
+    pre='orf' if sub=='orf_eng' else 'idwrd'; e_att=sc.get(f'{pre}_60s_attempted_eng') or sc.get(f'{pre}_reading_attempted_eng')
     ws=j['text_score']['word_score_list']
-    pairs=[(w.get('quality_score') or 0, flags[i]) for i,w in enumerate(ws) if i<len(flags) and flags[i] is not None]
+    reach=min(len(ws), int(float(e_att)) if e_att not in (None,'') else len(ws), len(flags))
+    pairs=[(w.get('quality_score') or 0, flags[i]) for i,w in enumerate(ws[:reach]) if flags[i] is not None]
     if not pairs: continue
     n=len(pairs); enum_c=sum(1 for q,fl in pairs if fl==0)
     for thr in (40,50,60,70):
