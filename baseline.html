@@ -1,0 +1,255 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baseline: the May 2026 study · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="index.html">EGRA in Five Minutes</a><a href="index.html#experiment">Experiment</a><a href="harness/results.html">Harness results</a><a href="files.html">All files</a><a href="sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>Baseline: the May 2026 study</h1><p class=lede>The corpus, the 21-minute enumerator timing baseline, the QA review layer</p><h1 id="baseline-how-long-the-enumerator-administered-egraegma-battery-takes-today">Baseline — how long the enumerator-administered EGRA/EGMA battery takes today</h1>
+<p><strong>Written:</strong> 2026-09-15 · <strong>Bead:</strong> bd-gqoz1 · <strong>Source data:</strong> the shared Drive folder <code>19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG</code> (downloaded into <code>audio/</code> by <code>download_drive_audio.py</code>)</p>
+<h2 id="what-is-in-the-drive-folder">What is in the Drive folder</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>What it is</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AA_&lt;uuid&gt;_enumerator.m4a</code></td>
+<td>SurveyCTO audio-audit recording of one enumerator administering the full battery to one child (whole session, not per subtask)</td>
+<td><strong>207 unique</strong> recordings (331 Drive entries, 124 are "Copy of" duplicates)</td>
+</tr>
+<tr>
+<td><code>EGRA_EGMA client N=2233.xlsx</code></td>
+<td>The SurveyCTO export of the study: one row per child, 1,364 columns — every item response, per-subtask start/end timestamps, 60-second timer state, scores</td>
+<td>2,233 children · 28 enumerators · 99 schools (Rawalpindi EMIS codes) · 27 Apr – 21 May 2026</td>
+</tr>
+<tr>
+<td><code>Data.xlsx</code> → <code>Reviews</code></td>
+<td>The coach QA layer: a reviewer re-listened to an enumerator recording and, per subtask, marked the enumerator's score <code>correct / incorrect / unknown</code> plus protocol compliance flags and comments</td>
+<td>1,462 reviews (874 ASER instrument, 187 EGRA/EGMA, rest unlabelled) by 7 reviewers</td>
+</tr>
+</tbody>
+</table>
+<p>Join keys: <code>unique_id_calc</code> (= <code>emis-section-?-child</code>) is on both the child row and the review row; <code>audio_filename</code> is on the review row. <code>audio/_audio_index.csv</code> has the join done for the 206 recordings that match a child.</p>
+<h2 id="the-instrument-that-was-administered-from-the-column-names">The instrument that was administered (from the column names)</h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Subtask (column prefix)</th>
+<th>Items</th>
+<th>Timed</th>
+<th>Score fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Urdu</td>
+<td>Listening comprehension <code>listcomp_*_urd</code></td>
+<td>4 literal + 2 inferential</td>
+<td>no</td>
+<td>numcorrect / percorrect</td>
+</tr>
+<tr>
+<td>Urdu</td>
+<td>Letter identification <code>letterid_*_urd</code></td>
+<td>100 letters</td>
+<td>60 s</td>
+<td>attempted, correct, time_remain, score (clpm)</td>
+</tr>
+<tr>
+<td>Urdu</td>
+<td>Familiar word reading <code>idwrd_*_urd</code></td>
+<td>50 words</td>
+<td>60 s</td>
+<td>attempted, correct, cper</td>
+</tr>
+<tr>
+<td>Urdu</td>
+<td>Oral reading fluency <code>orf_*_urd</code></td>
+<td>~70-word passage</td>
+<td>60 s</td>
+<td>attempted, correct, sentences, time_remain</td>
+</tr>
+<tr>
+<td>Urdu</td>
+<td>Reading comprehension <code>rdcomp_*_urd</code></td>
+<td>4 literal + 2 inferential</td>
+<td>no</td>
+<td>numcorrect (gated on ORF: <code>continue_rc_urd</code>)</td>
+</tr>
+<tr>
+<td>English</td>
+<td>Listening comprehension</td>
+<td>4 + 2</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>English</td>
+<td>Letter identification</td>
+<td>100</td>
+<td>60 s</td>
+<td></td>
+</tr>
+<tr>
+<td>English</td>
+<td><strong>Pseudoword decoding</strong> <code>pw_*_eng</code> (English only)</td>
+<td>50</td>
+<td>60 s</td>
+<td></td>
+</tr>
+<tr>
+<td>English</td>
+<td>Familiar word reading</td>
+<td>50</td>
+<td>60 s</td>
+<td></td>
+</tr>
+<tr>
+<td>English</td>
+<td>ORF passage + comprehension</td>
+<td></td>
+<td>60 s</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Number identification <code>idnummag</code> (<code>identify_1a..4b</code>)</td>
+<td>8</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Number representation / discrimination <code>numrep</code> (<code>represent_*</code>)</td>
+<td>8</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Basic-level fluency <code>blfluency</code> (<code>blfl1</code>, <code>blfl4</code> = two timed operations grids, 60 s each)</td>
+<td>~20 each</td>
+<td>60 s</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Computation <code>bleffcomp</code> (<code>computation_*</code>)</td>
+<td>8</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Word problems <code>wrdpblm</code></td>
+<td>8</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>Math</td>
+<td>Patterns <code>patterns</code></td>
+<td>8</td>
+<td>no</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Stop rules are visible as <code>*_firstline_*</code> (zero correct in the first line → discontinue) and <code>no_orf</code> / <code>continue_rc</code> gates.</p>
+<h2 id="timing-baseline-n-2233-children-from-per-subtask-timestamps">Timing baseline (n = 2,233 children, from per-subtask timestamps)</h2>
+<p>Whole SurveyCTO form, first tap to submit: <strong>median 21.1 min</strong>, mean 22.5, p25 17.4, p75 25.9, p90 32.3.
+First subtask to last subtask (excludes consent/roster): <strong>median 18.0 min</strong>, p90 26.5.</p>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Median</th>
+<th>Mean</th>
+<th>p75</th>
+<th>p90</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Urdu reading (5 subtasks)</td>
+<td>5.7 min</td>
+<td>6.2</td>
+<td>7.2</td>
+<td>9.2</td>
+</tr>
+<tr>
+<td>English reading (6 subtasks)</td>
+<td>6.9 min</td>
+<td>7.5</td>
+<td>8.6</td>
+<td>11.5</td>
+</tr>
+<tr>
+<td>Math (6 subtasks)</td>
+<td>6.2 min</td>
+<td>6.5</td>
+<td>7.8</td>
+<td>9.6</td>
+</tr>
+</tbody>
+</table>
+<p>Per subtask (seconds): see <code>baseline_subtask_timings.csv</code>. The three timed 60-second items each cost ~68 s wall-clock (timer + instructions). Listening comprehension is the slowest untimed item (~80 s) because the enumerator reads the story aloud twice. The math fluency grid is the single longest subtask (~90 s median).</p>
+<p><strong>Recorded audio</strong> (209 files): median <strong>22.5 min</strong>, mean 24.5, p10 14.3, p90 37.6, max 62. Total 85 hours. All files are <strong>AAC, 8 kHz mono, ~12 kbps</strong> — SurveyCTO's audio-audit setting. This matters: every pronunciation/phoneme API expects ≥16 kHz, so a coach-recorded WhatsApp voice note (16 kHz Opus) will be a <em>better</em> input than this baseline corpus.</p>
+<h2 id="what-the-target-means-against-this-baseline">What the target means against this baseline</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Today (enumerator, tablet)</th>
+<th>Target (coach, phone + models)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per child, full battery</td>
+<td>18–21 min</td>
+<td><strong>5 min</strong></td>
+</tr>
+<tr>
+<td>Per 5 children</td>
+<td>~105 min</td>
+<td><strong>30 min</strong></td>
+</tr>
+<tr>
+<td>Compression needed</td>
+<td></td>
+<td><strong>3.6–4.2×</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Where the time goes today: 17 subtasks × (instruction script + 60-second timer or item-by-item marking) with the enumerator tapping each item on the tablet. The compression has to come from (a) fewer, shorter, adaptive subtasks, (b) removing item-by-item tapping — the coach just records and the model scores, (c) the timed tasks stopping early on stop-rule hits. It cannot come from speeding up the child.</p>
+<h2 id="the-coach-review-layer-ground-truth-we-already-have">The coach-review layer (ground truth we already have)</h2>
+<p>1,462 human re-listens with per-field verdicts on whether the enumerator's score was right. Median compliance 92%, but <strong>35% of reviews are flagged</strong> and comments show the failure modes any AI scorer must also survive: background noise from an uncontrolled class, enumerator prompting or correcting the child, story read once instead of twice, translating English items into Urdu, inappropriate tone. The 187 EGRA/EGMA-instrument reviews plus the 206 matched recordings are the seed of a blind human-anchored evaluation set — the thing the July SpeechAce-vs-Azure study said was missing.</p>
+<h2 id="sample-composition-the-206-matched-recordings">Sample composition (the 206 matched recordings)</h2>
+<p>Grades 1–5 roughly equal (43/43/34/33/34), ages 6–14 (mode 10), 23 enumerators, 57 schools. Home language codes: 1, 5, 2 dominate in the full dataset (codebook not in the export — treat as Urdu/Punjabi/Pothwari until confirmed).</p>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>download_drive_audio.py</code> — reproduces the download</li>
+<li><code>baseline_timings.py</code> → <code>baseline_subtask_timings.csv</code>, <code>audio/_child_index.csv</code></li>
+<li><code>audio_durations.py</code> → <code>audio/_audio_index.csv</code> (duration + child + reviewer per file)</li>
+<li><code>audio/_coach_reviews.csv</code>, <code>audio/_audio_to_child.csv</code>, <code>audio/_drive_manifest.json</code>, <code>audio/_xlsx_headers.json</code></li>
+<li><code>meetings/</code> — Extended Mind exports of the adjacent meetings (the 15 Sep alignment call itself was <strong>not captured</strong> by the recorder; nothing exists in the meetings DB between 08:00 and 10:30 UTC that day)</li>
+</ul><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

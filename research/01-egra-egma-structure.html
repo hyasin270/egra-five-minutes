@@ -1,0 +1,779 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EGRA and EGMA structure · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>EGRA and EGMA structure</h1><p class=lede>Subtasks, timing, stop rules, Urdu adaptations, benchmarks, automated-scoring literature</p><h1 id="egra-egma-structure-urdu-adaptations-digital-scoring-and-reliability-practice">EGRA / EGMA structure, Urdu adaptations, digital scoring and reliability practice</h1>
+<p><strong>Purpose</strong>: reference document for the AI-assisted, coach-administered EGRA (English + Urdu) and EGMA design. Target: whole battery per child in ~5 min, 5 children in 30 min.
+<strong>Prepared</strong>: 2026-09-15. Every factual claim carries a source URL. Items not confirmed against a primary source are marked <strong>unverified</strong>.</p>
+<p><strong>Primary sources used (read directly, text-extracted)</strong>: RTI <em>EGRA Toolkit, Second Edition</em> (USAID, 2016) — https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf ("Toolkit"); RTI <em>EGMA Toolkit</em> (USAID, March 2014) — https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf ("EGMA Toolkit"); Dubeck &amp; Gove (2015), <em>The EGRA: its theoretical foundation, purpose, and limitations</em>, IJED — http://aserpakistan.org/document/learning_resources/2015/Dubeck_Gove_IJED_2015_EGRA_article.pdf; Sindh SELECT <em>EGRA Baseline Assessment Report</em> (2024, Grade 2, Sindhi + Urdu) — https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf ("Sindh 2024"); ACR-Asia <em>EGRA Benchmarks and Standards Research Report</em> (RTI, Dec 2017) — https://ierc-publicfiles.s3.amazonaws.com/public/resources/Asia%20ACR%20Benchmarking%20Report_FINAL%20REVISED_21%20Dec%2017.pdf ("ACR-Asia"); Tanzania <em>National EGRA 2016 Final Findings Report</em> (ABE-ACR) — https://ierc-publicfiles.s3.amazonaws.com/public/resources/FdngsRpt_TZNtnlEGRA_08-Nov2016_FNL.pdf ("TZ 2016").</p>
+<hr />
+<h2 id="1-egra-canonical-battery-rti-toolkit-2nd-ed-2016">1. EGRA canonical battery (RTI Toolkit 2nd ed., 2016)</h2>
+<h3 id="11-which-subtasks-are-core">1.1 Which subtasks are "core"</h3>
+<p>The Toolkit's common instrument for letter-based orthographies has <strong>six subtasks, four of them core</strong>: (1) listening comprehension, (2) letter identification (names <em>or</em> sounds), (3) nonword reading, (4) oral reading fluency (ORF) with reading comprehension. The two "most often included" additions are phonemic awareness (initial-sound identification) and familiar-word reading. Dictation, maze and cloze are optional; vocabulary is optional and untimed and "has not yet been through the same expert-panel review and validation process as the other subtasks" (Toolkit pp. 39–41). The Toolkit recommends keeping the count "around six" to control fatigue.</p>
+<h3 id="12-universal-administration-rules-toolkit-protocol-annex-pp-200215">1.2 Universal administration rules (Toolkit protocol annex, pp. ~200–215)</h3>
+<ul>
+<li><strong>Timed subtasks are 60 s and time-limited</strong>: the timer starts when the child reads the first item; on a tablet the screen flashes red at 60 s. If the child finishes early, the assessor records <strong>time remaining</strong>.</li>
+<li><strong>Hesitation rule</strong>: on timed reading grids, stay silent; if the child hesitates 3 s, point to the next item, say "Please go on", mark the skipped item incorrect.</li>
+<li><strong>Self-corrections count as correct.</strong></li>
+<li><strong>Early-stop ("auto-stop") rule</strong>: if the child gets <strong>no correct response in the first line</strong> — 10 items for letter/syllable grids, 5 items for nonword/familiar-word grids, the first line of the passage for ORF — say "Thank you", discontinue, tick the "discontinued" box. The child scores zero on that subtask and is coded auto-stopped (Toolkit §10.3, p. 109; Dubeck &amp; Gove Table 1).</li>
+<li><strong>Untimed oral items</strong> (initial sound, listening comprehension): no response after 3 s → mark "no response" and move on. Comprehension questions: no response after <strong>10 s</strong> → move on, do not repeat.</li>
+<li><strong>Incorrect vs no-response must be distinguished</strong> at item level; per-minute rates cannot be computed otherwise (Toolkit §10.3).</li>
+</ul>
+<h3 id="13-the-fluency-formula-exact-toolkit-103-p-109">1.3 The fluency formula (exact, Toolkit §10.3, p. 109)</h3>
+<pre><code>Subtask_per_minute = Subtask_score / (Time given for subtask − subtask_time_remain) × 60
+</code></pre>
+<p>where <code>Subtask_score</code> = items correct, <code>Time given</code> is normally 60 s, and <code>subtask_time_remain</code> is seconds left if the child finished early (0 if timed out). Only children who finish early have a rate different from their raw count. Units: clpm (letter names), clspm (letter sounds), cnwpm (nonwords), cwpm (familiar words or passage), csspm (syllables).</p>
+<h3 id="14-subtask-by-subtask-specification">1.4 Subtask-by-subtask specification</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Subtask</th>
+<th>What the child sees / hears</th>
+<th>Timed</th>
+<th>Items</th>
+<th>Stop rule</th>
+<th>Score</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Listening comprehension</strong> (core)</td>
+<td>Assessor reads a ~30-word locally familiar passage aloud <strong>once</strong>; child may not see it; 3–5 questions (mostly literal, 1–2 inferential; no yes/no items); child may answer in any language</td>
+<td>No</td>
+<td>3–5 Q</td>
+<td>none (10 s no-response per Q)</td>
+<td>correct / total (%)</td>
+<td>Toolkit p. 42; protocol</td>
+</tr>
+<tr>
+<td>2a</td>
+<td><strong>Letter-sound identification</strong> (core variant)</td>
+<td>Grid of <strong>100</strong> letters (10 rows × 10), random order, upper+lower case, frequency-weighted; child says each letter's sound, pointing as they go; 2 practice items</td>
+<td>60 s</td>
+<td>100</td>
+<td>no correct in first line (10)</td>
+<td>clspm; also attempted, incorrect, time remaining</td>
+<td>Toolkit pp. 45–48</td>
+</tr>
+<tr>
+<td>2b</td>
+<td><strong>Letter-name identification</strong> (alternative)</td>
+<td>Same 100-letter grid; child says names. Often hits ceiling by G2 in many countries</td>
+<td>60 s</td>
+<td>100</td>
+<td>first 10</td>
+<td>clpm</td>
+<td>Toolkit p. 48</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Initial-sound identification</strong> (phonemic awareness; common)</td>
+<td>Oral only: assessor says a word twice ("What is the first sound in <em>mouse</em>?"); 10 words from G1–2 word lists. Alternative design: 10 sets of 3 words, child names the one with a different initial sound</td>
+<td>No</td>
+<td>10</td>
+<td>none in Toolkit script (Dubeck &amp; Gove: stop if 0 in first 5)</td>
+<td>correct / 10</td>
+<td>Toolkit p. 55; D&amp;G Table 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Nonword (invented-word) reading</strong> (core)</td>
+<td>Grid of <strong>50</strong> one- and two-syllable pronounceable nonwords, 5 per row, legal orthographic patterns, no homophones of real words, clear well-spaced font</td>
+<td>60 s</td>
+<td>50</td>
+<td>first line (5)</td>
+<td>cnwpm</td>
+<td>Toolkit p. 49</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Familiar-word reading</strong> (common)</td>
+<td>Grid of <strong>50</strong> high-frequency grade-level words (from textbooks/word lists), 5 per row, random order, lowercase</td>
+<td>60 s</td>
+<td>50</td>
+<td>first line (5)</td>
+<td>cwpm</td>
+<td>Toolkit p. 56</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Oral reading fluency (passage)</strong> (core)</td>
+<td>Grade-level narrative of <strong>about 60 words</strong>, familiar setting, one-way plot; child reads aloud; assessor marks incorrect words; passage removed before questions</td>
+<td>60 s</td>
+<td>~60 words</td>
+<td>no correct word in first line</td>
+<td>cwpm + attempted + time remaining</td>
+<td>Toolkit pp. 50–52</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Reading comprehension</strong> (core, paired with 6)</td>
+<td>3–5 questions, literal + ≥1 inferential; <strong>only questions covering text the child actually read</strong> are asked (software prompts this); answers may be in any language; 10 s no-response</td>
+<td>No</td>
+<td>3–5</td>
+<td>not asked past point reached</td>
+<td>correct / asked, and / total</td>
+<td>Toolkit p. 51; protocol</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Dictation</strong> (optional)</td>
+<td>Assessor reads a sentence once whole, then in chunks (~1 word/s), waits 15 s, reads again; child writes on a lined form; scored per word (partial credit possible) plus capitals/punctuation. "Proven challenging to score in a consistent manner"</td>
+<td>No (15 s pauses)</td>
+<td>1 sentence</td>
+<td>none</td>
+<td>words correct (partial)</td>
+<td>Toolkit p. 41; protocol; D&amp;G</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Syllable identification</strong> (for syllabic orthographies e.g. Kiswahili)</td>
+<td>Grid of 50–100 syllables</td>
+<td>60 s</td>
+<td>50–100</td>
+<td>first 10</td>
+<td>csspm</td>
+<td>D&amp;G Table 1; TZ 2016 Table 1</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Phoneme/syllable segmentation</strong> (optional)</td>
+<td>Oral; child says the sounds of a spoken word; 10 items; used when initial-sound ceilings</td>
+<td>No</td>
+<td>10</td>
+<td>0 in first 5</td>
+<td>correct / 10</td>
+<td>Toolkit p. 41; D&amp;G</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Vocabulary</strong> (optional, unvalidated)</td>
+<td>Receptive: point to body parts / objects / spatial relations</td>
+<td>No</td>
+<td>~10–20</td>
+<td>none</td>
+<td>correct</td>
+<td>Toolkit p. 41</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Orientation to print</strong> (optional)</td>
+<td>Directionality, where to start</td>
+<td>No</td>
+<td>~3</td>
+<td>none</td>
+<td>correct</td>
+<td>D&amp;G Table 1</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>Maze / cloze</strong> (optional)</td>
+<td>Choose the word completing a sentence</td>
+<td>No</td>
+<td>—</td>
+<td>none</td>
+<td>correct</td>
+<td>Toolkit p. 41</td>
+</tr>
+</tbody>
+</table>
+<p><strong>EGRA 2.0 (2016–17)</strong>: RTI piloted four additional subtasks in Accra (spelling, oral language / vocabulary, silent reading comprehension, etc.); the English versions related strongly to existing comprehension measures, the Akuapem Twi versions did not perform well — https://shared.rti.org/content/development-and-pilot-testing-additional-subtasks-early-grade-reading-assessment-egra-20 and brief https://ierc-publicfiles.s3.amazonaws.com/public/resources/10745_EGRA_Subtasks_brief_02-15-17_r5.pdf. Exact subtask list not extracted here (<strong>unverified</strong>).</p>
+<h3 id="15-administration-scripts-structure">1.5 Administration scripts (structure)</h3>
+<p>Every subtask follows the same script skeleton in the Toolkit annex: (a) show stimulus / read directions; (b) two worked practice items with corrective feedback ("Good, the sound of this letter is /s/" / "The sound of this letter is /s/"); (c) "When I say Begin, start here [point], go across the page, point to each letter and tell me…"; (d) start timer on first response; (e) mark with slash, bracket after last item at 60 s, record time remaining; (f) early-stop line. Prompts such as "Please tell me the <em>sound</em>, not the name" may be given only once. Full Timor-Leste (Tetum) and English scripts are reproduced in the Toolkit annex.</p>
+<h3 id="16-per-subtask-time">1.6 Per-subtask time</h3>
+<p>The Toolkit gives no per-subtask timings, only totals (see §3). Working estimate used in this document: each timed grid ≈ 60 s test + 30–45 s instructions/practice ≈ <strong>90–105 s</strong>; ORF+comprehension ≈ <strong>2–2.5 min</strong>; listening comprehension ≈ <strong>1.5 min</strong>; initial sounds ≈ <strong>1–1.5 min</strong>; dictation ≈ <strong>2 min</strong>. These are estimates, not Toolkit figures.</p>
+<hr />
+<h2 id="2-egma-canonical-battery-rti-egma-toolkit-march-2014">2. EGMA canonical battery (RTI EGMA Toolkit, March 2014)</h2>
+<p>Core EGMA = six subtests (eight instruments because addition/subtraction each have Level 1 and Level 2). All are <strong>orally administered</strong>; "no student writing is required. Answers to all items are orally transmitted" — but paper/pencil and counters are available and the assessor records the strategy used (EGMA Toolkit pp. 12, 20–24). For <strong>untimed</strong> subtests, the assessor prompts the child to move on after <strong>5 s</strong> of no response and covers not-yet-reached items with a sheet of paper. Children are reminded to <strong>point</strong> at the item they are answering so the assessor can align tablet and stimulus. Approximate administration length: <strong>20 minutes</strong>, realistic field planning <strong>25 min per child</strong> including swap-over (EGMA Toolkit pp. 12, 50).</p>
+<table>
+<thead>
+<tr>
+<th>Subtest</th>
+<th>Stimulus &amp; response</th>
+<th>Timed</th>
+<th>Items</th>
+<th>Stop rule</th>
+<th>Score</th>
+<th>Response modality (capture implication)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Number identification</strong></td>
+<td>20 numerals in a 4-row grid: 3 single-digit (incl. 0 and 9), 12 two-digit (10–99), 5 three-digit (100–999); child <strong>says each number aloud</strong></td>
+<td><strong>60 s</strong></td>
+<td>20</td>
+<td>none</td>
+<td>correct per minute (rate)</td>
+<td><strong>Audio</strong> (child points + says)</td>
+</tr>
+<tr>
+<td><strong>Number discrimination</strong> (quantity comparison)</td>
+<td>10 pairs; child says which number is <strong>larger</strong>. 1 single-digit pair, 5 two-digit, 4 three-digit. "Pointing at the correct number is insufficient evidence" — child must <strong>say</strong> the number</td>
+<td>No</td>
+<td>10</td>
+<td>4 successive errors</td>
+<td>correct / 10</td>
+<td><strong>Audio</strong> (spoken numeral); pointing alone not accepted</td>
+</tr>
+<tr>
+<td><strong>Missing number</strong></td>
+<td>10 items, four horizontal boxes with one empty; 8 increasing, 2 decreasing; steps of 1, 2, 5, 10, 100; child <strong>says</strong> the missing number</td>
+<td>No</td>
+<td>10</td>
+<td>4 successive errors</td>
+<td>correct / 10</td>
+<td><strong>Audio</strong></td>
+</tr>
+<tr>
+<td><strong>Addition Level 1</strong></td>
+<td>20 items increasing in difficulty; addends ≤10, sums ≤19; presented on stimulus sheet; child answers orally; assessor notes strategy (fingers/tick marks, paper-pencil, mental)</td>
+<td><strong>60 s</strong></td>
+<td>20</td>
+<td>none</td>
+<td>correct per minute</td>
+<td><strong>Audio</strong> + observed strategy (vision or assessor tap)</td>
+</tr>
+<tr>
+<td><strong>Subtraction Level 1</strong></td>
+<td>Inverse of Addition L1 items</td>
+<td><strong>60 s</strong></td>
+<td>20</td>
+<td>none</td>
+<td>correct per minute</td>
+<td>Audio + strategy</td>
+</tr>
+<tr>
+<td><strong>Addition Level 2</strong></td>
+<td>5 items, two-digit, increasing difficulty; paper &amp; pencil and counters available</td>
+<td>No</td>
+<td>5</td>
+<td>4 successive errors</td>
+<td>correct / 5</td>
+<td>Audio; optional written working (image)</td>
+</tr>
+<tr>
+<td><strong>Subtraction Level 2</strong></td>
+<td>5 items, inverse</td>
+<td>No</td>
+<td>5</td>
+<td>4 successive errors</td>
+<td>correct / 5</td>
+<td>Audio; optional written working</td>
+</tr>
+<tr>
+<td><strong>Word problems</strong></td>
+<td>6 items <strong>read aloud by the assessor</strong> (to avoid confounding with reading); 3 mirror A/S L1 items; counters, pens and paper provided; strategy recorded</td>
+<td>No</td>
+<td>6</td>
+<td>4 successive errors</td>
+<td>correct / 6</td>
+<td><strong>Audio</strong> (assessor speech + child answer); counters (vision)</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: EGMA Toolkit §2.4.1–2.4.6 (pp. 20–24) and §3 (scoring: timed subtests reported as rate, untimed as proportion correct; results "are not interpreted in reference to a criterion or normative range").</p>
+<p><strong>Older/expanded EGMA variants</strong> (EGMA Toolkit pp. 25–27): the 2008–09 "EGMA 5" and pilot versions included <strong>Counting fluency (60 s), One-to-one correspondence, Shape recognition, Shape attributes, Pattern/number extension, Multiplication/Division</strong>; the pilot "took much longer than anticipated (well over 20 minutes)", which is why the Core EGMA was cut to the six subtests above. Shape/pattern items are therefore <strong>not</strong> in the 2014 Core; some country instruments retain them. Tanzania's national EGMA (2016) used five subtests: A/S Level 1 (timed), A/S Level 2, Missing Number, Word Problems (TZ 2016 p. 18).</p>
+<hr />
+<h2 id="3-total-administration-time-abbreviated-forms">3. Total administration time; abbreviated forms</h2>
+<table>
+<thead>
+<tr>
+<th>Instrument</th>
+<th>Time per child</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full EGRA (≈6 subtasks)</td>
+<td>"about <strong>15 to 20 minutes</strong> per child"; a team of 3 assessors ≈ 9–10 instruments/hour, ~30 children in 3 h</td>
+<td>Toolkit §9.2, p. 96</td>
+</tr>
+<tr>
+<td>EGRA, subtask-dependent</td>
+<td>"the entire battery could be administered in <strong>10–20 min</strong> with the assessor actively aiming to maintain the child's attention"</td>
+<td>Dubeck &amp; Gove 2015</td>
+</tr>
+<tr>
+<td>Kiswahili national EGRA, 5 subtasks (syllables, nonwords, ORF, comprehension, dictation)</td>
+<td>"approximately <strong>10 to 15 minutes</strong>"</td>
+<td>TZ 2016 p. 15</td>
+</tr>
+<tr>
+<td>Core EGMA</td>
+<td>"approximately <strong>20 minutes</strong>"; plan <strong>25 min</strong> incl. swap-over</td>
+<td>EGMA Toolkit pp. 12, 50</td>
+</tr>
+<tr>
+<td>ASER reading + math (India)</td>
+<td>"about <strong>10 minutes</strong>" for both tools</td>
+<td>Vagh 2012 (ASER validation)</td>
+</tr>
+<tr>
+<td>Pratham/J-PAL Fluency Battery (8 EGRA/DIBELS-style subtests, Hindi)</td>
+<td>"about <strong>10 minutes</strong>"</td>
+<td>Vagh 2012</td>
+</tr>
+<tr>
+<td>Tanzania self-administered SA-EGRA (tablet, no ORF)</td>
+<td>mean <strong>51.8 ± 18.2 min</strong> at time 2 — "still very long"</td>
+<td>TZ SA-EGRMA 2025 p. 10, https://www.imagineworldwide.org/wp-content/uploads/Tanzania_Kiswahili_SA-EGRMA_Final-Pilot-Report_2025.pdf</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Abbreviated / core subsets in practice</strong>
+- Toolkit "core four": listening comprehension, letter identification, nonword reading, ORF + comprehension (Toolkit p. 39).
+- Sindh 2024 (Grade 2, N = 7,248): five subtasks — phoneme awareness (10 untimed), nonword reading (60 s), expressive vocabulary (10 pictures, untimed), passage reading (60 s) + 5 questions, listening comprehension (3 questions). Letter naming (ceiling), syllables, phoneme segmentation (floor), familiar words, dictation and maze were deliberately dropped (Sindh 2024 pp. 6–7).
+- Tanzania national: 5 Kiswahili subtasks, 10–15 min (above).
+- Kenya Tusome / Tanzania benchmarking use only ORF + comprehension (and nonwords) as "benchmark subtasks" (TZ 2016 Table 5; ACR-Asia p. 17).
+- ASER (Pakistan/India) is the shortest proxy (see §4.4): 5 letters, 5 words, one paragraph, one story; ~10 min with math.</p>
+<p><strong>Implication for the 5-minute target</strong>: timed EGRA subtasks alone are 60 s each; three timed reading grids + ORF + comprehension + a two-item EGMA timed pair already exceed 5 min before instructions. A 5-min battery must be a <em>subset</em> (e.g., ORF+comprehension, one decoding grid, Number ID, A/S Level 1) or use shortened time windows — which breaks comparability with published cwpm benchmarks unless re-normed.</p>
+<hr />
+<h2 id="4-urdu-egra-in-pakistan-plus-sindhi-pashto-kiswahili-briefly">4. Urdu EGRA in Pakistan (plus Sindhi, Pashto; Kiswahili briefly)</h2>
+<h3 id="41-programmes-and-datasets">4.1 Programmes and datasets</h3>
+<ul>
+<li><strong>USAID Pakistan Reading Project (PRP, 2013–2020; IRC/Creative/World Learning)</strong>: 1.7 M grade 1–2 students, 27,000+ teachers; materials in seven language variants (Urdu, two Sindhi dialects, two Pashto dialects, Balochi, Brahui) but delivered "primarily in Urdu and Sindhi" (Learning at Scale brief, https://learningatscale.net/wp-content/uploads/2022/09/Learning-at-Scale-Findings-Brief-Pakistan-Reading-Program-for-distribution.pdf). PRP's baseline instrument was "based on the EGRA and adapted to the Pakistan level 3 and level 5 reading curriculum" (ReliefWeb, https://reliefweb.int/report/pakistan/testing-readers-early-grades-pakistan). Third-party EGRA endlines by MSI exist for 2020 — <em>PRP 2020 EGRA Endline</em> (https://pdf.usaid.gov/pdf_docs/PA00Z7MW.pdf, https://pdf.usaid.gov/pdf_docs/PA00ZJJG.pdf, Balochistan https://pdf.usaid.gov/pdf_docs/PA00Z7MQ.pdf) — <strong>the USAID DEC host was unreachable from this session, so their numbers are unverified here</strong>. A widely repeated PRP claim that Sindhi/Urdu ORF rose "from 30 cwpm in 2014 to 57 in 2017" appears in search summaries of Creative Associates' prize story (https://www.creativeassociatesinternational.com/story/pakistan-reading-project-wins-2020-international-prize-for-literacy-program-of-the-year/) but the page itself did not render the figures for us → <strong>unverified</strong>. Public micro-data for PRP regional EGRAs (2013–17) are catalogued at data.gov (e.g., https://catalog.data.gov/dataset/pakistan-reading-project-gilgit-baltistan-2013-2017).</li>
+<li><strong>Sindh Reading Program (SRP, USAID/GoS, 2014–19)</strong>: 400,000 children, 8 districts; baseline (7,200 G2 students, 600 schools) found 28% non-readers in Sindhi-medium and 45% in Urdu-medium schools (STS International, https://sts-international.org/portfolio/sindh-reading-program/).</li>
+<li><strong>Sindh SELECT EGRA baseline (Apr–May 2024)</strong>: 604 schools, <strong>7,248 Grade 2 students</strong>, 12 districts, instruments "adapted under the SRP/PRP in 2014", administered on <strong>Tangerine</strong> (Sindh 2024 pp. 4, 14). Results (Urdu-medium unless noted):</li>
+<li>Phoneme awareness: mean 5.29/10 (SD 3.98); 27% zero. Sindhi: 5.15/10, 29% zero.</li>
+<li>Nonword reading: mean <strong>13.39 cnwpm</strong> (range 0–50); 30% zero (rural 33%, urban 22%); non-zero readers ≈19 nwpm. Sindhi: 11.92, 41% zero.</li>
+<li>Expressive vocabulary (10 action pictures): 8.75/10.</li>
+<li><strong>ORF: 19.25 cwpm</strong> on a <strong>60-word</strong> passage (urban 24.63, rural 17.57; girls 20.35, boys 17.73); non-zero readers 34.81; <strong>45% zero scores</strong>. Sindhi: 24.79 cwpm, 28% zero.</li>
+<li>Reading comprehension: <strong>1.19/5</strong>; 60% zero; 6% answered all five. Sindhi: 1.47/5, 46% zero, 9% met the 4-of-5 standard.</li>
+<li>Listening comprehension (3 Q): 2.30/3, 5% zero. Sindhi 1.66/3, 14% zero.</li>
+<li>Against Sindh (SELD) standards: 90–91% failed the nonword standard; &lt;30% reached fluency/comprehension proficiency.
+  (Sindh 2024 pp. iii–vii.)</li>
+<li><strong>Punjab / PESRP</strong>: Punjab's grade-3 Literacy &amp; Numeracy Drive (LND) is a tablet-based monthly sample test by monitoring assistants (7–10 pupils per visit, MCQ-style in Urdu/English/Maths), <strong>not an EGRA</strong> and not a fluency measure (IEEE, https://ieeexplore.ieee.org/document/8966738/). No published Punjab EGRA-Urdu cwpm series was found in this session (<strong>unverified/none found</strong>).</li>
+<li><strong>KP / Pashto</strong>: PRP operated in KP with Urdu materials; the only KP-specific paper found is an observational teacher-checklist study with no fluency data (Ilkogretim Online 2021, https://ilkogretim-online.org/index.php/pub/article/download/6293/6095/12076). Pashto EGRA cwpm figures: <strong>none found in accessible sources</strong> (they exist inside the PRP regional endlines above — unverified).</li>
+</ul>
+<h3 id="42-benchmarks-cwpm-for-urdu-and-sindhi">4.2 Benchmarks (cwpm) for Urdu and Sindhi</h3>
+<p>Set under the USAID project (PRP) by grade and language, three bands (ACR-Asia Table 2, p. 16):</p>
+<table>
+<thead>
+<tr>
+<th>Grade</th>
+<th>Urdu: does not meet / meets / exceeds</th>
+<th>Sindhi: does not meet / meets / exceeds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>&lt;30 / <strong>30–60</strong> / &gt;60 cwpm</td>
+<td>&lt;30 / 30–50 / &gt;50</td>
+</tr>
+<tr>
+<td>2</td>
+<td>&lt;60 / <strong>60–90</strong> / &gt;90</td>
+<td>&lt;50 / <strong>50–80</strong> / &gt;80</td>
+</tr>
+<tr>
+<td>3</td>
+<td>&lt;70 / 70–100 / &gt;100</td>
+<td>&lt;60 / 60–90 / &gt;90</td>
+</tr>
+</tbody>
+</table>
+<p>At the time of the ACR-Asia compilation only <strong>20%</strong> of Urdu and <strong>24%</strong> of Sindhi students met the grade-2 benchmark (ACR-Asia Table 5, p. 18). Sindh 2024 uses the same "50–80 cwpm" standard for Sindhi and quotes it for Urdu too; comprehension standard = 4 of 5 questions. Note these Urdu targets (60–90) are far above the 40–50 cwpm typical of Latin-script benchmarks; ACR-Asia (p. 8, citing Abadzi 2011) argues unvowelled scripts (Arabic, Farsi, Pashto, Urdu) may <em>need</em> a higher speed to comprehend, because readers hold alternative pronunciations in working memory.</p>
+<h3 id="43-urdu-script-adaptation-issues-what-the-instrument-must-handle">4.3 Urdu-script adaptation issues (what the instrument must handle)</h3>
+<ul>
+<li><strong>Contextual letter forms</strong>: each Urdu letter takes up to four shapes (initial, medial, final, isolated); Nastaliq's sloping baseline and stacked ligatures reduce clarity about where one letter ends and the next starts (r12a Urdu orthography notes, https://r12a.github.io/scripts/arab/ur). A letter-identification grid therefore shows <strong>isolated forms</strong>; whether PRP/SRP used letter <em>names</em> or <em>sounds</em> for Urdu is <strong>unverified</strong> (Sindh 2024 dropped letter naming for G2 as a ceiling task and used initial-sound identification instead).</li>
+<li><strong>Diacritics (aerab: zabar/zer/pesh, tashdid, jazm)</strong> are omitted in normal Urdu print, making Urdu a deep orthography; educational texts add them (r12a; DAWN, https://www.dawn.com/news/1924375). DAWN cites ASER: &gt;40% of rural grade-3 pupils cannot identify letters and &gt;55% of grade-5 pupils cannot read a grade-2 Urdu text. Design decision required: nonwords and passages <strong>with or without aerab</strong> — the two produce different cwpm and are not comparable. Sindh 2024 does not state which was used (<strong>unverified</strong>).</li>
+<li><strong>Nonword construction in Urdu</strong>: no published PRP rule found (<strong>unverified</strong>). The U-PASS Urdu phonological tele-assessment (Frontiers in Education 2025, https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1572807/full) built Urdu non-words from Urdu's "mohmil" (nonsense compound) convention, selected Nastaliq over Naskh "for orthographic clarity", and controlled for aspirated and retroflex consonants — a usable template. Farukh &amp; Vulchanova (2014, <em>Dyslexia</em>, "Predictors of reading in Urdu: does deep orthography have an impact?", https://pmc.ncbi.nlm.nih.gov/articles/PMC4303915/) is the standard reference on Urdu orthographic depth (page blocked by CAPTCHA in this session — content <strong>unverified</strong>).</li>
+<li><strong>Direction and layout</strong>: right-to-left grids, 10 per row, need RTL stop-rule logic ("first line" = the top-right row).</li>
+<li><strong>Digraphs</strong>: aspirates written with do-chashmi he (e.g., بھ, پھ) and retroflexes (ٹ, ڈ, ڑ) must be counted as one letter-sound unit if a letter-sound grid is used (inference from Toolkit guidance on digraphs, p. 47 — <strong>design note, not a published Urdu rule</strong>).</li>
+</ul>
+<h3 id="44-aser-pakistan-vs-egra">4.4 ASER Pakistan vs EGRA</h3>
+<ul>
+<li><strong>Structure</strong>: ASER language tool (Urdu/Sindhi/Pashto, and English) has five ordinal levels — Beginner/nothing, letters, words, sentences (Class 1 text), story (Class 2 text); "level 1 … not able to answer at all (Beginner), level 5 … perfect answer" (http://aserpakistan.org/tools). In the ASER Centre design the child reads <strong>5 letters, 5 words</strong>, a 4-sentence paragraph, and a longer story; criteria are <strong>4 of 5 letters</strong>, <strong>4 of 5 words</strong>, paragraph/story read "with fewer than 3 mistakes", with a discontinue rule; administration ~10 min for reading+math, tested from the highest level down (Vagh 2012, https://img.asercentre.org/docs/Aser%20survey/Tools%20validating_the_aser_testing_tools__oct_2012__2.pdf; PSL adaptation guide, https://itacec.org/document/2019/december/Guide_and_Training_Manual_PSL.pdf). Math levels: number recognition (1-digit, 2-digit), subtraction with borrowing, division (3-digit by 1-digit).</li>
+<li><strong>Difference from EGRA</strong>: ASER is untimed, criterion-referenced (mastery/non-mastery), 5-item sampling, produces an ordinal level, not a rate. EGRA is timed, produces continuous rates (cwpm), and has component subtasks (phonemic awareness, decoding, listening).</li>
+<li><strong>Mapping (Hindi validation, n ≈ 20,000 across five samples)</strong>: ASER-reading correlated <strong>r = .90–.94</strong> with an EGRA/DIBELS-adapted Fluency Battery. Mean letter fluency by ASER level ≈ 2 (nothing), 17 (letter), 32 (word), 45 (paragraph), 62 (story); children at "word" level read the Grade-1 passage at ≈25 wpm, children at "paragraph" level read the Grade-2 passage at ≈44 wpm. Test–retest κ = .76 (reading); inter-rater κ = .64 simple, .82 weighted. 80–96% of children were classified consistently between the 5-item ASER subtests and the 52-item fluency grids (Vagh 2012, Tables 1–2). <strong>No Urdu-specific ASER↔EGRA mapping was found (unverified)</strong>. Google's Read Along India pilot was evaluated with the ASER tool ("64% … showed an improvement in reading proficiency"; https://readalong.google/impact/).</li>
+</ul>
+<h3 id="45-kiswahili-tanzania-benchmarks-brief">4.5 Kiswahili (Tanzania) benchmarks — brief</h3>
+<p>Tanzania's 2014 national Standard-2 benchmarks: <strong>ORF 50 cwpm</strong>, nonwords <strong>40 cnwpm</strong>, reading comprehension <strong>80%</strong>; EGMA: A/S Level 2 80%, Missing Number 60% (TZ 2016 Table 5). 2016 national results (Std 2, 650 schools): ORF mean <strong>23.6 cwpm</strong> (2013: 17.9), 16.1% zero; nonwords 15.7 cnwpm, 17.9% zero; syllables 39.9 per min; <strong>5.3%</strong> "proficient" (met both ORF and comprehension benchmarks); proficient readers averaged 57.9 cwpm vs 18.8 for beginners (TZ 2016 pp. ii–iv, 31). Kenya's Tusome set two Kiswahili benchmarks, <strong>17 cwpm</strong> (emergent) and <strong>45 cwpm</strong> (fluent, 75% comprehension) (ACR-Asia p. 17). Kiswahili instruments use a <strong>syllable</strong> grid instead of letters, 5 comprehension questions (4 literal + 1 inferential), and dictation (TZ 2016 Table 1).</p>
+<hr />
+<h2 id="5-digital-and-automated-egra">5. Digital and automated EGRA</h2>
+<h3 id="51-tangerine-rti-tangerine-central">5.1 Tangerine (RTI → Tangerine Central)</h3>
+<p>Open-source (GPL), offline-first Android/web app launched 2011 by RTI (Carmen Strigel, Amber Gove) to replace paper EGRA; used in 65+ countries; management transferred to Tangerine Central (women-owned) in 2025 (https://www.tangerinecentral.org/about; https://github.com/Tangerine-Community/Tangerine; https://www.rti.org/impact/tangerine-mobile-learning-assessments-made-easy). It implements the Toolkit protocol: assessor taps incorrect items, timer with red flash at 60 s, automatic time-remaining capture, auto-stop prompts, and prompts to ask only comprehension questions covered by text read (Toolkit protocol annex, tablet column). It does <strong>not</strong> score speech; a human still marks every item. Used in Sindh 2024 and Tanzania 2016.</p>
+<h3 id="52-self-administered-egraegma-rti-imagine-worldwide-202225">5.2 Self-administered EGRA/EGMA (RTI + Imagine Worldwide, 2022–25)</h3>
+<p>Tablet, child-driven, no assessor scoring. Ghana English pilot (Sept–Oct 2022, 279 G2 pupils): "the tool does not currently have speech recognition capacity", so ORF is <strong>proxied</strong> by the Spelling subtask or a composite (https://shared.rti.org/content/report-self-administered-egraegma-pilot-ghana-english; https://www.tangerinecentral.org/impact/egra-egma-ghana-2022-analysis). Tanzania Kiswahili pilot (2025, 600 pupils G2–4, 15 schools): SA-EGRA/SA-EGMA "do not assess oral reading fluency … nor numeric automaticity", correlations with traditional EGRA/EGMA "reduced but generally acceptable" (threshold r ≥ .5), Cronbach α .87/.90, mean duration 51.8 min (TZ SA-EGRMA 2025 pp. ES-1, 10). <strong>Lesson</strong>: without ASR, the fluency construct is lost and the child-driven format is slow.</p>
+<h3 id="53-automated-speech-scoring-published-results">5.3 Automated speech scoring — published results</h3>
+<table>
+<thead>
+<tr>
+<th>Study</th>
+<th>Language / setting</th>
+<th>Task</th>
+<th>Model</th>
+<th>Result vs humans</th>
+<th>Failure modes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Henkel et al. 2023/2025 (Oxford/Jacobs), https://arxiv.org/pdf/2310.17606 ; journal https://eric.ed.gov/?id=EJ1461166</td>
+<td>Ghana, 162 students <strong>aged 13–18</strong>, PrePIRLS ~100-word passages, classroom recordings, English L2 with regional accents</td>
+<td>ORF (cwpm)</td>
+<td>Whisper V2 <strong>out of the box</strong>, no fine-tuning; wav2vec2</td>
+<td>WER <strong>13.5</strong> (preprint; 10.3 in journal version) vs 25.2 for wav2vec2; automated ORF <strong>r = 0.96</strong> (0.98 journal) with expert raters</td>
+<td>wav2vec2 transcribes accent phonetically; ambient noise; not tested on early-grade children</td>
+</tr>
+<tr>
+<td>Chevtchenko et al. 2025 (EGRA-Xhosa-14.9k), https://arxiv.org/pdf/2505.17371</td>
+<td>South Africa, grades 1–4, <strong>14,971 recordings</strong> (~4 s each) of 10 EGRA letters/words, app-recorded in classrooms, 3 markers each</td>
+<td>Letter-sound &amp; word correct/incorrect</td>
+<td>Fine-tuned wav2vec2, HuBERT, Whisper as <strong>binary classifiers</strong></td>
+<td>Diagnostic efficiency ≈ <strong>91–92%</strong>, FPR ~3–5%, FNR ~3–5% with 200–300 samples per class; markers agreed with an expert EGRA reviewer only 71% (85% on consensus subset)</td>
+<td>Off-the-shelf multilingual ASR (MMS-1B) matched only <strong>6.9%</strong> of items; short sounds (hl, ng, v, n) &lt;1% — "direct multilingual ASR usage in classroom conditions may be less effective for short word- or letter-level inputs"</td>
+</tr>
+<tr>
+<td>Ardington / UCT, Gates Grand Challenges + EdTech Hub, https://gcgh.grandchallenges.org/grant/automating-early-grade-reading-assessments-egra-african-languages-using-voice-recognition-ai ; https://docs.edtechhub.org/lib/HYK9N7TW</td>
+<td>Sepedi, isiXhosa; ~3,000 G2–3 children; validating EGRA-AI inside a 120-school trial</td>
+<td>Letter sounds, words, passage, comprehension</td>
+<td>wav2vec → IPA transcription → marking models</td>
+<td>Design described; <strong>no accuracy results published</strong> in accessible sources</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Zhang et al. 2025 (Interspeech), https://arxiv.org/pdf/2505.19671</td>
+<td>Singapore, Tamil &amp; Malay children, classroom recordings, 27-sentence reading + picture Q&amp;A</td>
+<td>Fluency level (3-class)</td>
+<td>Whisper fine-tuned on child speech + augmentation; metrics (WER/CER/PER, pauses, rate) → GPT meta-evaluator</td>
+<td>Base Whisper WER <strong>56–86%</strong> on children; after fine-tuning <strong>7.5% (Malay)</strong>, <strong>24–40% (Tamil)</strong>; fluency accuracy 0.91 Malay, 0.75 Tamil</td>
+<td>Very-low-resource language (Tamil) stays poor; audio-LLM (gpt-4o-audio) worse than pipeline</td>
+</tr>
+<tr>
+<td>Diarra et al. 2026 (RobotsMali), https://arxiv.org/pdf/2606.31508</td>
+<td>Mali, Bambara, 60 children <strong>aged 9–18</strong>, 55 h phone-app recordings</td>
+<td>Reading ASR benchmark</td>
+<td>Fast-Conformer (Soloni) vs QuartzNet, on-device (&lt;300 ms per 8 s)</td>
+<td>WER <strong>0.42 → 0.22</strong> after fine-tuning</td>
+<td>"Children under 10 remain the main source of residual errors"</td>
+</tr>
+<tr>
+<td>Molenaar et al. 2023 (Interspeech), https://arxiv.org/pdf/2306.03444</td>
+<td>Dutch, 71 children aged 7–11 (JASMIN)</td>
+<td>Word-level accuracy</td>
+<td>Kaldi (prompt-aware LMs) vs Whisper</td>
+<td>Best MCC <strong>.63</strong> with humans; LM containing reading errors helps</td>
+<td>ASR over-flags errors; skewed classes</td>
+</tr>
+<tr>
+<td>SERDA validation 2025, https://pmc.ncbi.nlm.nih.gov/articles/PMC12686063/</td>
+<td>Dutch, <strong>653 children G2–3</strong>, 176 h</td>
+<td>Word lists + passages</td>
+<td>ASR + IRT</td>
+<td>Word-level MCC <strong>.43</strong> (passage .55); sensitivity .93 but precision .31; speed r = .57–.61 with human timing</td>
+<td>"ASR somewhat overestimates the number of errors"; adult-trained ASR</td>
+</tr>
+<tr>
+<td>Nese &amp; Kamata 2020 (ERIC ED607983), https://eric.ed.gov/?id=ED607983</td>
+<td>US English, <strong>N = 650, grades 2–4</strong>, CORE/easyCBM passages</td>
+<td>ORF WCPM</td>
+<td>Custom ASR</td>
+<td>Word-score agreement significantly lower for students with disabilities; WCPM differences <strong>not</strong> exacerbated for SWD/EL when aggregated to passage level</td>
+<td>Word-level errors for atypical speakers</td>
+</tr>
+<tr>
+<td>Vaidya, Sahoo &amp; Rao 2024 (IIT Bombay), https://arxiv.org/pdf/2405.19426</td>
+<td>India, children 10–14, English L2, 50–70-word passages rated 0–5 by teachers</td>
+<td>Holistic fluency incl. prosody</td>
+<td>wav2vec2 end-to-end</td>
+<td>Prior hand-crafted system r = .794 with manual scores; wav2vec2 variants comparable (exact figure not extracted)</td>
+<td>WCPM "necessary but not sufficient"</td>
+</tr>
+<tr>
+<td>SoapBox Labs (Interspeech 2020; MetaMetrics), https://www.isca-archive.org/interspeech_2020/kelly20b_interspeech.html ; https://metametricsinc.com/wp-content/uploads/2022/05/SoapBox-MetaMetrics-Webinar-QA.pdf</td>
+<td>English, child-specific ASR, commercial</td>
+<td>ORF</td>
+<td>Proprietary</td>
+<td>"very high correlation … no meaningful difference" vs human annotators (vendor claim); a widely quoted "96%" figure is <strong>unverified</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Amira Learning, https://explore.amiralearning.com/hubfs/Amira-Speech-Recognition-Contributes-to-Reading-Development-for-Young-Learners-of-English.pdf</td>
+<td>English, US classrooms</td>
+<td>ORF vs DIBELS</td>
+<td>Proprietary (Project LISTEN lineage)</td>
+<td>Gains study, not an accuracy-vs-human study</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Google Read Along / Bolo, https://readalong.google/impact/</td>
+<td>Hindi, English, Urdu among 10+ languages; on-device ASR</td>
+<td>Reading tutor; "beginner &lt;45 cwpm" internal metric</td>
+<td>Proprietary</td>
+<td>64% of India-pilot children improved on ASER; internal claim beginners' ORF 38%→88% after 100 min (https://blog.google/intl/en-in/products/google-companies/reinforcing-our-commitment-to/); <strong>no published ASR-vs-human accuracy</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Curious Learning</td>
+<td>Feed the Monster / Curious Reader apps; <strong>no published ASR scoring evaluation found</strong> (https://www.curiouslearning.org/resources)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Kaldi-based Kiswahili ORF scoring</td>
+<td><strong>Not found</strong> in this session's searches; Kiswahili ASR work exists for adults (https://arxiv.org/pdf/2210.16537) — <strong>unverified</strong> for children/EGRA</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Urdu-specific ASR baseline</strong>: Whisper's training set contains only ~104 h of Urdu; small models are a "tipping point" for usability; Urdu ASR is hampered by dialect diversity and Urdu–English code-switching (survey, https://arxiv.org/pdf/2411.14493). Child Arabic (a related script/phonology) shows Whisper large-v3 WER <strong>66%</strong>, 4.1× its adult WER (https://arxiv.org/pdf/2510.23319). <strong>No Urdu child-speech reading corpus was found</strong> — the Xhosa recipe (record every item as a ~4 s clip, triple-mark, fine-tune a classifier) is the closest published path.</p>
+<h3 id="54-what-has-worked-and-what-has-failed-synthesis">5.4 What has worked and what has failed (synthesis)</h3>
+<ol>
+<li><strong>Passage ORF with a large ASR model works surprisingly well for older readers</strong> (r ≈ 0.96 on Ghana teens with Whisper, no fine-tuning) but nothing equivalent is published for grade 1–3 children in a low-resource, non-Latin script.</li>
+<li><strong>Letter- and nonword-level items are the hard case</strong>: off-the-shelf multilingual ASR essentially fails (6.9% exact match on Xhosa EGRA items); per-item fine-tuned classifiers reach ~91% — comparable to the 88–97% human inter-rater agreement seen in Sindh 2024, but only with 200–300 labelled clips per item.</li>
+<li><strong>ASR over-detects errors</strong> (SERDA precision .31; Dutch MCC .43–.63), i.e., automated cwpm will be biased <em>downward</em> on weak readers unless the reference model includes expected miscues.</li>
+<li><strong>Younger children are the residual error source</strong> in every child-ASR paper (Bambara &lt;10; Tamil).</li>
+<li><strong>Self-administered tablets without ASR had to drop ORF entirely</strong> and took ~50 min — evidence that the human/AI-listener, not the child-driven UI, is the right architecture.</li>
+<li>Comprehension answers: Henkel et al. report GPT-4 grading short-answer comprehension at QWK 0.92, above human raters (0.915) — LLM grading of spoken answers is plausible once transcribed.</li>
+</ol>
+<hr />
+<h2 id="6-reliability-practice-human-enumerators-gold-standards-and-what-it-implies-for-an-ai-scorer">6. Reliability practice — human enumerators, gold standards, and what it implies for an AI scorer</h2>
+<ul>
+<li><strong>Selection threshold</strong>: "In an EGRA training, the benchmark is set at <strong>90% agreement</strong> with the correct evaluation of the child for the final training assessment"; assessors below the benchmark are not selected (Toolkit §8.7, p. ~91). EGMA identically: assessors "who do not achieve a minimum of <strong>90% agreement with the standard</strong> during IRR … will not be retained" (EGMA Toolkit p. 38).</li>
+<li><strong>How the gold standard is made</strong>: a technical expert plays "assessor" and a local expert plays "student" with <strong>scripted responses</strong> designed to contain the typical errors (hesitations, self-corrections, letter-name-for-sound, skipped lines, early-stop cases); all trainee assessors score the same performance simultaneously (en masse, live or video); this is done <strong>three times</strong> during the training week, with individual feedback after each (EGMA Toolkit §4.2.3; Toolkit §8.7).</li>
+<li><strong>Scoring the assessors</strong> (Toolkit Annex J): <code>Assessor subtask score (%) = agreements with Gold Standard / items in subtask</code>; item-level agreement across assessors is also computed; for timed subtasks an assessor is "in agreement" on time-remaining if <strong>within 2 seconds</strong> of the gold standard; overall percent agreement = mean of subtask and time-remaining agreements. Report by assessor, by subtask, and overall.</li>
+<li><strong>Field IRR during data collection</strong> (Toolkit §9.2 + Annex K; TZ 2016 Annex E): each day, two assessors per team double-score one extra child — one administers, the "listener" marks silently on a second tablet; discrepancies are reconciled. Tanzania 2016 reported ≈<strong>98%</strong> item agreement overall. Sindh 2024 ran <strong>1,208 IRR paired tests on 7,248 assessments (17%)</strong>; percent agreement ranged <strong>88–97%</strong> — nonword reading highest (95% Urdu, 97% Sindhi), expressive vocabulary lowest (88% Urdu) (Sindh 2024 p. 15).</li>
+<li><strong>Instrument-level reliability</strong>: Fluency Battery test–retest .83–.98, α ≈ .93 (Vagh 2012); EGMA subtests α &gt; .80 acceptable, word problems/Level-2 tasks weaker because of 5–6 items (EGMA Toolkit §3).</li>
+</ul>
+<p><strong>Implications for validating an AI scorer</strong>
+1. The AI must be treated as <strong>one more assessor</strong>: score the same gold-standard scripted child performances and the same field double-scored children, and report percent agreement <strong>per subtask, per item, and on time-remaining (±2 s)</strong> in the Toolkit's Exhibit J format — this is the format ministry and donor teams already accept.
+2. Pass bar: <strong>≥90% item agreement with the gold standard</strong> per subtask (the enumerator bar), and field agreement in the <strong>88–98%</strong> band observed for humans; for cwpm, agreement within the noise of human timing (±2 s ≈ ±3–4% of a 60 s window) and a mean bias near zero (SERDA-type error over-detection would fail a bias check).
+3. Build the gold standard the way RTI does — <strong>scripted, error-laden performances</strong>, not only clean readings — so the AI is tested on hesitations, self-corrections, letter names given for sounds, skipped lines and auto-stop cases.
+4. Multiple human markers disagree substantially at letter level (Xhosa: 71% expert agreement on all clips, 85% on consensus); use <strong>consensus-of-three</strong> labels for training/validation and report agreement against an expert EGRA reviewer, not against a single marker.
+5. Keep the coach-in-the-loop marking as the primary record until the AI meets the bar per subtask and per language; publish disagreement rates by student subgroup (rural/urban, gender, weak readers) since ASR degrades on atypical speakers (Nese &amp; Kamata).</p>
+<hr />
+<h2 id="7-consolidated-table-subtask-language-modality-timing-stop-rule-score-estimated-seconds">7. Consolidated table — subtask × language × modality × timing × stop rule × score × estimated seconds</h2>
+<p>Modality = what the phone must capture to score the item. <strong>Audio</strong> = child's speech (plus assessor prompts); <strong>Image</strong> = photo of the child's written/ worked output or of stimulus/counters; <strong>Tap</strong> = coach marks on screen (Tangerine-style) as the reference/fallback. Seconds are working estimates (test time + instructions/practice); Toolkit/EGMA Toolkit give only totals.</p>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th>Language</th>
+<th>Input modality</th>
+<th>Timed?</th>
+<th>Stop rule</th>
+<th>Score produced</th>
+<th>Est. s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listening comprehension</td>
+<td>English / Urdu</td>
+<td>Audio (assessor reads ~30-word story; child answers orally) + Tap</td>
+<td>No; 10 s per Q</td>
+<td>none</td>
+<td>correct / 3–5 (%)</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Letter-sound ID (100 grid)</td>
+<td>English</td>
+<td>Audio + Tap (fallback)</td>
+<td>60 s</td>
+<td>0 correct in first 10</td>
+<td>clspm</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Letter-sound / letter-name ID (isolated forms, RTL grid)</td>
+<td>Urdu</td>
+<td>Audio + Tap; Urdu variant choice (name vs sound; aerab) <strong>unverified</strong></td>
+<td>60 s</td>
+<td>0 correct in first 10</td>
+<td>clspm / clpm</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Initial-sound identification (10 words)</td>
+<td>English / Urdu</td>
+<td>Audio (oral only; no stimulus)</td>
+<td>No; 3 s no-response</td>
+<td>0 in first 5 (D&amp;G)</td>
+<td>correct / 10</td>
+<td>75</td>
+</tr>
+<tr>
+<td>Nonword reading (50 grid)</td>
+<td>English / Urdu</td>
+<td>Audio + Tap</td>
+<td>60 s</td>
+<td>0 correct in first 5</td>
+<td>cnwpm</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Familiar-word reading (50 grid)</td>
+<td>English / Urdu (dropped in Sindh 2024)</td>
+<td>Audio + Tap</td>
+<td>60 s</td>
+<td>0 correct in first 5</td>
+<td>cwpm</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Oral reading fluency (~60-word passage)</td>
+<td>English / Urdu</td>
+<td>Audio + Tap</td>
+<td>60 s</td>
+<td>0 correct in first line</td>
+<td>cwpm, words attempted, time remaining</td>
+<td>105</td>
+</tr>
+<tr>
+<td>Reading comprehension (3–5 Q, only text reached)</td>
+<td>English / Urdu</td>
+<td>Audio (spoken answers; any language) + Tap</td>
+<td>No; 10 s per Q</td>
+<td>not asked beyond text read</td>
+<td>correct / asked; / total</td>
+<td>60</td>
+</tr>
+<tr>
+<td>Dictation (1 sentence)</td>
+<td>English / Urdu (optional)</td>
+<td><strong>Image</strong> of child's writing (+ audio of assessor)</td>
+<td>No; 15 s pauses</td>
+<td>none</td>
+<td>words correct (partial credit)</td>
+<td>120</td>
+</tr>
+<tr>
+<td>Expressive vocabulary (10 pictures; Sindh 2024)</td>
+<td>Urdu</td>
+<td>Audio (child names picture)</td>
+<td>No</td>
+<td>none</td>
+<td>correct / 10</td>
+<td>60</td>
+</tr>
+<tr>
+<td>Number identification (20 items, 0–999)</td>
+<td>Math</td>
+<td>Audio (child says numeral) + Tap</td>
+<td>60 s</td>
+<td>none</td>
+<td>correct per minute</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Number discrimination (10 pairs)</td>
+<td>Math</td>
+<td>Audio — child must <strong>say</strong> the larger number; pointing alone insufficient</td>
+<td>No; 5 s prompt</td>
+<td>4 successive errors</td>
+<td>correct / 10</td>
+<td>75</td>
+</tr>
+<tr>
+<td>Missing number (10 items)</td>
+<td>Math</td>
+<td>Audio + Tap</td>
+<td>No; 5 s prompt</td>
+<td>4 successive errors</td>
+<td>correct / 10</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Addition Level 1 (20)</td>
+<td>Math</td>
+<td>Audio + strategy observation (Tap or Image of fingers/paper)</td>
+<td>60 s</td>
+<td>none</td>
+<td>correct per minute</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Subtraction Level 1 (20)</td>
+<td>Math</td>
+<td>Audio + strategy</td>
+<td>60 s</td>
+<td>none</td>
+<td>correct per minute</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Addition Level 2 (5)</td>
+<td>Math</td>
+<td>Audio; optional Image of written working</td>
+<td>No; 5 s prompt</td>
+<td>4 successive errors</td>
+<td>correct / 5</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Subtraction Level 2 (5)</td>
+<td>Math</td>
+<td>Audio; optional Image</td>
+<td>No</td>
+<td>4 successive errors</td>
+<td>correct / 5</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Word problems (6, read aloud by assessor; counters + paper)</td>
+<td>Math</td>
+<td>Audio (assessor + child) + Tap; counters visible (Image optional)</td>
+<td>No; 5 s prompt</td>
+<td>4 successive errors</td>
+<td>correct / 6</td>
+<td>150</td>
+</tr>
+<tr>
+<td>Shape recognition / pattern extension</td>
+<td>Math (non-core; pre-2014 EGMA)</td>
+<td>Tap / pointing (child points to shapes)</td>
+<td>No</td>
+<td>per-sheet stop at first error (2009 pilot)</td>
+<td>correct</td>
+<td>90</td>
+</tr>
+</tbody>
+</table>
+<p>Totals implied: full EGRA (7 rows, no dictation) ≈ 10.5 min; full core EGMA (8 rows) ≈ 13 min — consistent with the toolkits' 15–20 + 20 min once transitions are added, and 2–4× the 5-minute target.</p>
+<hr />
+<h2 id="summary-15-decision-relevant-findings">Summary — 15 decision-relevant findings</h2>
+<ol>
+<li>The Toolkit's fluency formula is <code>score / (60 − time_remaining) × 60</code>; the app must capture time-remaining to the second, and the human/AI must be within ±2 s of a gold standard to be "in agreement".</li>
+<li>All EGRA reading grids are 60 s, time-limited, with an early-stop after zero correct in the first line (10 letters / 5 words / first passage line); comprehension asks only questions covered by text actually read.</li>
+<li>Core EGRA = listening comprehension, letter ID, nonword reading, ORF + comprehension; familiar words and initial sounds are the usual additions; dictation/vocabulary are optional and weakly validated.</li>
+<li>Core EGMA = Number ID (timed), Number Discrimination, Missing Number (untimed, stop after 4 errors), A/S Level 1 (timed), A/S Level 2 and Word Problems (untimed, stop after 4); the child must <em>say</em> answers — pointing is explicitly insufficient, so audio (not tap) is the primary capture for every EGMA item.</li>
+<li>Published totals: EGRA 15–20 min (Toolkit), 10–15 min (Tanzania, 5 subtasks); EGMA ~20 min (+5 swap). A 5-minute per-child battery is a strict subset and must be re-benchmarked.</li>
+<li>Urdu grade-2 benchmark (USAID/PRP) is 60–90 cwpm "meets", &gt;90 "exceeds"; Sindhi 50–80; only ~20–24% met it. Sindh 2024 Urdu-medium G2 mean ORF = 19.25 cwpm, 45% zero; comprehension 1.19/5, 60% zero.</li>
+<li>Sindh 2024 kept five subtasks (initial sound, nonwords, expressive vocabulary, 60-word passage + 5 Q, listening 3 Q) and dropped letter naming, familiar words, dictation — a defensible Urdu template already run on 7,248 children on Tangerine.</li>
+<li>Urdu adaptation decisions that change scores and must be fixed up-front: letter names vs sounds; isolated vs joined forms; passages/nonwords with or without aerab; RTL "first line" stop logic; digraph units (bھ, ٹ).</li>
+<li>ASER (Pakistan) is ordinal, untimed, 5-item; it maps onto EGRA fluency (r ≈ .90–.94 in Hindi; "story" level ≈ 44+ wpm on grade-2 text) but no Urdu mapping is published — we would need to create it.</li>
+<li>Kiswahili: TZ benchmark 50 cwpm (nonwords 40, comprehension 80%); 2016 national mean 23.6 cwpm, 5.3% proficient; Kenya Tusome 17/45 cwpm.</li>
+<li>Best automated ORF evidence: Whisper out-of-the-box, r = 0.96–0.98 with humans on Ghanaian teens; nothing equivalent exists for grade-1–3 children in Urdu, and child-speech WER for related scripts (Arabic) is ~66%.</li>
+<li>Letter/nonword items are where generic ASR fails (6.9% exact match on Xhosa EGRA clips); per-item fine-tuned classifiers reach ~91% with 200–300 labelled clips per item — a data-collection budget, not a model choice.</li>
+<li>ASR systematically over-flags reading errors on children (precision .31 in a 653-child Dutch validation), biasing cwpm downward for weak readers; a miscue-aware reference is required.</li>
+<li>Human bar to beat: 90% agreement with a scripted gold standard at training; 88–98% field IRR (Sindh, Tanzania). Validate the AI as "one more assessor" using the Toolkit's Exhibit-J agreement report, per subtask, on scripted error-laden performances and on double-scored field children.</li>
+<li>Coach-in-the-loop tap marking (Tangerine pattern) should remain the record of truth per subtask until the AI meets the bar for that subtask and language; the RTI self-administered tablets that dropped the human listener also lost ORF entirely and took 50 min.</li>
+</ol><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

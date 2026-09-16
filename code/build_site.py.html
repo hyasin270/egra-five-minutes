@@ -1,0 +1,225 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>build_site.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>build_site.py</h1><p class=lede>Build the self-contained GitHub Pages site for the EGRA-in-five-minutes plan into ./site.</p><p class="meta">Raw file: <a href="../src/build_site.py">build_site.py</a></p><pre><code>&quot;&quot;&quot;Build the self-contained GitHub Pages site for the EGRA-in-five-minutes plan into ./site.
+Includes: the plan (index.html), every research doc, the harness results + scripts + aggregate CSVs, the baseline,
+probe findings, the TIP notes, the alignment-call summary, a files index, and a sources index of every external link.
+Excludes anything with child data: recordings, the SurveyCTO export, transcripts, per-child JSON, reference stimuli.
+Run: uv run --with markdown python build_site.py
+&quot;&quot;&quot;
+import os, re, shutil, csv, html, glob, collections
+import markdown
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(ROOT, &#x27;site&#x27;)
+REPO = &#x27;https://github.com/hyasin270/egra-five-minutes&#x27;
+
+DOCS = [  # (source path, output path, title, one-line description)
+    (&#x27;INVESTIGATION.md&#x27;, &#x27;investigation.html&#x27;, &#x27;Investigation index&#x27;, &#x27;What was asked, what is in the folder, headline findings, open decisions&#x27;),
+    (&#x27;BASELINE.md&#x27;, &#x27;baseline.html&#x27;, &#x27;Baseline: the May 2026 study&#x27;, &#x27;The corpus, the 21-minute enumerator timing baseline, the QA review layer&#x27;),
+    (&#x27;harness/HARNESS_RESULTS.md&#x27;, &#x27;harness/results.html&#x27;, &#x27;Eval harness results&#x27;, &#x27;Every model number beside the human floor, with method&#x27;),
+    (&#x27;research/01_EGRA_EGMA_structure.md&#x27;, &#x27;research/01-egra-egma-structure.html&#x27;, &#x27;EGRA and EGMA structure&#x27;, &#x27;Subtasks, timing, stop rules, Urdu adaptations, benchmarks, automated-scoring literature&#x27;),
+    (&#x27;research/02_model_landscape.md&#x27;, &#x27;research/02-model-landscape.html&#x27;, &#x27;Model landscape&#x27;, &#x27;Every pronunciation, ASR, phone-recognition, audio-LLM and vision option checked, with locale lists and prices&#x27;),
+    (&#x27;research/03_current_reading_pipeline.md&#x27;, &#x27;research/03-current-reading-pipeline.html&#x27;, &#x27;What the main bot already has&#x27;, &#x27;The reading pipeline and the live ASER tool, file by file&#x27;),
+    (&#x27;research/04_niete_observe_hitl.md&#x27;, &#x27;research/04-niete-observe-hitl.html&#x27;, &#x27;The NIETE observe HITL flow&#x27;, &#x27;How the AI pre-fill and coach correction work today; hook points; reuse map&#x27;),
+    (&#x27;research/05_what_a_recording_can_yield.md&#x27;, &#x27;research/05-what-a-recording-can-yield.html&#x27;, &#x27;What a recording can yield&#x27;, &#x27;Constructs recoverable from a read-aloud beyond WCPM, with evidence and phase&#x27;),
+    (&#x27;research/06_assessment_batteries_walkthrough.md&#x27;, &#x27;research/06-assessment-batteries.html&#x27;, &#x27;Assessment batteries walkthrough&#x27;, &#x27;EGRA, EGMA, ICAN, TIP, ASER, ELANA, DIBELS, MELQO, Literacy Boost, Pakistan incumbents, AI readers&#x27;),
+    (&#x27;research/07_model_deep_dive.md&#x27;, &#x27;research/07-model-deep-dive.html&#x27;, &#x27;Model deep dive&#x27;, &#x27;Child-speech ASR, Urdu models, phone/GOP stacks, prosody, audio LLMs, maths ITN, vision; the eval shortlist&#x27;),
+    (&#x27;probes/PROBE1_FINDINGS.md&#x27;, &#x27;probes/probe1.html&#x27;, &#x27;Probe 1: an audio LLM on a whole session&#x27;, &#x27;Gemini 2.5 Pro and Flash segment and score one 17-minute enumerator recording&#x27;),
+    (&#x27;probes/PROBE2_FINDINGS.md&#x27;, &#x27;probes/probe2.html&#x27;, &#x27;Probe 2: production STT on the Urdu block&#x27;, &#x27;Soniox timestamps, diarisation and the &quot;STT cuts, LLM labels&quot; rule&#x27;),
+    (&#x27;tips/TIP_NOTES.md&#x27;, &#x27;tips/tip-notes.html&#x27;, &#x27;The TIP diagnostic (LEAPS/CERP)&#x27;, &#x27;What the written placement test contains and how it relates to ours&#x27;),
+    (&#x27;meetings/2026-09-15_alignment-call.md&#x27;, &#x27;meetings/alignment-call-2026-09-15.html&#x27;, &#x27;Alignment call, 15 Sep 2026&#x27;, &#x27;Decisions with timestamps; how the transcript was recovered&#x27;),
+]
+SCRIPTS = sorted(glob.glob(os.path.join(ROOT, &#x27;harness&#x27;, &#x27;*.py&#x27;)) + glob.glob(os.path.join(ROOT, &#x27;harness&#x27;, &#x27;*.sh&#x27;)) +
+                 [os.path.join(ROOT, f) for f in (&#x27;download_drive_audio.py&#x27;, &#x27;baseline_timings.py&#x27;, &#x27;audio_durations.py&#x27;, &#x27;download_tips_folder.py&#x27;, &#x27;build_site.py&#x27;)] +
+                 glob.glob(os.path.join(ROOT, &#x27;probes&#x27;, &#x27;*.py&#x27;)))
+CSVS = [  # aggregate tables only; no names, no phones, no child transcripts
+    (&#x27;baseline_subtask_timings.csv&#x27;, &#x27;Per-subtask enumerator timings (seconds)&#x27;),
+    (&#x27;harness/human_floor.csv&#x27;, &#x27;Human floor: reviewer agreement with the enumerator per subtask&#x27;),
+    (&#x27;harness/reading_summary.csv&#x27;, &#x27;Reading counts: machine vs enumerator per subtask, with window-failure split&#x27;),
+    (&#x27;harness/reading_scores.csv&#x27;, &#x27;Reading counts per recording window (file ids only)&#x27;),
+    (&#x27;harness/reading_items.csv&#x27;, &#x27;Per-word machine vs enumerator flags (subtask, machine_wrong, enum_wrong)&#x27;),
+    (&#x27;harness/segmenter_llm_google_gemini-2.5-pro.csv&#x27;, &#x27;Segmenter agreement with tablet timestamps per recording&#x27;),
+    (&#x27;harness/maths_scores_google_gemini-2.5-pro.csv&#x27;, &#x27;Maths from speech: machine vs enumerator counts per recording&#x27;),
+    (&#x27;harness/english_results.csv&#x27;, &#x27;English windows: SpeechAce and STT-diff vs enumerator per recording&#x27;),
+    (&#x27;harness/segmenter_results.csv&#x27;, &#x27;Rule-based segmenter (v1) results&#x27;),
+]
+
+CSS = &quot;&quot;&quot;
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+&quot;&quot;&quot;
+
+def nav(depth):
+    up = &#x27;../&#x27; * depth
+    return (f&#x27;&lt;nav class=&quot;top&quot;&gt;&lt;a class=&quot;brand&quot; href=&quot;{up}index.html&quot;&gt;EGRA in Five Minutes&lt;/a&gt;&lt;a href=&quot;{up}index.html#experiment&quot;&gt;Experiment&lt;/a&gt;&#x27;
+            f&#x27;&lt;a href=&quot;{up}harness/results.html&quot;&gt;Harness results&lt;/a&gt;&lt;a href=&quot;{up}files.html&quot;&gt;All files&lt;/a&gt;&lt;a href=&quot;{up}sources.html&quot;&gt;Sources&lt;/a&gt;&#x27;
+            f&#x27;&lt;a href=&quot;{REPO}&quot;&gt;Repository&lt;/a&gt;&lt;/nav&gt;&#x27;)
+
+def page(title, body, depth, lede=&#x27;&#x27;):
+    return (f&#x27;&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&#x27;
+            f&#x27;&lt;title&gt;{html.escape(title)} · EGRA in Five Minutes&lt;/title&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap&quot;&gt;&#x27;
+            f&#x27;&lt;style&gt;{CSS}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;{nav(depth)}&lt;h1&gt;{html.escape(title)}&lt;/h1&gt;&#x27;
+            f&#x27;{(&quot;&lt;p class=lede&gt;&quot; + html.escape(lede) + &quot;&lt;/p&gt;&quot;) if lede else &quot;&quot;}{body}&#x27;
+            f&#x27;&lt;footer&gt;Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built {__import__(&quot;datetime&quot;).date.today().isoformat()} · &lt;a href=&quot;{REPO}&quot;&gt;repository&lt;/a&gt;&lt;/footer&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&#x27;)
+
+def md_to_html(text, src_path):
+    # rewrite relative .md links to their .html twins
+    mapping = {s: o for s, o, _, _ in DOCS}
+    def repl(m):
+        target = m.group(2)
+        base = os.path.dirname(src_path)
+        norm = os.path.normpath(os.path.join(base, target)) if not target.startswith((&#x27;http&#x27;, &#x27;#&#x27;)) else target
+        if norm in mapping:
+            depth = src_path.count(&#x27;/&#x27;)
+            return f&#x27;[{m.group(1)}]({&quot;../&quot; * depth}{mapping[norm]})&#x27;
+        return m.group(0)
+    text = re.sub(r&#x27;\[([^\]]+)\]\(([^)]+\.md)\)&#x27;, repl, text)
+    return markdown.markdown(text, extensions=[&#x27;tables&#x27;, &#x27;fenced_code&#x27;, &#x27;toc&#x27;, &#x27;sane_lists&#x27;])
+
+def write(path, content):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    open(path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;).write(content)
+
+def build():
+    if os.path.exists(OUT):
+        shutil.rmtree(OUT)
+    os.makedirs(OUT)
+    urls_by_doc = collections.OrderedDict()
+    # 1. docs
+    for src, out, title, desc in DOCS:
+        text = open(os.path.join(ROOT, src), encoding=&#x27;utf-8&#x27;).read()
+        urls_by_doc[title] = sorted(set(re.findall(r&#x27;https?://[^\s)\]&gt;&quot;\&#x27;`]+&#x27;, text)))
+        body = md_to_html(text, src)
+        write(os.path.join(OUT, out), page(title, body, out.count(&#x27;/&#x27;), desc))
+    # 2. scripts: raw copy + syntax page
+    for sp in SCRIPTS:
+        rel = os.path.relpath(sp, ROOT)
+        raw_out = os.path.join(OUT, &#x27;src&#x27;, rel)
+        os.makedirs(os.path.dirname(raw_out), exist_ok=True); shutil.copy(sp, raw_out)
+        code = open(sp, encoding=&#x27;utf-8&#x27;).read()
+        doc = re.search(r&#x27;&quot;&quot;&quot;(.*?)&quot;&quot;&quot;&#x27;, code, re.S)
+        body = f&#x27;&lt;p class=&quot;meta&quot;&gt;Raw file: &lt;a href=&quot;{&quot;../&quot; * (rel.count(&quot;/&quot;) + 1)}src/{rel}&quot;&gt;{rel}&lt;/a&gt;&lt;/p&gt;&lt;pre&gt;&lt;code&gt;{html.escape(code)}&lt;/code&gt;&lt;/pre&gt;&#x27;
+        write(os.path.join(OUT, &#x27;code&#x27;, rel + &#x27;.html&#x27;), page(rel, body, rel.count(&#x27;/&#x27;) + 1, (doc.group(1).strip().split(&quot;\n&quot;)[0] if doc else &#x27;&#x27;)))
+    # 3. csvs: raw copy + table page (first 300 rows)
+    for rel, desc in CSVS:
+        sp = os.path.join(ROOT, rel)
+        if not os.path.exists(sp):
+            continue
+        raw_out = os.path.join(OUT, &#x27;data&#x27;, rel); os.makedirs(os.path.dirname(raw_out), exist_ok=True); shutil.copy(sp, raw_out)
+        rows = list(csv.reader(open(sp, encoding=&#x27;utf-8&#x27;)))
+        head, body_rows = rows[0], rows[1:]
+        t = &#x27;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&#x27; + &#x27;&#x27;.join(f&#x27;&lt;th&gt;{html.escape(h)}&lt;/th&gt;&#x27; for h in head) + &#x27;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#x27;
+        t += &#x27;&#x27;.join(&#x27;&lt;tr&gt;&#x27; + &#x27;&#x27;.join(f&#x27;&lt;td&gt;{html.escape(c)}&lt;/td&gt;&#x27; for c in r) + &#x27;&lt;/tr&gt;&#x27; for r in body_rows[:300]) + &#x27;&lt;/tbody&gt;&lt;/table&gt;&#x27;
+        note = f&#x27;&lt;p class=&quot;meta&quot;&gt;{len(body_rows)} rows{&quot; (first 300 shown)&quot; if len(body_rows) &gt; 300 else &quot;&quot;} · raw file: &lt;a href=&quot;{&quot;../&quot; * (rel.count(&quot;/&quot;) + 1)}data/{rel}&quot;&gt;{rel}&lt;/a&gt;&lt;/p&gt;&#x27;
+        write(os.path.join(OUT, &#x27;tables&#x27;, rel + &#x27;.html&#x27;), page(rel, note + t, rel.count(&#x27;/&#x27;) + 1, desc))
+    # 4. index.html from PLAN.html with the files section rebuilt
+    plan = open(os.path.join(ROOT, &#x27;PLAN.html&#x27;), encoding=&#x27;utf-8&#x27;).read()
+    files_section = build_files_section()
+    plan = re.sub(r&#x27;&lt;section id=&quot;files&quot;&gt;.*?&lt;/section&gt;&#x27;, files_section, plan, count=1, flags=re.S)
+    plan = plan.replace(&#x27;&lt;nav class=&quot;toc&quot;&gt;&#x27;, f&#x27;&lt;nav class=&quot;toc&quot;&gt;&lt;a href=&quot;files.html&quot;&gt;All files&lt;/a&gt;&lt;a href=&quot;sources.html&quot;&gt;Sources&lt;/a&gt;&lt;a href=&quot;{REPO}&quot;&gt;Repository&lt;/a&gt;&#x27;)
+    plan = plan.replace(&#x27;&lt;code&gt;harness/HARNESS_RESULTS.md&lt;/code&gt;&#x27;, &#x27;&lt;a href=&quot;harness/results.html&quot;&gt;harness/HARNESS_RESULTS.md&lt;/a&gt;&#x27;)
+    plan = plan.replace(&#x27;(they are in the &lt;code&gt;harness/&lt;/code&gt; folder)&#x27;, &#x27;(they are all &lt;a href=&quot;files.html#harness&quot;&gt;linked on the files page&lt;/a&gt;)&#x27;)
+    head = (&#x27;&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&#x27;
+            &#x27;&lt;style&gt;body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&#x27;)
+    write(os.path.join(OUT, &#x27;index.html&#x27;), head + plan + &#x27;&lt;/body&gt;&lt;/html&gt;&#x27;)
+    # 5. files.html and sources.html
+    write(os.path.join(OUT, &#x27;files.html&#x27;), page(&#x27;All files&#x27;, files_section.replace(&#x27;&lt;section id=&quot;files&quot;&gt;&#x27;, &#x27;&#x27;).replace(&#x27;&lt;/section&gt;&#x27;, &#x27;&#x27;).replace(&#x27;&lt;h2&gt;Where everything is&lt;/h2&gt;&#x27;, &#x27;&#x27;), 0, &#x27;Every document, script and table behind the plan, plus private team links to the recordings and the study export.&#x27;))
+    write(os.path.join(OUT, &#x27;sources.html&#x27;), page(&#x27;Sources&#x27;, build_sources(urls_by_doc), 0, &#x27;Every external link cited in the research documents, grouped by document. The tests themselves are at the top.&#x27;))
+    write(os.path.join(OUT, &#x27;.nojekyll&#x27;), &#x27;&#x27;)
+    print(&#x27;built&#x27;, OUT)
+
+def build_files_section():
+    parts = [&#x27;&lt;section id=&quot;files&quot;&gt;&#x27;, &#x27;&lt;h2&gt;Where everything is&lt;/h2&gt;&#x27;]
+    parts.append(&#x27;&lt;h3&gt;Documents&lt;/h3&gt;&lt;div class=&quot;grid&quot;&gt;&#x27;)
+    for src, out, title, desc in DOCS:
+        parts.append(f&#x27;&lt;div class=&quot;card&quot;&gt;&lt;a href=&quot;{out}&quot;&gt;&lt;strong&gt;{html.escape(title)}&lt;/strong&gt;&lt;/a&gt;&lt;br&gt;&lt;span class=&quot;meta&quot;&gt;{html.escape(desc)} · &lt;code&gt;{src}&lt;/code&gt;&lt;/span&gt;&lt;/div&gt;&#x27;)
+    parts.append(&#x27;&lt;/div&gt;&lt;h3 id=&quot;harness&quot;&gt;Harness scripts (run in order to reproduce every number)&lt;/h3&gt;&lt;ol&gt;&#x27;)
+    for sp in SCRIPTS:
+        rel = os.path.relpath(sp, ROOT)
+        code = open(sp, encoding=&#x27;utf-8&#x27;).read(); doc = re.search(r&#x27;&quot;&quot;&quot;(.*?)&quot;&quot;&quot;&#x27;, code, re.S)
+        first = html.escape(doc.group(1).strip().split(&#x27;\n&#x27;)[0]) if doc else &#x27;&#x27;
+        parts.append(f&#x27;&lt;li&gt;&lt;a href=&quot;code/{rel}.html&quot;&gt;&lt;code&gt;{rel}&lt;/code&gt;&lt;/a&gt; — {first} &lt;span class=&quot;meta&quot;&gt;(&lt;a href=&quot;src/{rel}&quot;&gt;raw&lt;/a&gt;)&lt;/span&gt;&lt;/li&gt;&#x27;)
+    parts.append(&#x27;&lt;/ol&gt;&lt;h3&gt;Result tables&lt;/h3&gt;&lt;ul&gt;&#x27;)
+    for rel, desc in CSVS:
+        if os.path.exists(os.path.join(ROOT, rel)):
+            parts.append(f&#x27;&lt;li&gt;&lt;a href=&quot;tables/{rel}.html&quot;&gt;&lt;code&gt;{rel}&lt;/code&gt;&lt;/a&gt; — {html.escape(desc)} &lt;span class=&quot;meta&quot;&gt;(&lt;a href=&quot;data/{rel}&quot;&gt;csv&lt;/a&gt;)&lt;/span&gt;&lt;/li&gt;&#x27;)
+    parts.append(&#x27;&lt;/ul&gt;&lt;h3&gt;Private team data (Google Drive, Taleemabad accounts only)&lt;/h3&gt;&lt;ul&gt;&#x27;
+                 &#x27;&lt;li&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG&quot;&gt;The May 2026 study folder&lt;/a&gt; — the 207 enumerator recordings (&lt;code&gt;AA_&amp;lt;uuid&amp;gt;_enumerator.m4a&lt;/code&gt;), the SurveyCTO export &lt;code&gt;EGRA_EGMA client N=2233.xlsx&lt;/code&gt; (one row per child, 1,364 columns), and the reviewer workbook &lt;code&gt;Data.xlsx&lt;/code&gt; (1,462 QA re-listens). These hold child data and are not copied into this repository.&lt;/li&gt;&#x27;
+                 &#x27;&lt;li&gt;&lt;a href=&quot;https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D&quot;&gt;The TIP assessments folder&lt;/a&gt; — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.&lt;/li&gt;&#x27;
+                 &#x27;&lt;li&gt;The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): &lt;code&gt;06_Logs &amp;amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/&lt;/code&gt; in the Rumi workspace.&lt;/li&gt;&lt;/ul&gt;&#x27;)
+    parts.append(&#x27;&lt;/section&gt;&#x27;)
+    return &#x27;\n&#x27;.join(parts)
+
+TESTS = [
+    (&#x27;EGRA Toolkit, 2nd edition (RTI / USAID)&#x27;, &#x27;https://pdf.usaid.gov/pdf_docs/PA00M4TN.pdf&#x27;),
+    (&#x27;EGMA Toolkit (RTI / USAID, 2014)&#x27;, &#x27;https://pdf.usaid.gov/pdf_docs/PA00KNG5.pdf&#x27;),
+    (&#x27;ASER Pakistan (ITA)&#x27;, &#x27;https://aserpakistan.org/&#x27;),
+    (&#x27;ICAN, International Common Assessment of Numeracy (PAL Network)&#x27;, &#x27;https://palnetwork.org/ican/&#x27;),
+    (&#x27;PAL-ELANA literacy and numeracy assessment&#x27;, &#x27;https://palnetwork.org/elana/&#x27;),
+    (&#x27;DIBELS 8th edition (University of Oregon)&#x27;, &#x27;https://dibels.uoregon.edu/&#x27;),
+    (&#x27;Acadience Reading&#x27;, &#x27;https://acadiencelearning.org/&#x27;),
+    (&#x27;MELQO / MODEL (UNESCO, World Bank)&#x27;, &#x27;https://unesdoc.unesco.org/ark:/48223/pf0000248053&#x27;),
+    (&#x27;Targeted Instruction Program (LEAPS / CERP)&#x27;, &#x27;https://www.leapsprogram.org/&#x27;),
+    (&#x27;Tangerine (RTI tablet EGRA)&#x27;, &#x27;https://www.tangerinecentral.org/&#x27;),
+    (&#x27;Google Read Along&#x27;, &#x27;https://readalong.google/&#x27;),
+    (&#x27;Amira Learning&#x27;, &#x27;https://www.amiralearning.com/&#x27;),
+    (&#x27;Microsoft Azure Pronunciation Assessment&#x27;, &#x27;https://learn.microsoft.com/azure/ai-services/speech-service/how-to-pronunciation-assessment&#x27;),
+    (&#x27;SpeechAce API&#x27;, &#x27;https://www.speechace.com/api-plans/&#x27;),
+    (&#x27;Soniox speech-to-text&#x27;, &#x27;https://soniox.com/&#x27;),
+    (&#x27;OpenAI Whisper transcription&#x27;, &#x27;https://platform.openai.com/docs/guides/speech-to-text&#x27;),
+    (&#x27;Meta Omnilingual ASR&#x27;, &#x27;https://github.com/facebookresearch/omnilingual-asr&#x27;),
+    (&#x27;ZIPA phone recogniser (ACL 2025)&#x27;, &#x27;https://github.com/lingjzhu/zipa&#x27;),
+    (&#x27;Montreal Forced Aligner&#x27;, &#x27;https://montreal-forced-aligner.readthedocs.io/&#x27;),
+]
+
+def build_sources(urls_by_doc):
+    parts = [&#x27;&lt;h2&gt;The tests and tools&lt;/h2&gt;&lt;ul&gt;&#x27;]
+    for name, url in TESTS:
+        parts.append(f&#x27;&lt;li&gt;&lt;a href=&quot;{url}&quot;&gt;{html.escape(name)}&lt;/a&gt; &lt;span class=&quot;meta&quot;&gt;{html.escape(url)}&lt;/span&gt;&lt;/li&gt;&#x27;)
+    parts.append(&#x27;&lt;/ul&gt;&#x27;)
+    for doc, urls in urls_by_doc.items():
+        if not urls:
+            continue
+        parts.append(f&#x27;&lt;h2&gt;{html.escape(doc)}&lt;/h2&gt;&lt;ul&gt;&#x27;)
+        for u in urls:
+            u = u.rstrip(&#x27;.,;:&#x27;)
+            parts.append(f&#x27;&lt;li&gt;&lt;a href=&quot;{html.escape(u)}&quot;&gt;{html.escape(u)}&lt;/a&gt;&lt;/li&gt;&#x27;)
+        parts.append(&#x27;&lt;/ul&gt;&#x27;)
+    return &#x27;\n&#x27;.join(parts)
+
+if __name__ == &#x27;__main__&#x27;:
+    build()
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

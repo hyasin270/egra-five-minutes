@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Probe 2: production STT on the Urdu block · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>Probe 2: production STT on the Urdu block</h1><p class=lede>Soniox timestamps, diarisation and the &quot;STT cuts, LLM labels&quot; rule</p><h1 id="probe-2-production-stt-soniox-stt-async-v3-on-the-same-session-2026-09-15">Probe 2 — production STT (Soniox stt-async-v3) on the same session (2026-09-15)</h1>
+<p><strong>Input:</strong> the Urdu block of the Probe-1 recording, 01:20–08:30, 16 kHz WAV from the 8 kHz source. Language hint <code>ur</code>, diarization on (2–3 speakers). Script <code>probe2_soniox.py</code>; outputs <code>probe2_soniox_probe1_urdu_block.wav.{json,md}</code>. <strong>12 s</strong> to transcribe 7 minutes.</p>
+<h2 id="findings">Findings</h2>
+<ol>
+<li><strong>Timestamps are exact and the LLM's were not.</strong> Soniox places the enumerator's "start" at 03:09 and "bas" (stop) at 04:09 — a 60.0-second window, matching the tablet timer to the second. Gemini 2.5 Pro had put the letter task at 04:22–05:39 (≈75 s late); Gemini Flash put listening comprehension at 01:30 (≈20 s early). The slice I cut from Gemini's timestamps for the "letters" actually contained the familiar-word list. <strong>Design rule: STT word timestamps cut the audio; the LLM labels and scores the cuts. Never trust an audio LLM's mm:ss.</strong></li>
+<li><strong>Diarization separates child from enumerator on 8 kHz classroom audio.</strong> <code>spk1</code> = enumerator, <code>spk2</code> = child, consistently through story, questions, timed reads and comprehension. This is what lets us score only the child's tokens and audit the enumerator's protocol from the same file.</li>
+<li><strong>Urdu letter names transcribe usably.</strong> The child's 60-second run comes back as a letter-name string (دال رے دال میم کاف شین جیم پے تے بے الف …), ~80 tokens including repeats (ذال ذال ذال) — the tablet says 74 attempted / 70 correct. Counting against the printed grid needs alignment, but the raw material is there. Note the protocol in this study is <strong>letter names</strong>, not letter sounds.</li>
+<li><strong>Familiar words and the ORF passage come back nearly verbatim</strong> (بچہ دروازہ پانی کتاب … ; the Bilal/Jhelum passage with the child's self-corrections — والد والد, جمع کے جمع کے — preserved). Self-corrections and repeats are exactly what a WCPM scorer must handle; Soniox keeps them rather than smoothing them away.</li>
+<li><strong>Comprehension answers are short and separable</strong> ("ٹیبل", "پتھر", "اپنے والدین کے ساتھ") — trivially gradeable by an LLM against the answer key.</li>
+</ol>
+<h2 id="subtask-boundaries-recovered-from-stt-this-session">Subtask boundaries recovered from STT (this session)</h2>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th>Start</th>
+<th>End</th>
+<th>Length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Urdu listening comprehension (story ×2 + 6 Qs)</td>
+<td>01:51</td>
+<td>03:01</td>
+<td>70 s</td>
+</tr>
+<tr>
+<td>Urdu letter identification (timed)</td>
+<td>03:09</td>
+<td>04:09</td>
+<td><strong>60 s</strong></td>
+</tr>
+<tr>
+<td>Urdu familiar words</td>
+<td>04:21</td>
+<td>05:13</td>
+<td>52 s</td>
+</tr>
+<tr>
+<td>Urdu ORF passage</td>
+<td>05:19</td>
+<td>06:27</td>
+<td>68 s</td>
+</tr>
+<tr>
+<td>Urdu reading comprehension</td>
+<td>06:27</td>
+<td>07:00</td>
+<td>33 s</td>
+</tr>
+<tr>
+<td>English listening comprehension</td>
+<td>07:00</td>
+<td>…</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="implication-for-the-stack">Implication for the stack</h2>
+<p>A two-model pipeline covers reading end-to-end on our existing vendors: <strong>Soniox (timestamps, diarization, Urdu/English transcript) → Gemini-Pro-class audio LLM or text LLM (segment labelling, per-item verdicts, comprehension grading, protocol audit)</strong>, with <strong>Azure Pronunciation Assessment / SpeechAce only for the English phoneme layer</strong> and an open forced-aligner for Urdu item confidence. Everything in this probe ran on 8 kHz audio-audit quality; WhatsApp voice notes are 16 kHz Opus and should only improve it.</p><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

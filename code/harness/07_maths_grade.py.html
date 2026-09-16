@@ -1,0 +1,106 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/07_maths_grade.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/07_maths_grade.py</h1><p class=lede>Harness step 7: maths from speech. For each child, give a TEXT LLM the diarised transcript of the maths block</p><p class="meta">Raw file: <a href="../../src/harness/07_maths_grade.py">harness/07_maths_grade.py</a></p><pre><code>&quot;&quot;&quot;Harness step 7: maths from speech. For each child, give a TEXT LLM the diarised transcript of the maths block
+(STT timestamps) and ask it to list every question the enumerator asked, the child&#x27;s final answer, and whether it
+is correct, grouped by EGMA subtask. Compare per-subtask correct counts with the enumerator&#x27;s numcorrect fields.
+Run: uv run --with requests --with pandas python harness/07_maths_grade.py [model] [max_files]
+&quot;&quot;&quot;
+import os, sys, json, glob, re, time, requests, concurrent.futures as cf
+import pandas as pd
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+KEY = [l.split(&#x27;=&#x27;, 1)[1].strip() for l in open(os.path.join(ROOT, &#x27;.env&#x27;)) if l.startswith(&#x27;NIETE_STAGING_OPENROUTER_API_KEY=&#x27;)][-1]
+MODEL = sys.argv[1] if len(sys.argv) &gt; 1 else &#x27;google/gemini-2.5-pro&#x27;
+MAXF = int(sys.argv[2]) if len(sys.argv) &gt; 2 else 10000
+SEG_MODEL = &#x27;google_gemini-2.5-pro&#x27;
+os.makedirs(&#x27;harness/maths&#x27;, exist_ok=True)
+MSUBS = [&#x27;idnummag&#x27;, &#x27;numrep&#x27;, &#x27;blfluency&#x27;, &#x27;bleffcomp&#x27;, &#x27;wrdpblm&#x27;, &#x27;patterns&#x27;]
+ENUM_FIELD = {&#x27;idnummag&#x27;: &#x27;idnummag_numcorrect&#x27;, &#x27;numrep&#x27;: &#x27;numrep_numcorrect&#x27;, &#x27;bleffcomp&#x27;: &#x27;comp_numcorrect&#x27;, &#x27;wrdpblm&#x27;: &#x27;wrdpblm_numcorrect&#x27;, &#x27;patterns&#x27;: &#x27;patterns_numcorrect&#x27;}
+
+PROMPT = &quot;&quot;&quot;Below is a diarised, timestamped transcript (Urdu/English mix) of the MATHS block of an EGMA-style assessment: an enumerator asks a Grade 1-5 child questions orally; the child answers orally (sometimes after counting aloud). Subtasks in order: idnummag (identify numbers / which is bigger / order numbers, ~8 items), numrep (represent numbers: bundles of sticks, place value, how many hundreds, ~8 items), blfluency (rapid timed addition then subtraction, many short items), bleffcomp (computation like 25+7, 31-7, ~8 items), wrdpblm (word problems read aloud, ~8 items), patterns (shape/number patterns, ~8 items).
+For every question you can identify, output: subtask, the question as asked (short), the child&#x27;s FINAL answer (take the last number the child says; counting aloud before it is not the answer), the correct answer if you can determine it from the question, and whether the child&#x27;s final answer is correct (true/false/unknown). If the child gives no audible answer, answer = null, correct = false.
+Return ONLY JSON: {&quot;items&quot;:[{&quot;sub&quot;:&quot;idnummag&quot;,&quot;q&quot;:&quot;...&quot;,&quot;child&quot;:&quot;16&quot;,&quot;correct_answer&quot;:&quot;16&quot;,&quot;is_correct&quot;:true}, ...]}&quot;&quot;&quot;
+
+
+def render_math(tr, s, e):
+    toks = tr.get(&#x27;tokens&#x27;, [])
+    turns = []
+    for t in toks:
+        ts, te, sp, tx = t.get(&#x27;start_ms&#x27;, 0) / 1000, t.get(&#x27;end_ms&#x27;, 0) / 1000, t.get(&#x27;speaker&#x27;), t.get(&#x27;text&#x27;, &#x27;&#x27;)
+        if ts &lt; s - 1 or te &gt; e + 1:
+            continue
+        if turns and turns[-1][&#x27;spk&#x27;] == sp and ts - turns[-1][&#x27;e&#x27;] &lt; 1.5:
+            turns[-1][&#x27;text&#x27;] += tx; turns[-1][&#x27;e&#x27;] = te
+        else:
+            turns.append({&#x27;spk&#x27;: sp, &#x27;s&#x27;: ts, &#x27;e&#x27;: te, &#x27;text&#x27;: tx})
+    return &#x27;\n&#x27;.join(f&quot;[{tu[&#x27;s&#x27;]:.0f}-{tu[&#x27;e&#x27;]:.0f}] spk{tu[&#x27;spk&#x27;]}: {tu[&#x27;text&#x27;].strip()[:500]}&quot; for tu in turns)
+
+
+def grade(segp):
+    r = json.load(open(segp)); f = r[&#x27;file&#x27;]
+    out = f&quot;harness/maths/{MODEL.replace(&#x27;/&#x27;, &#x27;_&#x27;)}__{f}&quot;
+    if os.path.exists(out):
+        return json.load(open(out))
+    segs = [s for s in r[&#x27;segments&#x27;] if s[&#x27;sub&#x27;] in MSUBS]
+    if not segs:
+        return None
+    s0 = min(s[&#x27;start_s&#x27;] for s in segs) - 5; e0 = max(s[&#x27;end_s&#x27;] for s in segs) + 5
+    tr = json.load(open(&#x27;harness/soniox/&#x27; + f))
+    text = render_math(tr, s0, e0)
+    for attempt in range(3):
+        try:
+            resp = requests.post(&#x27;https://openrouter.ai/api/v1/chat/completions&#x27;, headers={&#x27;Authorization&#x27;: f&#x27;Bearer {KEY}&#x27;},
+                                 json={&#x27;model&#x27;: MODEL, &#x27;messages&#x27;: [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: PROMPT + &#x27;\n\nTRANSCRIPT:\n&#x27; + text}], &#x27;max_tokens&#x27;: 16000, &#x27;temperature&#x27;: 0}, timeout=300).json()
+            c = resp[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]; m = re.search(r&#x27;\{.*\}&#x27;, c, re.S)
+            res = {&#x27;file&#x27;: f, &#x27;model&#x27;: MODEL, &#x27;cost&#x27;: resp.get(&#x27;usage&#x27;, {}).get(&#x27;cost&#x27;), &#x27;items&#x27;: json.loads(m.group(0))[&#x27;items&#x27;]}
+            json.dump(res, open(out, &#x27;w&#x27;), ensure_ascii=False)
+            return res
+        except Exception:
+            time.sleep(2 + 3 * attempt)
+    return None
+
+
+if __name__ == &#x27;__main__&#x27;:
+    files = sorted(glob.glob(f&#x27;harness/segments_llm/{SEG_MODEL}__*.json&#x27;))[:MAXF]
+    print(MODEL, len(files), &#x27;files&#x27;, flush=True)
+    rows = []
+    with cf.ThreadPoolExecutor(4) as ex:
+        for res in ex.map(grade, files):
+            if not res:
+                continue
+            gt = json.load(open(&#x27;harness/gt/&#x27; + res[&#x27;file&#x27;])); sc = gt[&#x27;scores&#x27;]
+            cnt = {}
+            for it in res[&#x27;items&#x27;]:
+                cnt.setdefault(it.get(&#x27;sub&#x27;), [0, 0]); cnt[it[&#x27;sub&#x27;]][1] += 1
+                if it.get(&#x27;is_correct&#x27;) is True: cnt[it[&#x27;sub&#x27;]][0] += 1
+            row = {&#x27;file&#x27;: res[&#x27;file&#x27;][:20], &#x27;cost&#x27;: res.get(&#x27;cost&#x27;)}
+            for sub, fld in ENUM_FIELD.items():
+                row[f&#x27;{sub}_machine&#x27;] = cnt.get(sub, [None, 0])[0]; row[f&#x27;{sub}_n&#x27;] = cnt.get(sub, [0, 0])[1]; row[f&#x27;{sub}_enum&#x27;] = sc.get(fld)
+            rows.append(row)
+            print(res[&#x27;file&#x27;][:20], {k: v for k, v in row.items() if k.endswith((&#x27;_machine&#x27;, &#x27;_enum&#x27;))}, flush=True)
+    df = pd.DataFrame(rows); df.to_csv(f&quot;harness/maths_scores_{MODEL.replace(&#x27;/&#x27;, &#x27;_&#x27;)}.csv&quot;, index=False)
+    print(&#x27;\nSUMMARY&#x27;, MODEL, &#x27;files&#x27;, len(df), &#x27;cost/file $%.3f&#x27; % df.cost.mean())
+    for sub in ENUM_FIELD:
+        d = df.dropna(subset=[f&#x27;{sub}_machine&#x27;, f&#x27;{sub}_enum&#x27;]).copy()
+        if len(d) &lt; 3: continue
+        d[f&#x27;{sub}_enum&#x27;] = pd.to_numeric(d[f&#x27;{sub}_enum&#x27;])
+        diff = d[f&#x27;{sub}_machine&#x27;] - d[f&#x27;{sub}_enum&#x27;]
+        print(f&quot;  {sub:10s} n={len(d):3d} r={d[f&#x27;{sub}_machine&#x27;].corr(d[f&#x27;{sub}_enum&#x27;]):.2f} MAE={diff.abs().mean():.2f} bias={diff.mean():+.2f} exact={100 * (diff == 0).mean():.0f}% within1={100 * (diff.abs() &lt;= 1).mean():.0f}% items_found_mean={d[f&#x27;{sub}_n&#x27;].mean():.1f}&quot;)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/08b_whisper_english_pass.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/08b_whisper_english_pass.py</h1><p class=lede>Harness step 8b: English block via OpenAI whisper-1 with language forced to &#x27;en&#x27; + word timestamps.</p><p class="meta">Raw file: <a href="../../src/harness/08b_whisper_english_pass.py">harness/08b_whisper_english_pass.py</a></p><pre><code>&quot;&quot;&quot;Harness step 8b: English block via OpenAI whisper-1 with language forced to &#x27;en&#x27; + word timestamps.
+Why: Soniox with language_hints=[&#x27;en&#x27;] still returned the child&#x27;s accented English letter names and words in
+Devanagari/Urdu script (hints are hints). whisper-1 honours `language` strictly and returns word timestamps.
+Output: harness/whisper_en/&lt;file&gt;.json in the same token shape as the Soniox files (start_ms/end_ms absolute,
+speaker=None) so the scorers can consume it unchanged.
+Run: uv run --with requests python harness/08b_whisper_english_pass.py [max_files]
+&quot;&quot;&quot;
+import os, sys, json, glob, subprocess, requests, time, concurrent.futures as cf
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+KEY = [l.split(&#x27;=&#x27;, 1)[1].strip() for l in open(os.path.join(ROOT, &#x27;02_Main Rumi Bot/.env&#x27;)) if l.startswith(&#x27;OPENAI_API_KEY=&#x27;)][-1]
+SEG_MODEL = &#x27;google_gemini-2.5-pro&#x27;
+MAXF = int(sys.argv[1]) if len(sys.argv) &gt; 1 else 10000
+os.makedirs(&#x27;harness/whisper_en&#x27;, exist_ok=True)
+ENG = [&#x27;letterid_eng&#x27;, &#x27;pw_eng&#x27;, &#x27;idwrd_eng&#x27;, &#x27;orf_eng&#x27;]
+
+
+def one(segp):
+    r = json.load(open(segp)); f = r[&#x27;file&#x27;]
+    out = f&#x27;harness/whisper_en/{f}&#x27;
+    if os.path.exists(out):
+        return f, &#x27;cached&#x27;
+    segs = [s for s in r[&#x27;segments&#x27;] if s[&#x27;sub&#x27;] in ENG]
+    if not segs:
+        return f, &#x27;no-english-segments&#x27;
+    src = &#x27;audio/&#x27; + f.replace(&#x27;.json&#x27;, &#x27;&#x27;)
+    tokens = []; cost_min = 0
+    for s in segs:  # one call per subtask window (≤ ~2 min each) so the prompt can carry the stimulus type
+        s0, e0 = max(0, s[&#x27;start_s&#x27;] - 1.0), s[&#x27;end_s&#x27;] + 1.0
+        wav = f&quot;harness/whisper_en/_{f}_{s[&#x27;sub&#x27;]}.mp3&quot;
+        subprocess.run([&#x27;ffmpeg&#x27;, &#x27;-y&#x27;, &#x27;-loglevel&#x27;, &#x27;error&#x27;, &#x27;-ss&#x27;, f&#x27;{s0:.2f}&#x27;, &#x27;-to&#x27;, f&#x27;{e0:.2f}&#x27;, &#x27;-i&#x27;, src, &#x27;-ar&#x27;, &#x27;16000&#x27;, &#x27;-ac&#x27;, &#x27;1&#x27;, &#x27;-b:a&#x27;, &#x27;64k&#x27;, wav], check=True)
+        prompt = {&#x27;letterid_eng&#x27;: &#x27;A child names English letters one by one: L, I, H, R, S, Y, E, O, N, T.&#x27;, &#x27;pw_eng&#x27;: &#x27;A child reads made-up nonsense words one by one: maz, zaj, ver, lut, eaf.&#x27;,
+                  &#x27;idwrd_eng&#x27;: &#x27;A child reads English words one by one: boy, girl, school, book, pen, bag, teacher.&#x27;, &#x27;orf_eng&#x27;: &#x27;A child reads a short English story about Imran and a plant aloud.&#x27;}[s[&#x27;sub&#x27;]]
+        for attempt in range(3):
+            try:
+                resp = requests.post(&#x27;https://api.openai.com/v1/audio/transcriptions&#x27;, headers={&#x27;Authorization&#x27;: f&#x27;Bearer {KEY}&#x27;},
+                                     files={&#x27;file&#x27;: open(wav, &#x27;rb&#x27;)}, data={&#x27;model&#x27;: &#x27;whisper-1&#x27;, &#x27;language&#x27;: &#x27;en&#x27;, &#x27;response_format&#x27;: &#x27;verbose_json&#x27;, &#x27;timestamp_granularities[]&#x27;: &#x27;word&#x27;, &#x27;prompt&#x27;: prompt, &#x27;temperature&#x27;: 0}, timeout=300)
+                j = resp.json()
+                if &#x27;words&#x27; not in j:
+                    raise RuntimeError(str(j)[:200])
+                for w in j[&#x27;words&#x27;]:
+                    tokens.append({&#x27;text&#x27;: &#x27; &#x27; + w[&#x27;word&#x27;], &#x27;start_ms&#x27;: int((s0 + w[&#x27;start&#x27;]) * 1000), &#x27;end_ms&#x27;: int((s0 + w[&#x27;end&#x27;]) * 1000), &#x27;speaker&#x27;: None, &#x27;language&#x27;: &#x27;en&#x27;, &#x27;sub&#x27;: s[&#x27;sub&#x27;]})
+                cost_min += (e0 - s0) / 60
+                break
+            except Exception as ex:
+                time.sleep(2 + 3 * attempt)
+                if attempt == 2:
+                    return f, &#x27;error:&#x27; + str(ex)[:80]
+        os.remove(wav)
+    json.dump({&#x27;tokens&#x27;: tokens, &#x27;engine&#x27;: &#x27;whisper-1&#x27;, &#x27;minutes&#x27;: round(cost_min, 2)}, open(out, &#x27;w&#x27;), ensure_ascii=False)
+    return f, f&#x27;ok:{len(tokens)}words {cost_min:.1f}min&#x27;
+
+
+if __name__ == &#x27;__main__&#x27;:
+    files = sorted(glob.glob(f&#x27;harness/segments_llm/{SEG_MODEL}__*.json&#x27;))[:MAXF]
+    print(len(files), &#x27;files&#x27;, flush=True)
+    with cf.ThreadPoolExecutor(4) as ex:
+        for f, st in ex.map(one, files):
+            print(f[:20], st, flush=True)
+    print(&#x27;WHISPER_EN_DONE&#x27;, flush=True)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

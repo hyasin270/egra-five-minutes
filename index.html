@@ -1,0 +1,564 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>EGRA in Five Minutes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap">
+<style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone{width:300px;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px;font-size:13px}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Rumi · student assessment · plan, written for a first-time reader · bead bd-gqoz1</div>
+  <h1>EGRA in Five Minutes</h1>
+  <p class="sub">We want a coach to test a child's reading and maths in five minutes with a phone, have the computer do the marking, and have the coach check the marks before anything is saved. This page explains what that means, what we already know, what we tested, and what we plan to build.</p>
+  <div class="meta"><span>15 Sep 2026 · version 3, plain-language edition</span><span>Based on 187 real recordings, 2,233 children's scores, one alignment call, and about $49 of computer time</span></div>
+  <nav class="toc"><a href="files.html">All files</a><a href="sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a>
+    <a href="#idea">The idea in one minute</a><a href="#words">Words you will meet</a><a href="#today">How it is done today</a><a href="#call">What the team decided</a><a href="#tests">The tests, explained</a><a href="#journey">What the coach does</a><a href="#pipeline">What the computer does</a><a href="#experiment">The experiment</a><a href="#yield">More than a speed</a><a href="#maths">Maths: speak or write?</a><a href="#battery">The five-minute test</a><a href="#form">The checking screen</a><a href="#data">Where it is saved</a><a href="#models">Which AI does what</a><a href="#roadmap">The order we go in</a><a href="#decisions">Decisions to be made</a><a href="#files">Files</a>
+  </nav>
+</header>
+
+<section id="idea">
+  <h2>The idea in one minute</h2>
+  <div class="prose">
+    <p>Today, to find out how well a child reads and counts, a trained person called an <strong>enumerator</strong> sits with the child for about 20 minutes, shows them letters, words, a story and some sums, and ticks right or wrong on a tablet. That is slow, needs a specialist, and only happens once or twice a year.</p>
+    <p>We want our <strong>coaches</strong> (the people who already visit schools to watch lessons) to do a shorter version with five children per visit. The coach records the child on the phone, the computer listens to the recording and fills in the marks, and the coach looks at the marks and corrects any that are wrong before they are saved. We keep both the computer's marks and the coach's corrections, plus the recording, forever.</p>
+    <p>Why bother? Because if the test is short enough to run every few weeks, we can see whether a child is improving <em>during</em> the year, not just at the end. And because a recording can tell us far more than a tick box: how fast the child reads, which words they trip on, whether they correct themselves, how long they pause. Nobody can write all that down live. A computer can.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="n">21<small>minutes</small></div><div class="l">How long the full test takes an enumerator today, per child (middle value across 2,233 children)</div></div>
+    <div class="tile hot"><div class="n">5<small>minutes</small></div><div class="l">What we promised on the 15 September call: five children in 30 minutes per coach per day</div></div>
+    <div class="tile"><div class="n">0.97<small>agreement</small></div><div class="l">How closely the computer's word counts matched the enumerator's in our experiment, once it found the right part of the recording (1.0 would be perfect)</div></div>
+    <div class="tile"><div class="n">55<small>% human floor</small></div><div class="l">How often a second human agreed with the enumerator's word counts on the same recordings. Humans disagree a lot too.</div></div>
+  </div>
+</section>
+
+<section id="words">
+  <h2>Words you will meet</h2>
+  <div class="prose"><p>Every term is explained again where it first matters, but here they all are in one place.</p></div>
+  <dl class="gloss">
+    <dt>EGRA</dt><dd><em>Early Grade Reading Assessment.</em> A standard reading test for children in the first few years of school, designed by an American research group (RTI) and used in over 100 countries. It has several short parts called subtasks: naming letters, reading made-up words, reading real words, reading a short story for one minute, and answering questions about it.</dd>
+    <dt>EGMA</dt><dd><em>Early Grade Mathematics Assessment.</em> The maths partner of EGRA: reading numbers, saying which of two numbers is bigger, quick addition and subtraction, and word problems.</dd>
+    <dt>ASER</dt><dd>The simpler test Pakistan uses today (run by ITA). A child is placed on a ladder: can they read letters, words, a paragraph, a story? Maths: numbers 1 to 9, 10 to 99, subtraction, division. It gives a level, not a speed. The call on 15 September said we want more detail than ASER gives.</dd>
+    <dt>Subtask</dt><dd>One part of a test, for example "read this list of words for one minute".</dd>
+    <dt>Timed window</dt><dd>A subtask where the child gets exactly 60 seconds. What matters is how many items they got right in that minute.</dd>
+    <dt>Stop rule</dt><dd>If a child gets nothing right in the first line, the tester stops that subtask so the child is not made to struggle for a full minute.</dd>
+    <dt>WCPM</dt><dd><em>Words correct per minute.</em> The main reading-fluency number: how many words the child read correctly in one minute of a story. A Pakistani grade-2 child reading Urdu is expected to reach 60 to 90.</dd>
+    <dt>Enumerator</dt><dd>A trained tester who runs the test on a tablet. In the May 2026 study, 28 enumerators tested 2,233 children in 99 Rawalpindi schools.</dd>
+    <dt>Coach</dt><dd>Our school-visiting staff (also called TMs, AEOs, cluster coordinators depending on region). They watch lessons and give teachers feedback. We want them to run the five-minute test too.</dd>
+    <dt>Human in the loop (HITL)</dt><dd>The computer does the first pass, a person checks and corrects it, and the person's answer is final. Our lesson-observation feature already works this way: the AI fills a scoring form and the coach edits it.</dd>
+    <dt>Speech-to-text (STT), also called transcription</dt><dd>Software that turns a recording into written words. We use a service called Soniox; another is OpenAI's Whisper.</dd>
+    <dt>Timestamps</dt><dd>For every written word, the exact second in the recording where it was said. This lets us cut out "the 60 seconds after the coach said start".</dd>
+    <dt>Diarisation</dt><dd>Working out who is speaking when: the child or the coach.</dd>
+    <dt>Large language model (LLM)</dt><dd>An AI that reads and writes text, like ChatGPT, Gemini or Claude. Some can also listen to audio directly; we call those audio LLMs.</dd>
+    <dt>Reference text</dt><dd>The exact letters, words or story the child was supposed to read. The computer compares what it heard against this.</dd>
+    <dt>Alignment</dt><dd>Lining up the words the child said against the reference text to see which were read correctly, which were skipped, which were replaced by another word, and which were added. The classic method is called Levenshtein alignment (counting the smallest number of edits between two lists). <em>Forced alignment</em> is a stronger version that uses the audio itself, not just the transcript, and is what we need for reliable word-by-word marks.</dd>
+    <dt>Phoneme</dt><dd>A single speech sound. "Cat" has three: k, a, t. A <em>pronunciation assessment</em> service scores each one and can say "the child said <em>eeli</em> instead of <em>Ali</em>". Microsoft Azure and SpeechAce sell this for English. Nobody sells it for Urdu.</dd>
+    <dt>Item bank</dt><dd>The fixed list of test items (numbers, words, questions) with their correct answers, stored in our system so the computer knows what the child was asked.</dd>
+    <dt>Human floor</dt><dd>How often two trained humans agree with each other on the same recording. If humans only agree 55 percent of the time, we cannot expect a computer to agree with a human more than that; the floor is the realistic target.</dd>
+    <dt>Correlation (r)</dt><dd>A number from 0 to 1 saying how closely two sets of numbers move together. 0.97 means "almost the same ranking"; 0.3 means "barely related".</dd>
+    <dt>MAE</dt><dd><em>Mean absolute error.</em> On average, how many words apart the computer's count and the human's count were.</dd>
+    <dt>Precision and recall (for word-by-word marks)</dt><dd>Precision: of the words the computer flagged as wrong, how many really were wrong. Recall: of the words that really were wrong, how many the computer caught. Low precision means lots of false alarms.</dd>
+    <dt>8 kHz vs 16 kHz</dt><dd>Recording quality. The May study's recordings were 8 kHz (phone-call quality). WhatsApp voice notes are 16 kHz (clearer). Every result on this page was measured on the worse quality.</dd>
+    <dt>R2</dt><dd>Our cloud file store (from Cloudflare). All recordings are saved there.</dd>
+    <dt>WhatsApp Flow</dt><dd>A form that opens inside WhatsApp. Our coaches already use one to check the AI's lesson-observation scores; the child-assessment checking screen will be another one.</dd>
+    <dt>TIP / LEAPS</dt><dd>A written placement test (Targeted Instruction Program, by the LEAPS research group) used in Islamabad and KP schools to sort children into ability groups. Paper, whole class at once, 50 minutes for maths. The "TIPS" folder you shared is this test.</dd>
+  </dl>
+</section>
+
+<section id="today">
+  <h2>How it is done today, and what we have to work with</h2>
+  <div class="cols">
+    <div class="prose">
+      <h3>The May 2026 study</h3>
+      <p>In April and May, 28 enumerators tested 2,233 children in 99 Rawalpindi government schools with the full EGRA and EGMA in Urdu and English on tablets. The tablet software (SurveyCTO) recorded every session's audio and every tap: which letter the child got wrong, how many seconds were left on the timer, the answers to the questions. That whole export is in the Drive folder you shared, along with 207 of the recordings.</p>
+      <p>On top of that, seven reviewers later listened to 588 of those recordings and marked, subtask by subtask, whether the enumerator's score was right. So for each recording we have two human opinions: the enumerator's live marks and a reviewer's second opinion.</p>
+      <h3>What the timing tells us</h3>
+      <p>The middle child took 21 minutes: about 6 minutes of Urdu, 7 of English, 6 of maths. Three subtasks are 60-second timed reads that cost about 68 seconds each with instructions. Listening comprehension is slow because the enumerator reads a story aloud twice. The maths speed grid is the single longest part.</p>
+    </div>
+    <div class="prose">
+      <h3>Why five minutes cannot mean "the same test, faster"</h3>
+      <p>The child cannot read faster. The time saving has to come from three places: the coach stops tapping every item (the computer marks instead), we keep the stop rules so a child who cannot read letters is not made to attempt the story, and we choose which 60-second windows to keep. A full EGRA alone is 15 to 20 minutes by design, so a five-minute test is a deliberate selection, not a speed-up.</p>
+      <h3>What happened when we tried a WhatsApp version already</h3>
+      <p>In August we built a WhatsApp ASER tool. On 11 September the Rawalpindi field team said no: it asked one question per message, took 10 to 15 minutes per child, needed internet in schools that have none, and they did not trust the AI on Pakistani accents. Since then a "human decides" mode and a correction button have shipped. The one-question-per-message shape and the need for internet have not changed. This plan removes both.</p>
+    </div>
+  </div>
+</section>
+
+<section id="call">
+  <h2>What the team decided on 15 September</h2>
+  <div class="prose">
+    <p class="quote">"I want to invest in a better test. I'm not happy with ASER. More granularity is the need of the hour."<cite>Haroon, alignment call, 25 minutes in</cite></p>
+    <p>The call's recording was stuck in our meeting system (the row was marked private and the processing job had stalled), so I pulled the recording out and transcribed it. The decisions, with where they were said:</p>
+    <ul>
+      <li><strong>30 minutes per coach per day</strong>, on top of the lesson observation. Five children at about five minutes each. Not released until it is proven under 30. Islamabad first; other regions two to three weeks later.</li>
+      <li><strong>All three subjects</strong> (Urdu, English, maths), Urdu first. Comprehension questions stay.</li>
+      <li><strong>The children are chosen by an algorithm, not the coach</strong>, so the sample is random. Still open: five new children each visit, or three new plus two we have tested before.</li>
+      <li><strong>Based on EGRA, not ASER</strong>, and not the TIP written test unless someone shows it is better.</li>
+      <li><strong>Break EGRA into small weekly quizzes</strong> for the WhatsApp student quiz, so class-level progress shows up weekly.</li>
+      <li><strong>Use the recordings to check the tester too</strong>, the way our lesson-observation AI checks a lesson. The experiment below is the first run of exactly that.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="tests">
+  <h2>The tests, explained</h2>
+  <div class="prose"><p>What each well-known test contains, how it is run, and what it is good and bad at, so you can judge which items we keep. Longer versions with sources are in the research folder.</p></div>
+  <div class="grid3">
+    <div class="card"><h3>EGRA</h3><div class="k">One tester, one child · 15 to 20 minutes · grades 1 to 3</div><p>Listen to a story and answer questions; name 100 letters in a minute; say the first sound of words; read 50 made-up words in a minute (this checks decoding without memory); read 50 real words in a minute; read a story for a minute and answer 3 to 5 questions. Stops early if the first line is all wrong. Result: letters and words correct per minute. Urdu versions exist.</p><p class="k">Good: the speed numbers move within months, so progress shows. Bad: long; the letter part is the noisiest.</p></div>
+    <div class="card"><h3>EGMA</h3><div class="k">One tester, one child · about 20 minutes</div><p>Read 20 numbers in a minute; say which of two numbers is bigger; fill the missing number in a sequence; quick addition and subtraction for a minute each; harder sums with paper allowed; six word problems. The child must <em>say</em> the answer, pointing does not count.</p><p class="k">Good: separates children who know facts from children who count on fingers. Bad: some parts have only 5 items, so they are unreliable on their own.</p></div>
+    <div class="card"><h3>ASER</h3><div class="k">One tester, one child · about 10 minutes for reading and maths together</div><p>A ladder: nothing → letters → words → paragraph → story. Pass a rung by getting 4 of 5 right. Maths: 1 to 9 → 10 to 99 → subtraction with borrowing → division. Result: a level name.</p><p class="k">Good: cheap and governments understand it. Bad: a child can improve a lot and stay on the same rung, so you cannot see change during a term.</p></div>
+    <div class="card"><h3>ICAN</h3><div class="k">One tester, one child · about 15 minutes · run in Pakistan in Urdu</div><p>26 maths items across numbers, operations, patterns, shapes, measurement and reading a chart. Gated: harder sets only if the easier one is passed.</p><p class="k">Good: covers shapes and data that EGMA skips. Bad: nothing is timed, so no speed measure.</p></div>
+    <div class="card"><h3>TIP (the folder you shared)</h3><div class="k">Written, whole class at once · maths is 40 questions in 50 minutes · grades 1 to 5</div><p>Urdu and English: match a picture to a word, join letters into a word, plurals, fill the verb, pick the picture for a sentence, fill gaps in a paragraph, write three sentences. Maths: sums with carrying, missing numbers, bigger or smaller, odd or even, times and division, fractions, word problems. Each class stops at its own page. Sorts children into KG / Class 1 / Class 2 / Class 3 groups.</p><p class="k">Good: it is the grouping Islamabad and KP classrooms already use. Bad: it tests writing as much as reading; nothing is read aloud or timed; far too long for us. We should map our results onto its groups, not adopt it.</p></div>
+    <div class="card"><h3>DIBELS (the American one-minute model)</h3><div class="k">One tester, one child · one minute per part</div><p>Letter naming, breaking words into sounds, made-up words, real words, a story, each in one minute. Proof that a full picture of a young reader fits in five minutes.</p><p class="k">Good: the template for "one minute per skill". Bad: English only.</p></div>
+    <div class="card"><h3>AI reading apps (Amira, Google Read Along, Microsoft Reading Progress)</h3><div class="k">Child reads to a phone or laptop</div><p>All produce the same things from a read-aloud: words per minute, accuracy, a list of mistakes by type, and a per-skill report for the teacher. Read Along has Urdu.</p><p class="k">Good: shows what word-by-word output looks like. Bad: English first; their accuracy claims are not independently checked.</p></div>
+    <div class="card"><h3>What governments already run here</h3><div class="k">Punjab LND, national NAT, Sindh's EGRA</div><p>LND: seven multiple-choice questions on a tablet for seven children per school per month. NAT: a grade-4 paper test. Sindh 2024: a government-owned Urdu EGRA on 7,248 children, five subtasks.</p><p class="k">Good: legible to officials. Bad: none measures reading speed at scale.</p></div>
+  </div>
+  <div class="callout quiet"><strong>What almost every test has in common.</strong> Five things: knowing letters, decoding (made-up or single words), reading a passage with a speed, answering questions on it, and recognising numbers plus basic sums. Everything else appears in only one test and can be dropped. Every short test gets short the same two ways: skip the hard rung if the easy one failed, and choose a subset. What a recording adds that paper never could: a speed on every item and a list of the exact mistakes.</div>
+</section>
+
+<section id="journey">
+  <h2>What the coach does, step by step</h2>
+  <div class="prose"><p>Follow one child. Ayesha is in grade 3. Her coach has just finished recording a lesson in her class.</p></div>
+  <ol class="steps">
+    <li><div><strong>The offer.</strong> The moment the lesson recording is received, Rumi (our WhatsApp assistant) sends: "Today's five children for assessment: Ayesha, Bilal, …" The list was chosen in advance by the sampling algorithm. The coach can accept or skip; the observation itself does not depend on it.</div></li>
+    <li><div><strong>The Urdu block, one voice note.</strong> The coach sits with Ayesha, holds up the printed Urdu story card, presses record, and says the cue phrase from the card: "یہ کہانی پڑھو۔ شروع۔" Ayesha reads for a minute; the coach says "بس" and asks the three questions on the card, then the five first-sound items. The coach stops the recording. One voice note, about two minutes.</div></li>
+    <li><div><strong>The English block, one voice note.</strong> Same pattern: story card, cue phrase, one minute of reading, two questions, then eight made-up words.</div></li>
+    <li><div><strong>The maths block, one voice note plus one photo.</strong> The coach shows eight numbers for Ayesha to read aloud, then runs the one-minute quick-sums strip aloud. Then the coach hands Ayesha a small sheet with four written sums and one word problem to do while the coach fetches Bilal, and photographs the sheet when she is done.</div></li>
+    <li><div><strong>The computer marks while the next child reads.</strong> Ayesha's three voice notes and photo upload when there is signal. If the school has no internet, they queue on the phone and go later. The computer's marks are ready in under a minute once uploaded.</div></li>
+    <li><div><strong>The checking screen.</strong> A form opens in WhatsApp showing the computer's marks for Ayesha, block by block: 31 words correct in 60 seconds, two of three questions right, and so on. The coach changes anything that looks wrong. Where the computer was unsure, the form says "listen and mark" with the clip attached, and the coach decides.</div></li>
+    <li><div><strong>Saved twice.</strong> We store what the computer said and what the coach said, side by side, plus the recordings. The coach's answer is the official one. The computer's answer is kept so we can measure how often it was right and improve it.</div></li>
+  </ol>
+  <figure>
+    <svg viewBox="0 0 1080 300" role="img" aria-label="Coach journey: after the classroom recording is received, Rumi offers the day's five pre-selected children; the coach records one voice note per block per child plus one maths photo, reviews a pre-filled form per child, and both the computer's and the coach's answers are stored before the next child.">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+      <g font-family="Inter,system-ui,sans-serif" font-size="12" fill="currentColor">
+        <rect x="10" y="40" width="150" height="70" rx="6" fill="none" stroke="currentColor"/>
+        <text x="85" y="66" text-anchor="middle" font-weight="600">Lesson recorded</text><text x="85" y="84" text-anchor="middle">(the observe feature)</text><text x="85" y="99" text-anchor="middle" fill="#6B7590">coach still in the school</text>
+        <line x1="160" y1="75" x2="200" y2="75" stroke="currentColor" marker-end="url(#ar)"/>
+        <rect x="200" y="40" width="170" height="70" rx="6" fill="none" stroke="#F06E42" stroke-width="2"/>
+        <text x="285" y="66" text-anchor="middle" font-weight="600">"Today's 5 children"</text><text x="285" y="84" text-anchor="middle">chosen in advance</text><text x="285" y="99" text-anchor="middle" fill="#6B7590">by the sampling rule</text>
+        <line x1="370" y1="75" x2="410" y2="75" stroke="currentColor" marker-end="url(#ar)"/>
+        <rect x="410" y="20" width="300" height="110" rx="6" fill="none" stroke="currentColor" stroke-dasharray="4 3"/>
+        <text x="560" y="40" text-anchor="middle" font-weight="600">per child (about 6 min incl. the swap)</text>
+        <rect x="425" y="52" width="80" height="60" rx="4" fill="none" stroke="currentColor"/><text x="465" y="76" text-anchor="middle">Urdu</text><text x="465" y="92" text-anchor="middle" fill="#6B7590">voice note</text>
+        <rect x="520" y="52" width="80" height="60" rx="4" fill="none" stroke="currentColor"/><text x="560" y="76" text-anchor="middle">English</text><text x="560" y="92" text-anchor="middle" fill="#6B7590">voice note</text>
+        <rect x="615" y="52" width="80" height="60" rx="4" fill="none" stroke="currentColor"/><text x="655" y="76" text-anchor="middle">Maths</text><text x="655" y="92" text-anchor="middle" fill="#6B7590">note + photo</text>
+        <line x1="710" y1="75" x2="750" y2="75" stroke="currentColor" marker-end="url(#ar)"/>
+        <rect x="750" y="40" width="160" height="70" rx="6" fill="none" stroke="#F06E42" stroke-width="2"/>
+        <text x="830" y="66" text-anchor="middle" font-weight="600">Checking screen</text><text x="830" y="84" text-anchor="middle">computer's marks, coach edits</text><text x="830" y="99" text-anchor="middle" fill="#6B7590">about 60 s</text>
+        <line x1="910" y1="75" x2="950" y2="75" stroke="currentColor" marker-end="url(#ar)"/>
+        <rect x="950" y="40" width="120" height="70" rx="6" fill="none" stroke="currentColor"/>
+        <text x="1010" y="66" text-anchor="middle" font-weight="600">Saved</text><text x="1010" y="84" text-anchor="middle">both answers</text><text x="1010" y="99" text-anchor="middle" fill="#6B7590">+ recordings</text>
+        <path d="M1010 110 V 170 H 560 V 135" fill="none" stroke="currentColor" marker-end="url(#ar)"/>
+        <text x="785" y="163" text-anchor="middle" fill="#6B7590">next child (the computer marks child 1 while child 2 reads)</text>
+        <text x="20" y="215" font-weight="600">Recording rule</text><text x="20" y="233">One voice note per block. The coach says the cue phrase and "start". The computer's 60-second clock runs from the child's first word, never from a tap.</text>
+        <text x="20" y="262" font-weight="600">No-internet rule</text><text x="20" y="280">Notes and the photo wait on the phone and upload later. Marks and the checking screen arrive when the coach is back online, child by child, in order.</text>
+      </g>
+    </svg>
+    <figcaption>The offer after a lesson is an offer, not a requirement. Finishing the lesson observation never depends on it, which is also what the field team asked for.</figcaption>
+  </figure>
+</section>
+
+<section id="pipeline">
+  <h2>What the computer does with a voice note</h2>
+  <div class="prose"><p>Ayesha's Urdu voice note is two minutes long. Here is what happens to it, in order.</p></div>
+  <ol class="steps">
+    <li><div><strong>Save the file.</strong> The voice note goes straight into our cloud file store (R2) under a name that says which school, session, child and block it is. We never rely on WhatsApp keeping it; WhatsApp deletes media after about a month.</div></li>
+    <li><div><strong>Turn speech into words with timestamps.</strong> A speech-to-text service (Soniox for Urdu, Whisper for English) writes out every word and the exact second it was said, and labels which words are the coach's and which are the child's. We tell it the language in advance; we learned the hard way that if we let it guess, it writes a child's accented English in Urdu letters.</div></li>
+    <li><div><strong>Find the windows.</strong> The computer looks for the coach's cue phrase ("یہ کہانی پڑھو") and the child's first word after it, and cuts out exactly 60 seconds from there. That is the story window. The questions come after "بس". Because the timestamps come from the speech-to-text service, the cut is accurate to the second. (We tested letting an audio AI do the cutting; its clock was off by 20 to 75 seconds, so it only gets to label, never to time.)</div></li>
+    <li><div><strong>Compare to the reference.</strong> The computer already knows the story text (the item bank). It lines the child's words up against it and marks each word: read correctly, skipped, replaced by a different word, or added. That gives words attempted, words correct, and the WCPM.</div></li>
+    <li><div><strong>Mark the questions.</strong> The child's spoken answers to the three questions go to a text AI with the marking guide ("the answer should mention Bilal's father") and it returns right or wrong with its reason. It also notes which language the child answered in.</div></li>
+    <li><div><strong>Check the coach.</strong> The same transcript shows whether the coach read the story twice, whether they prompted the child inside the timed minute, and how noisy the room was. In our test this caught a slip that a human reviewer had missed.</div></li>
+    <li><div><strong>Say how sure it is.</strong> Every mark carries a confidence. Marks above the bar we set from the experiment below appear as numbers on the checking screen; marks below it appear as "listen and mark".</div></li>
+    <li><div><strong>Fill the form.</strong> The marks become a pre-filled WhatsApp form for the coach.</div></li>
+  </ol>
+  <figure>
+    <svg viewBox="0 0 1080 420" role="img" aria-label="Pipeline: a voice note goes to storage, then speech-to-text with the language forced, then the window finder; each window goes to a language-specific marker; results become a word table and a pre-filled form; the coach's edits are stored beside the computer's marks.">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+      <g font-family="Inter,system-ui,sans-serif" font-size="12" fill="currentColor">
+        <rect x="10" y="30" width="130" height="54" rx="6" fill="none" stroke="currentColor"/><text x="75" y="53" text-anchor="middle" font-weight="600">Voice note</text><text x="75" y="70" text-anchor="middle" fill="#6B7590">from WhatsApp</text>
+        <line x1="140" y1="57" x2="175" y2="57" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="175" y="30" width="120" height="54" rx="6" fill="none" stroke="currentColor"/><text x="235" y="53" text-anchor="middle" font-weight="600">Saved (R2)</text><text x="235" y="70" text-anchor="middle" fill="#6B7590">named by child + block</text>
+        <line x1="295" y1="57" x2="330" y2="57" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="330" y="30" width="170" height="54" rx="6" fill="none" stroke="currentColor"/><text x="415" y="53" text-anchor="middle" font-weight="600">Speech-to-text</text><text x="415" y="70" text-anchor="middle" fill="#6B7590">words + seconds + who spoke</text>
+        <line x1="500" y1="57" x2="535" y2="57" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="535" y="30" width="180" height="54" rx="6" fill="none" stroke="#F06E42" stroke-width="2"/><text x="625" y="53" text-anchor="middle" font-weight="600">Window finder</text><text x="625" y="70" text-anchor="middle" fill="#6B7590">cue phrase → 60 s from first word</text>
+        <path d="M715 57 H 760 V 140 H 800" fill="none" stroke="currentColor" marker-end="url(#ar2)"/>
+        <path d="M760 140 V 210 H 800" fill="none" stroke="currentColor" marker-end="url(#ar2)"/>
+        <path d="M760 210 V 280 H 800" fill="none" stroke="currentColor" marker-end="url(#ar2)"/>
+        <path d="M760 280 V 350 H 800" fill="none" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="800" y="115" width="270" height="50" rx="6" fill="none" stroke="currentColor"/><text x="812" y="135" font-weight="600">English reading marker</text><text x="812" y="152" fill="#6B7590">word alignment + pronunciation service</text>
+        <rect x="800" y="185" width="270" height="50" rx="6" fill="none" stroke="currentColor"/><text x="812" y="205" font-weight="600">Urdu reading marker</text><text x="812" y="222" fill="#6B7590">word alignment + sound-level model (v2)</text>
+        <rect x="800" y="255" width="270" height="50" rx="6" fill="none" stroke="currentColor"/><text x="812" y="275" font-weight="600">Maths marker</text><text x="812" y="292" fill="#6B7590">number reader + item bank · photo reader</text>
+        <rect x="800" y="325" width="270" height="50" rx="6" fill="none" stroke="currentColor"/><text x="812" y="345" font-weight="600">Questions · coach check</text><text x="812" y="362" fill="#6B7590">text AI with the marking guide</text>
+        <path d="M800 140 H 680 V 245" fill="none" stroke="currentColor"/>
+        <path d="M800 210 H 680" fill="none" stroke="currentColor"/>
+        <path d="M800 280 H 680" fill="none" stroke="currentColor"/>
+        <path d="M800 350 H 680 V 245" fill="none" stroke="currentColor"/>
+        <line x1="680" y1="245" x2="560" y2="245" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="380" y="215" width="180" height="60" rx="6" fill="none" stroke="#F06E42" stroke-width="2"/><text x="470" y="238" text-anchor="middle" font-weight="600">Word table + form</text><text x="470" y="256" text-anchor="middle" fill="#6B7590">counts, per-word marks, confidence</text>
+        <line x1="380" y1="245" x2="330" y2="245" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="175" y="215" width="155" height="60" rx="6" fill="none" stroke="currentColor"/><text x="252" y="238" text-anchor="middle" font-weight="600">Coach edits</text><text x="252" y="256" text-anchor="middle" fill="#6B7590">on the WhatsApp form</text>
+        <line x1="175" y1="245" x2="140" y2="245" stroke="currentColor" marker-end="url(#ar2)"/>
+        <rect x="10" y="205" width="130" height="80" rx="6" fill="none" stroke="currentColor"/><text x="75" y="228" text-anchor="middle" font-weight="600">Saved rows</text><text x="75" y="246" text-anchor="middle" fill="#6B7590">computer's marks</text><text x="75" y="262" text-anchor="middle" fill="#6B7590">coach's marks</text><text x="75" y="278" text-anchor="middle" fill="#6B7590">who decided, difference</text>
+        <text x="10" y="395" fill="#6B7590">Safety check before marking: the window finder must find a child speaking for at least 10 seconds after a cue phrase. If not, the row is marked "no child speech found" and the form says so, instead of a made-up score.</text>
+      </g>
+    </svg>
+    <figcaption>Everything left of the window finder already exists in our bot (it is how the current reading test works). The window finder, the sound-level Urdu marker, the number reader, the photo reader and the per-item form are the new parts.</figcaption>
+  </figure>
+</section>
+
+<section id="experiment">
+  <h2>The experiment: does this actually work on real recordings?</h2>
+  <div class="prose">
+    <p>We ran every one of the 187 study recordings that had matching scores through the pipeline above, then compared the computer's marks with the humans'. This is the "eval harness": a set of scripts that anyone can rerun (they are all <a href="files.html#harness">linked on the files page</a>). Total computer cost was about $49.</p>
+    <h3>Where the human scores come from</h3>
+    <p>Two layers. The <strong>enumerator's live marks</strong> from the tablet: for every letter, word and story word, whether the child got it right, plus the counts and timer readings. And the <strong>reviewer's second opinion</strong>: someone listened to the recording afterwards and marked whether each of the enumerator's scores was right, wrong, or impossible to tell from the audio.</p>
+    <h3>Why the "human floor" matters</h3>
+    <p>Before judging the computer we asked: how often do the two humans agree with each other? The answer surprised us. On letters and maths, about 9 times in 10. On the timed word lists and the story, only 51 to 62 percent of the time. The recordings are noisy phone-quality audio from real classrooms with fans and interruptions, and even a trained human cannot always tell what a child said. So on those tasks the fair target for the computer is "as good as the second human", not perfection.</p>
+  </div>
+  <h3>Results, subtask by subtask</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Subtask</th><th>Second human agreed with the enumerator</th><th></th><th>Computer's count vs the enumerator's (correlation, once it found the right window)</th><th class="num">Average error, words</th><th class="num">Right window not found</th></tr></thead>
+    <tbody>
+      <tr><td>Urdu word list (60 s)</td><td class="num">51%</td><td><div class="bar"><i style="width:51%"></i></div></td><td><span class="pill ok">0.97</span></td><td class="num">5.9</td><td class="num">12%</td></tr>
+      <tr><td>Urdu story (60 s)</td><td class="num">54%</td><td><div class="bar"><i style="width:54%"></i></div></td><td><span class="pill ok">0.98</span> but counts about 10 words too few</td><td class="num">10.4</td><td class="num">24%</td></tr>
+      <tr><td>English word list</td><td class="num">56%</td><td><div class="bar"><i style="width:56%"></i></div></td><td><span class="pill ok">0.93</span></td><td class="num">5.9</td><td class="num">28%</td></tr>
+      <tr><td>English story</td><td class="num">62%</td><td><div class="bar"><i style="width:62%"></i></div></td><td><span class="pill ok">0.97</span>; within 5 words for 64% of children</td><td class="num">5.6</td><td class="num">20%</td></tr>
+      <tr><td>English made-up words</td><td class="num">52%</td><td><div class="bar"><i style="width:52%"></i></div></td><td>most children read 0 to 5, so correlation is meaningless; within 5 for 91%</td><td class="num">2.2</td><td class="num">24%</td></tr>
+      <tr><td>Letters, Urdu / English</td><td class="num">89% / 90%</td><td><div class="bar"><i style="width:89%"></i></div></td><td><span class="pill coach">leave to the coach</span> letter names came back in three different scripts</td><td class="num">11</td><td class="num">84% / 62%</td></tr>
+      <tr><td>Maths word problems (question spoken by the tester)</td><td class="num">87%</td><td><div class="bar"><i style="width:87%"></i></div></td><td>0.70; exactly right 45%, within one item 63%</td><td class="num">1.5 items</td><td class="num">—</td></tr>
+      <tr><td>Maths number reading (number on paper, never spoken)</td><td class="num">81%</td><td><div class="bar"><i style="width:81%"></i></div></td><td>0.27 from audio alone; fixed in the product because we will know the numbers shown</td><td class="num">3.1 items</td><td class="num">—</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cols">
+    <div class="prose">
+      <h3>Reading the table</h3>
+      <p><strong>Counting works.</strong> When the computer found the right 60 seconds, its counts of correct words tracked the enumerator's almost perfectly (0.93 to 0.98), on poor-quality audio. It tends to count a few words too few, most on the Urdu story, because the transcription drops words the child did say. That is a known, fixable bias.</p>
+      <p><strong>Finding the window is the weak link, and it is a design problem.</strong> In 12 to 28 percent of cases the computer cut the wrong part of the recording. That happened because these recordings are 20-minute sessions with no clear breaks. In our design the coach records one voice note per block and says a cue phrase, so the window is obvious.</p>
+      <p><strong>Letters fail for everyone.</strong> The computer lost the letter window most of the time because letter names were written in Urdu, Latin and even Devanagari script by the transcription. Research on other languages found the same. So letters stay a coach's tick in the first version, which the human floor (89 percent) says is safe.</p>
+    </div>
+    <div class="prose">
+      <h3>Word-by-word marks are not ready</h3>
+      <p>Counting how many words were right is one thing; saying <em>which</em> words were wrong is harder. The plain transcript method flagged four to six times more words than the enumerator did: only 12 to 20 percent of its flags were real mistakes. SpeechAce (a paid pronunciation service) did better at 21 to 25 percent, still wrong three times in four. The fix is a technique called forced alignment that uses the audio itself against the known text; that is a version-2 item. In version 1 the form shows counts and the clip, not per-word chips.</p>
+      <h3>Three things we found by accident</h3>
+      <ul>
+        <li>Our Microsoft Azure pronunciation service is dead: both stored keys are rejected, and the same key is on the live server, so English reading tests have quietly been falling back to a weaker method. Filed as an urgent bug; the key must be regenerated in the Azure portal.</li>
+        <li>Letting the transcription service guess the language breaks on accented child English. Tell it the language.</li>
+        <li>Audio AIs (Gemini) label what is happening well but get the time wrong by up to 75 seconds. They may label, never time.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="yield">
+  <h2>More than a speed: what else a recording can tell us</h2>
+  <div class="prose">
+    <p>Everything comes from one thing: a <strong>word table</strong>, one row per word the child was supposed to read, with when it started, when it ended, whether it was right, and how sure the computer is. Build that first and store it; every measure below is a calculation on it. Ranked by how useful it is to a coach, how strong the evidence is, and how hard it is to build.</p>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>What we can measure</th><th>In plain words</th><th>How well established</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Words correct per minute, accuracy</strong></td><td>The standard reading-speed number</td><td>Machine and human agree at 0.96 in US national testing; 0.97 in our experiment</td><td><span class="pill ok">version 1</span></td></tr>
+      <tr><td><strong>Did the coach follow the script?</strong></td><td>Story read twice? No hints during the timed minute? Timer honest?</td><td>Caught a slip a human reviewer missed; testers are known to make such errors often</td><td><span class="pill ok">version 1</span></td></tr>
+      <tr><td><strong>Was the room too noisy?</strong></td><td>A quality flag so we know when to trust the marks less</td><td>Recognition errors triple in loud rooms</td><td><span class="pill ok">version 1</span></td></tr>
+      <tr><td><strong>Pauses</strong></td><td>Does the child pause at full stops (good) or in the middle of phrases (struggling)? How long before the first word?</td><td>Pause patterns alone explain over half of the speed differences between children, and predict later comprehension</td><td><span class="pill ok">version 1</span>, shown as information, not a score</td></tr>
+      <tr><td><strong>Types of mistake and self-corrections</strong></td><td>Skipped words, added words, wrong words, repeats; and how often the child fixes their own mistake (a good sign)</td><td>Self-correction predicts progress in large studies; our per-word accuracy is not yet good enough</td><td><span class="pill gold">version 1 counts for English · version 2 Urdu</span></td></tr>
+      <tr><td><strong>Effortful decoding</strong></td><td>Sounding out letter by letter, restarting words, long pauses inside a word</td><td>Standard idea; no published reliability yet</td><td><span class="pill gold">version 2</span></td></tr>
+      <tr><td><strong>A speed with an error bar</strong></td><td>Instead of "31 words", "31 give or take 6", and fairer comparison across different stories</td><td>Needs each child to read 3 or 4 short passages over time; well-published statistics</td><td><span class="pill gold">version 2</span>, but design the stories for it now</td></tr>
+      <tr><td><strong>Comprehension in any language</strong></td><td>Mark spoken answers even if the child answers in Punjabi</td><td>AI marking of short answers matches human markers</td><td><span class="pill ok">version 1</span></td></tr>
+      <tr><td><strong>Maths: remembering vs counting</strong></td><td>How long the child takes to answer 7 + 5, and whether you can hear them counting</td><td>Strong theory; testers already tick "used fingers"; no automated version exists yet</td><td><span class="pill gold">version 2</span>, as a check on the coach's tick</td></tr>
+      <tr><td><strong>Types of maths mistake</strong></td><td>Off by one, wrong place value, did addition instead of subtraction</td><td>Useful hints for the teacher; never a score on their own</td><td><span class="pill ok">version 1</span></td></tr>
+      <tr><td><strong>Which numbers trip the child</strong></td><td>Teens, decades, three-digit; Urdu has a separate word for every number up to 99</td><td>Well described for other languages; Urdu is our hypothesis</td><td><span class="pill gold">version 2</span></td></tr>
+      <tr><td><strong>Expression</strong></td><td>Does the child read like they are talking or like a robot? (The US test scores this 1 to 4)</td><td>Computers now agree with humans more than humans agree with each other on this; no Urdu data yet</td><td><span class="pill gold">version 2 English</span>, research for Urdu</td></tr>
+      <tr><td><strong>Phonics gap map</strong></td><td>Which letter-sounds a child, or a whole class, cannot map: the thing a teacher should teach tomorrow</td><td>One US product ships it; sound-level recognition is still error-prone in noise</td><td><span class="pill gold">version 2 for a class · research per child</span></td></tr>
+      <tr><td><strong>The written maths photo</strong></td><td>Final answers now; later, reading tally marks and working; never penalise a reversed digit under age 7</td><td>Handwriting reading works; reading strategy from working does not yet</td><td><span class="pill gold">version 2</span></td></tr>
+      <tr><td><strong>Fairness report</strong></td><td>Does the computer mark Punjabi- or Pothwari-accented Urdu harsher? Accepted-pronunciation lists built from our own recordings</td><td>Well-known problem in speech recognition; the fix is known</td><td><span class="pill ok">version 1 report</span> · version 2 lists</td></tr>
+      <tr><td>Not doing: reading the child's mood, second-by-second tiredness curves, grammar of the child's speech</td><td></td><td>Measurable, but no evidence they say anything about the score, and they punish shy children</td><td>research only</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><strong>The bigger point.</strong> Paper gives one number per subject per child per term. A recording gives a word table per child per visit. Four things become possible that never were: a growth curve for each child from repeated five-minute samples; spotting the mistake patterns across a whole class (what to teach next week); calibrating our own stories on thousands of real reads instead of formulas; and a running fairness check on every coach instead of a one-off training test. None of this needs new AI. It needs the word table stored from day one, with the coach's corrections next to it.</div>
+</section>
+
+<section id="maths">
+  <h2>Maths: should the child speak the answer or write it?</h2>
+  <div class="cols">
+    <div class="prose">
+      <p>A fair question is whether marking maths from speech is even normal. It depends on what the item is measuring, and the standard tests already split the same way.</p>
+      <p><strong>Speaking is the norm for speed items.</strong> EGMA insists the child says the answer for number reading and for the one-minute sums, because these measure how quickly a child retrieves facts. A grade-1 child writes so slowly that a written version would measure handwriting, not maths. ASER and ICAN are spoken throughout. Our experiment confirmed spoken answers can be marked when the question is spoken too (word problems 0.70), and number reading becomes easy once the computer knows which numbers were shown, which it will in the product.</p>
+      <p><strong>Writing is the norm for computation.</strong> EGMA lets the child use paper for harder sums; the TIP test, LND and NAT are entirely written; and the child's working (tally marks, carrying) is evidence a recording cannot capture. A photo also costs the coach nothing: the child writes six items while the coach fetches the next child.</p>
+      <p><strong>So: both, split by what the item measures.</strong> Speak the number reading and the timed sums; write the two-digit sums and one word problem, photographed once. AI can read children's final answers from a photo well today; reading their working reliably is a version-2 goal, and we should test 50 real sheets before trusting either.</p>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>Maths item</th><th>How captured</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Read 8 numbers aloud</td><td><span class="pill audio">speak</span></td><td>Speed matters; the computer knows the numbers</td></tr>
+          <tr><td>Which number is bigger</td><td><span class="pill audio">speak</span></td><td>The test rules say say, not point</td></tr>
+          <tr><td>One-minute quick sums</td><td><span class="pill audio">speak</span></td><td>A speed measure; hearing counting reveals strategy</td></tr>
+          <tr><td>Two-digit sums with carrying</td><td><span class="pill gold">write + photo</span></td><td>The working is the evidence; no coach time</td></tr>
+          <tr><td>Word problems</td><td><span class="pill audio">speak</span> the answer, optionally <span class="pill gold">photo</span> the working</td><td>Coach reads the question; AI marks; photo shows method</td></tr>
+          <tr><td>Patterns, shapes, time</td><td><span class="pill gold">photo</span> or drop</td><td>Not a speed item; older grades only</td></tr>
+        </tbody>
+      </table>
+      <div class="callout push"><strong>Why not simply photograph everything.</strong> Photographing everything would lose the two things only audio gives in maths: the per-minute speed and the sound of a child counting instead of knowing. Speaking everything would lose the working. The split above is what EGMA itself does.</div>
+    </div>
+  </div>
+</section>
+
+<section id="battery">
+  <h2>The five-minute test, from first principles</h2>
+  <div class="prose">
+    <p>Do not start by asking which EGRA parts to cut. Start by asking what a five-minute recording can contain. One 60-second story read gives speed, accuracy, mistake types, self-corrections and pauses; add three questions and it gives comprehension. That one window already carries more detail than the whole ASER ladder. So the rule is: <strong>spend the minutes on windows that yield many measures, use stop rules so every child works at their own level, and keep every timed window at the full 60 seconds so our numbers stay comparable with the published Urdu benchmarks.</strong> Detail comes from measuring more per window, not from squeezing in more windows.</p>
+    <p>Two departures from the original brief. Five minutes is the test, not the visit: walking a child in and out adds a minute, and the 30-minute promise absorbs it. And the 100-letter grid should be a fallback rung, not the default: it is where both humans and computers are weakest, and a child who can read the story has proven the letters.</p>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Block · one voice note each</th><th>What the child does</th><th class="num">Seconds</th><th>Stop rule</th><th>What we learn</th><th>Can the computer mark it now?</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4"><strong>Urdu</strong> about 2 min</td><td>Read a 60-word grade-2 story for one minute</td><td class="num">60</td><td>Fewer than 5 right in the first line → switch to 10 letters (20 s) and 10 words (30 s) instead</td><td>speed, accuracy, mistakes, self-corrections, pauses</td><td><span class="pill ok">counts yes</span>, per-word later</td></tr>
+      <tr><td>Answer 3 questions about it</td><td class="num">25</td><td>only if at least one line was read</td><td>understanding; language of answer</td><td><span class="pill ok">yes</span></td></tr>
+      <tr><td>Say the first sound of 5 words</td><td class="num">20</td><td>skipped on the letter branch</td><td>sound awareness</td><td><span class="pill coach">coach marks</span></td></tr>
+      <tr><td>Read 5 made-up words</td><td class="num">20</td><td>readers only</td><td>decoding without memory</td><td><span class="pill coach">coach marks</span></td></tr>
+      <tr><td rowspan="3"><strong>English</strong> about 2 min</td><td>Read a short grade-level story for one minute</td><td class="num">60</td><td>Fewer than 5 right in the first line → 10 words (30 s) and 10 letters (20 s)</td><td>as Urdu, plus sound-level detail once Azure is fixed</td><td><span class="pill ok">counts yes</span></td></tr>
+      <tr><td>Answer 2 questions</td><td class="num">20</td><td>only if at least one line was read</td><td>understanding</td><td><span class="pill ok">yes</span></td></tr>
+      <tr><td>Read 8 made-up words</td><td class="num">30</td><td>readers only</td><td>decoding; our experiment marked these within 5 for 91% of children</td><td><span class="pill ok">yes</span></td></tr>
+      <tr><td rowspan="3"><strong>Maths</strong> about 1.5 min + a photo</td><td>Read 8 numbers aloud</td><td class="num">25</td><td>4 wrong in a row → stop the block</td><td>number knowledge, which numbers fail</td><td><span class="pill ok">yes</span>, with the item bank</td></tr>
+      <tr><td>One-minute quick sums, answers spoken</td><td class="num">60</td><td>timed</td><td>sums per minute; counting vs knowing</td><td><span class="pill ok">yes</span></td></tr>
+      <tr><td>4 written sums + 1 word problem, done while the coach fetches the next child; one photo</td><td class="num">0 coach time</td><td>grade 2 and up</td><td>answers now, working later</td><td><span class="pill gold">photo, answers only</span></td></tr>
+      <tr><td colspan="2"><strong>Child time</strong></td><td class="num"><strong>about 330</strong></td><td colspan="3">Plus about 30 seconds of moving between blocks. Today's enumerator takes about 8 minutes for the same content. Five children with swaps: about 30 minutes.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout quiet"><strong>Why this is more than "EGRA cut down to ASER".</strong> ASER gives one level per subject. This gives, per child per visit: two reading speeds with mistake lists, comprehension in two languages, a decoding check in each, a maths speed with a strategy signal, written computation, and a coach-quality score; plus a per-item table that builds up into class-level phonics gaps and growth curves over time. What it drops from the full EGRA: the 100-letter grids for readers, listening comprehension, dictation, and 50-word lists (replaced by 10-word rows on the fallback branch). Everything kept at 60 seconds stays comparable with the 60 to 90 words-per-minute Urdu benchmark.</div>
+</section>
+
+<section id="form">
+  <h2>The checking screen</h2>
+  <div class="cols">
+    <div class="prose">
+      <p>We reuse exactly how the lesson-observation form works today. The computer's answer is saved once and never changed (version 1). The WhatsApp form opens pre-filled from it. The coach's edits are saved as version 2 with a note of what changed. Only the coach who did the assessment can submit it.</p>
+      <p>Two changes for children: the form is per child, not per lesson, and each edit is saved item by item, because we need to know exactly where the computer was wrong in order to improve it.</p>
+      <p>Each screen is one block. Each subtask row shows the computer's count; the coach taps to change it. Where the computer was confident, the words it marked wrong appear as chips the coach can flip. Where it was not (letters, first sounds, and all per-word marks in version 1), the row says "listen and mark" with the clip attached. A "manual mode" switch lets a coach mark a whole block themselves; the audio is still recorded and marked in the background so we can keep measuring the computer.</p>
+    </div>
+    <div>
+      <div class="phone">
+        <div class="bar">Rumi · Student assessment · Ayesha (Gr 3) · 1 of 3</div>
+        <div class="screen-title">Urdu reading</div>
+        <div class="row"><span class="k">Words correct in 60 s</span><span class="v ai">31 <span class="pill coach">edit</span></span></div>
+        <div class="row"><span class="k">Words attempted</span><span class="v ai">34</span></div>
+        <div class="words"><span class="w">آج</span><span class="w">بلال</span><span class="w">اپنے</span><span class="w miss">والد</span><span class="w">کے</span><span class="w">ساتھ</span><span class="w">دریائے</span><span class="w miss">جہلم</span><span class="w">کے</span><span class="w">کنارے</span><span class="w fix">گیا</span><span class="w">…</span></div>
+        <div class="row"><span class="k">Question 1 · "کس کے ساتھ؟"</span><span class="v ai">✓</span></div>
+        <div class="row"><span class="k">Question 2 · "کیا بہہ رہا تھا؟"</span><span class="v ai">✗</span></div>
+        <div class="row"><span class="k">First sounds</span><span class="v"><span class="pill gold">listen &amp; mark</span></span></div>
+        <div class="row"><span class="k">Coach check</span><span class="v ai">story read twice ✓ · no hints ✓</span></div>
+        <div class="btn">Confirm Urdu · go to English</div>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);max-width:300px;margin-top:8px">Red chip = the computer marked it wrong. Yellow chip = the coach changed it. "Listen &amp; mark" = the computer was not sure enough; the coach decides.</p>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <h2>Where everything is saved</h2>
+  <div class="prose"><p>Good news: our database already has the right shape, built for the August ASER tool. We add no new tables for version 1, only a few columns. In plain terms:</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>What we need to keep</th><th>Where it already lives</th><th>What we add</th></tr></thead>
+    <tbody>
+      <tr><td>The session: which coach, child, grade, school, region, done or not</td><td>the <code>aser_sessions</code> table</td><td>a flag saying this was the five-minute test, and a link to the lesson observation it followed</td></tr>
+      <tr><td>Each reading window: the text shown, the recording, the transcript, the word table, counts, speed, time</td><td>the <code>reading_assessments</code> table (one row per window)</td><td>new names for the new window types; the start and end second of the window; the word table with a mark and confidence per word</td></tr>
+      <tr><td>The computer's answer next to the coach's answer, who decided, and the difference</td><td>columns already exist (<code>rumi_level</code> / <code>coach_level</code> and friends)</td><td>one extra field listing every item the coach changed, with before and after</td></tr>
+      <tr><td>The maths photo and its answers</td><td>the <code>numeracy_assessments</code> table</td><td>per-item answers from the photo</td></tr>
+      <tr><td>The recordings themselves</td><td>the R2 file store</td><td>file names that include school, session, child and block; uploaded immediately, never left on WhatsApp</td></tr>
+      <tr><td>Reports for the team dashboard</td><td>an existing summary view</td><td>the new subtask columns and the coach-quality fields</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="models">
+  <h2>Which AI does what</h2>
+  <div class="prose"><p>There is no single "the AI". Different tools do different jobs, and the experiment decided which. Costs are per child for the five-minute test.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Job</th><th>Tool we will use</th><th>Why, in one line</th><th class="num">Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Urdu speech to text with timestamps</td><td>Soniox (already in our bot), told the language is Urdu</td><td>Its timestamps were exact to the second; counts matched humans at 0.97</td><td class="num">1 cent</td></tr>
+      <tr><td>English speech to text</td><td>OpenAI Whisper, told the language is English</td><td>Soniox wrote accented child English in the wrong script; Whisper forced to English worked</td><td class="num">1 cent</td></tr>
+      <tr><td>Finding the 60-second window</td><td>The coach's cue phrase plus the child's first word; a cheap text AI as backup labeller</td><td>Audio AIs got the time wrong by up to 75 seconds; text AIs labelling a timestamped transcript did fine and cost 24 times less</td><td class="num">under 1 cent</td></tr>
+      <tr><td>Which Urdu words were wrong</td><td>Free, open models that align audio to the known text (Meta's Omnilingual, ZIPA) and score each sound</td><td>Nobody sells Urdu pronunciation scoring; these are the best free options; version 2</td><td class="num">near zero</td></tr>
+      <tr><td>Which English words were wrong, and how they were mispronounced</td><td>Microsoft Azure pronunciation service (once the key is fixed); SpeechAce for made-up words</td><td>Both are built for this; SpeechAce was better than plain transcription in our test but still noisy</td><td class="num">2 to 4 cents</td></tr>
+      <tr><td>Spoken maths answers</td><td>A small number-word dictionary we write ourselves (Urdu and English numbers, mixed speech) plus the item bank</td><td>No ready-made Urdu number reader exists; the experiment showed spoken answers are markable once the question is known</td><td class="num">near zero</td></tr>
+      <tr><td>The maths photo</td><td>Google Gemini vision, with the answer key; Claude as a second opinion on disagreements</td><td>Best on handwriting benchmarks; children's digits still untested, so we probe 50 sheets first</td><td class="num">1 to 2 cents</td></tr>
+      <tr><td>Marking spoken answers to questions; checking the coach followed the script</td><td>A text AI (Claude or GPT) given the transcript and the marking guide; Gemini listening to the whole block once, in the background, for the coach check</td><td>AI marking of short answers matches human markers; the coach check caught a slip a human missed</td><td class="num">1 to 5 cents</td></tr>
+      <tr><td>Pauses and expression</td><td>Calculations on the word table; a small classifier trained on our coaches' ratings</td><td>Cheap, well-studied; never ask a language model to judge expression</td><td class="num">zero</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout quiet"><strong>About the famous chatbots.</strong> Claude cannot listen to audio at all. The latest OpenAI and Google audio models either dropped Urdu or cannot keep time. So the big models mark answers, label transcripts and explain results; they do not time or score words. Everything Urdu-specific runs on open models we can host ourselves, chosen for licences that allow production use.</div>
+</section>
+
+<section id="roadmap">
+  <h2>The order we go in</h2>
+  <div class="prose"><p>No dates. Each step starts when the one before it is done and has proved itself.</p></div>
+  <div class="phase"><div class="when">1</div><div><h3>Evidence and decisions</h3><ul><li>Done: the experiment above, the test walkthrough, the alignment-call transcript, the TIP read-through.</li><li>Left: regenerate the Azure key and rerun the English test; run the forced-alignment method for Urdu word marks; hand-transcribe 30 Urdu reads as a gold standard.</li><li>Fix the Urdu instrument choices with Sabeena and Sameer (decision D3). Confirm the after-observation placement with the Rawalpindi field team.</li></ul></div></div>
+  <div class="phase"><div class="when">2</div><div><h3>Build in the main bot, on the staging server</h3><ul><li>One voice note per block; notes queue when offline; the 60-second clock from the child's first word; stop rules.</li><li>Save the word table for every read; the per-item checking form; counts shown, per-word chips only where confident.</li><li>Maths: the item bank, the number dictionary, the photo answer reader.</li></ul></div></div>
+  <div class="phase"><div class="when">3</div><div><h3>Islamabad pilot, as promised on the call</h3><ul><li>Two or three coaches, five schools, 25 pre-selected children, real number, everything coach-confirmed.</li><li>Stopwatch every child; we stop when the typical child is under five minutes of test time. Re-measure every number above on the clearer WhatsApp audio.</li></ul></div></div>
+  <div class="phase"><div class="when">4</div><div><h3>NIETE version and the after-lesson offer; portal page</h3><ul><li>Copy the tables, handler and sampling into the NIETE bot; offer the test when the lesson recording arrives; a grade picker; an "Assessments" page next to "Observations" on the portal showing computer vs coach marks and coach-quality.</li></ul></div></div>
+  <div class="phase"><div class="when">5</div><div><h3>Calibrate, then trust</h3><ul><li>A subtask switches from "coach confirms" to "computer confirms" only when the computer agrees with the enumerator as often as the second human did for that subtask. Publish that table monthly per region.</li><li>The team dashboard panel; Rawalpindi then ICT; the weekly quiz items from the same item bank.</li></ul></div></div>
+</section>
+
+<section id="decisions">
+  <h2>Decisions to be made</h2>
+  <div class="decision"><div class="tag">D1</div><div><strong>The five-minute test as designed above</strong>: two 60-second stories with fallback rungs, made-up words for readers, spoken maths speed plus a written photo strip. Or a variant. Shorter windows would break comparability and add less information than measuring more per window.</div></div>
+  <div class="decision"><div class="tag">D2</div><div><strong>Maths split by what the item measures</strong> (speak the speed items, write the computation). Photo-only loses the speed and the counting signal; speech-only loses the working.</div></div>
+  <div class="decision"><div class="tag">D3</div><div><strong>Urdu instrument choices</strong>: letter names or letter sounds (the May study used names; Sindh used first sounds); vowel marks (aerab) on or off in the stories; which two grade-2 stories; how to build the made-up words. Sabeena and Sameer's call, and the marker cannot be built until these are fixed.</div></div>
+  <div class="decision"><div class="tag">D4</div><div><strong>Azure.</strong> Regenerate the keys in the Azure portal, or retire Azure for English and use SpeechAce plus our own alignment. Live English reading tests are on the weaker fallback until this is decided.</div></div>
+  <div class="decision"><div class="tag">D5</div><div><strong>Sampling for the pilot</strong>: five new children per visit, or three new plus two repeats. The experiment has no opinion; the impact team's big EGRA every three months stays the official measure either way.</div></div>
+  <div class="decision"><div class="tag">D6</div><div><strong>Map our results onto the TIP groups</strong> (KG / Class 1 / 2 / 3) so Islamabad and KP teachers can use them directly. Small work, big legibility.</div></div>
+</section>
+
+<section id="files">
+<h2>Where everything is</h2>
+<h3>Documents</h3><div class="grid">
+<div class="card"><a href="investigation.html"><strong>Investigation index</strong></a><br><span class="meta">What was asked, what is in the folder, headline findings, open decisions · <code>INVESTIGATION.md</code></span></div>
+<div class="card"><a href="baseline.html"><strong>Baseline: the May 2026 study</strong></a><br><span class="meta">The corpus, the 21-minute enumerator timing baseline, the QA review layer · <code>BASELINE.md</code></span></div>
+<div class="card"><a href="harness/results.html"><strong>Eval harness results</strong></a><br><span class="meta">Every model number beside the human floor, with method · <a href="harness/results.html">harness/HARNESS_RESULTS.md</a></span></div>
+<div class="card"><a href="research/01-egra-egma-structure.html"><strong>EGRA and EGMA structure</strong></a><br><span class="meta">Subtasks, timing, stop rules, Urdu adaptations, benchmarks, automated-scoring literature · <code>research/01_EGRA_EGMA_structure.md</code></span></div>
+<div class="card"><a href="research/02-model-landscape.html"><strong>Model landscape</strong></a><br><span class="meta">Every pronunciation, ASR, phone-recognition, audio-LLM and vision option checked, with locale lists and prices · <code>research/02_model_landscape.md</code></span></div>
+<div class="card"><a href="research/03-current-reading-pipeline.html"><strong>What the main bot already has</strong></a><br><span class="meta">The reading pipeline and the live ASER tool, file by file · <code>research/03_current_reading_pipeline.md</code></span></div>
+<div class="card"><a href="research/04-niete-observe-hitl.html"><strong>The NIETE observe HITL flow</strong></a><br><span class="meta">How the AI pre-fill and coach correction work today; hook points; reuse map · <code>research/04_niete_observe_hitl.md</code></span></div>
+<div class="card"><a href="research/05-what-a-recording-can-yield.html"><strong>What a recording can yield</strong></a><br><span class="meta">Constructs recoverable from a read-aloud beyond WCPM, with evidence and phase · <code>research/05_what_a_recording_can_yield.md</code></span></div>
+<div class="card"><a href="research/06-assessment-batteries.html"><strong>Assessment batteries walkthrough</strong></a><br><span class="meta">EGRA, EGMA, ICAN, TIP, ASER, ELANA, DIBELS, MELQO, Literacy Boost, Pakistan incumbents, AI readers · <code>research/06_assessment_batteries_walkthrough.md</code></span></div>
+<div class="card"><a href="research/07-model-deep-dive.html"><strong>Model deep dive</strong></a><br><span class="meta">Child-speech ASR, Urdu models, phone/GOP stacks, prosody, audio LLMs, maths ITN, vision; the eval shortlist · <code>research/07_model_deep_dive.md</code></span></div>
+<div class="card"><a href="probes/probe1.html"><strong>Probe 1: an audio LLM on a whole session</strong></a><br><span class="meta">Gemini 2.5 Pro and Flash segment and score one 17-minute enumerator recording · <code>probes/PROBE1_FINDINGS.md</code></span></div>
+<div class="card"><a href="probes/probe2.html"><strong>Probe 2: production STT on the Urdu block</strong></a><br><span class="meta">Soniox timestamps, diarisation and the &quot;STT cuts, LLM labels&quot; rule · <code>probes/PROBE2_FINDINGS.md</code></span></div>
+<div class="card"><a href="tips/tip-notes.html"><strong>The TIP diagnostic (LEAPS/CERP)</strong></a><br><span class="meta">What the written placement test contains and how it relates to ours · <code>tips/TIP_NOTES.md</code></span></div>
+<div class="card"><a href="meetings/alignment-call-2026-09-15.html"><strong>Alignment call, 15 Sep 2026</strong></a><br><span class="meta">Decisions with timestamps; how the transcript was recovered · <code>meetings/2026-09-15_alignment-call.md</code></span></div>
+</div><h3 id="harness">Harness scripts (run in order to reproduce every number)</h3><ol>
+<li><a href="code/audio_durations.py.html"><code>audio_durations.py</code></a> — ffprobe every recording, join to the child index + coach reviews, write audio/_audio_index.csv and print baseline stats. <span class="meta">(<a href="src/audio_durations.py">raw</a>)</span></li>
+<li><a href="code/baseline_timings.py.html"><code>baseline_timings.py</code></a> — Baseline: how long enumerators took per subtask and per child, from the SurveyCTO export. <span class="meta">(<a href="src/baseline_timings.py">raw</a>)</span></li>
+<li><a href="code/build_site.py.html"><code>build_site.py</code></a> — Build the self-contained GitHub Pages site for the EGRA-in-five-minutes plan into ./site. <span class="meta">(<a href="src/build_site.py">raw</a>)</span></li>
+<li><a href="code/download_drive_audio.py.html"><code>download_drive_audio.py</code></a> — Download every file in the shared EGRA/EGMA enumerator-recordings Drive folder into ./audio. <span class="meta">(<a href="src/download_drive_audio.py">raw</a>)</span></li>
+<li><a href="code/download_tips_folder.py.html"><code>download_tips_folder.py</code></a> — Download the TIPS assessment Drive folder into ./tips (Google-native files exported). <span class="meta">(<a href="src/download_tips_folder.py">raw</a>)</span></li>
+<li><a href="code/harness/01_soniox_batch.py.html"><code>harness/01_soniox_batch.py</code></a> — Harness step 1: Soniox stt-async-v3 (diarised, hints ur+en) over every recording → harness/soniox/&lt;file&gt;.json <span class="meta">(<a href="src/harness/01_soniox_batch.py">raw</a>)</span></li>
+<li><a href="code/harness/02_ground_truth.py.html"><code>harness/02_ground_truth.py</code></a> — Harness step 2: extract per-child ground truth from the SurveyCTO export for the 206 matched recordings. <span class="meta">(<a href="src/harness/02_ground_truth.py">raw</a>)</span></li>
+<li><a href="code/harness/03_segmenter.py.html"><code>harness/03_segmenter.py</code></a> — Harness step 3: rule-based segmenter over Soniox diarised tokens. <span class="meta">(<a href="src/harness/03_segmenter.py">raw</a>)</span></li>
+<li><a href="code/harness/03b_segmenter_llm.py.html"><code>harness/03b_segmenter_llm.py</code></a> — Harness step 3b: LLM-labelled segmentation on STT timestamps (&quot;STT cuts, LLM labels&quot;). <span class="meta">(<a href="src/harness/03b_segmenter_llm.py">raw</a>)</span></li>
+<li><a href="code/harness/04_reference_reconstruct.py.html"><code>harness/04_reference_reconstruct.py</code></a> — Harness step 4: reconstruct the instrument&#x27;s reference texts by consensus across children. <span class="meta">(<a href="src/harness/04_reference_reconstruct.py">raw</a>)</span></li>
+<li><a href="code/harness/04b_reference_llm.py.html"><code>harness/04b_reference_llm.py</code></a> — Harness step 4b: reconstruct the reference stimuli with an LLM instead of positional voting. <span class="meta">(<a href="src/harness/04b_reference_llm.py">raw</a>)</span></li>
+<li><a href="code/harness/05_human_floor.py.html"><code>harness/05_human_floor.py</code></a> — Harness step 5: the human floor. For every subtask, how often did the QA reviewer (second human, re-listening <span class="meta">(<a href="src/harness/05_human_floor.py">raw</a>)</span></li>
+<li><a href="code/harness/06_reading_score.py.html"><code>harness/06_reading_score.py</code></a> — Harness step 6: Urdu + English reading scores from STT alone (the &quot;cheap stack&quot;). <span class="meta">(<a href="src/harness/06_reading_score.py">raw</a>)</span></li>
+<li><a href="code/harness/07_maths_grade.py.html"><code>harness/07_maths_grade.py</code></a> — Harness step 7: maths from speech. For each child, give a TEXT LLM the diarised transcript of the maths block <span class="meta">(<a href="src/harness/07_maths_grade.py">raw</a>)</span></li>
+<li><a href="code/harness/08_soniox_english_pass.py.html"><code>harness/08_soniox_english_pass.py</code></a> — Harness step 8: second Soniox pass on the ENGLISH block only, language hint &#x27;en&#x27; only. <span class="meta">(<a href="src/harness/08_soniox_english_pass.py">raw</a>)</span></li>
+<li><a href="code/harness/08b_whisper_english_pass.py.html"><code>harness/08b_whisper_english_pass.py</code></a> — Harness step 8b: English block via OpenAI whisper-1 with language forced to &#x27;en&#x27; + word timestamps. <span class="meta">(<a href="src/harness/08b_whisper_english_pass.py">raw</a>)</span></li>
+<li><a href="code/harness/09_english_azure_speechace.py.html"><code>harness/09_english_azure_speechace.py</code></a> — Harness step 9: English passage + word list — Azure Pronunciation Assessment vs SpeechAce vs Soniox-diff, <span class="meta">(<a href="src/harness/09_english_azure_speechace.py">raw</a>)</span></li>
+<li><a href="code/harness/09b_speechace_eval.py.html"><code>harness/09b_speechace_eval.py</code></a> — Re-score the cached SpeechAce responses properly: per-word verdict (quality_score &lt; 60 = wrong) vs the enumerator&#x27;s <span class="meta">(<a href="src/harness/09b_speechace_eval.py">raw</a>)</span></li>
+<li><a href="code/harness/_chain_after_segmenter.sh.html"><code>harness/_chain_after_segmenter.sh</code></a> —  <span class="meta">(<a href="src/harness/_chain_after_segmenter.sh">raw</a>)</span></li>
+<li><a href="code/probes/probe1_segment.py.html"><code>probes/probe1_segment.py</code></a> — Probe 1: can an audio LLM segment an enumerator EGRA session into subtasks and extract the child&#x27;s responses? <span class="meta">(<a href="src/probes/probe1_segment.py">raw</a>)</span></li>
+<li><a href="code/probes/probe2_soniox.py.html"><code>probes/probe2_soniox.py</code></a> — Probe 2: our production STT (Soniox stt-async-v3, Urdu hint, diarization) on the Urdu letter-ID slice. Run: uv run --with requests python probe2_soniox.py &lt;wav&gt; &lt;lang&gt; <span class="meta">(<a href="src/probes/probe2_soniox.py">raw</a>)</span></li>
+</ol><h3>Result tables</h3><ul>
+<li><a href="tables/baseline_subtask_timings.csv.html"><code>baseline_subtask_timings.csv</code></a> — Per-subtask enumerator timings (seconds) <span class="meta">(<a href="data/baseline_subtask_timings.csv">csv</a>)</span></li>
+<li><a href="tables/harness/human_floor.csv.html"><code>harness/human_floor.csv</code></a> — Human floor: reviewer agreement with the enumerator per subtask <span class="meta">(<a href="data/harness/human_floor.csv">csv</a>)</span></li>
+<li><a href="tables/harness/reading_summary.csv.html"><code>harness/reading_summary.csv</code></a> — Reading counts: machine vs enumerator per subtask, with window-failure split <span class="meta">(<a href="data/harness/reading_summary.csv">csv</a>)</span></li>
+<li><a href="tables/harness/reading_scores.csv.html"><code>harness/reading_scores.csv</code></a> — Reading counts per recording window (file ids only) <span class="meta">(<a href="data/harness/reading_scores.csv">csv</a>)</span></li>
+<li><a href="tables/harness/reading_items.csv.html"><code>harness/reading_items.csv</code></a> — Per-word machine vs enumerator flags (subtask, machine_wrong, enum_wrong) <span class="meta">(<a href="data/harness/reading_items.csv">csv</a>)</span></li>
+<li><a href="tables/harness/segmenter_llm_google_gemini-2.5-pro.csv.html"><code>harness/segmenter_llm_google_gemini-2.5-pro.csv</code></a> — Segmenter agreement with tablet timestamps per recording <span class="meta">(<a href="data/harness/segmenter_llm_google_gemini-2.5-pro.csv">csv</a>)</span></li>
+<li><a href="tables/harness/maths_scores_google_gemini-2.5-pro.csv.html"><code>harness/maths_scores_google_gemini-2.5-pro.csv</code></a> — Maths from speech: machine vs enumerator counts per recording <span class="meta">(<a href="data/harness/maths_scores_google_gemini-2.5-pro.csv">csv</a>)</span></li>
+<li><a href="tables/harness/english_results.csv.html"><code>harness/english_results.csv</code></a> — English windows: SpeechAce and STT-diff vs enumerator per recording <span class="meta">(<a href="data/harness/english_results.csv">csv</a>)</span></li>
+<li><a href="tables/harness/segmenter_results.csv.html"><code>harness/segmenter_results.csv</code></a> — Rule-based segmenter (v1) results <span class="meta">(<a href="data/harness/segmenter_results.csv">csv</a>)</span></li>
+</ul><h3>Private team data (Google Drive, Taleemabad accounts only)</h3><ul><li><a href="https://drive.google.com/drive/folders/19tfSEeBaOchNwSB2VNZd9s9PmEpDAIkG">The May 2026 study folder</a> — the 207 enumerator recordings (<code>AA_&lt;uuid&gt;_enumerator.m4a</code>), the SurveyCTO export <code>EGRA_EGMA client N=2233.xlsx</code> (one row per child, 1,364 columns), and the reviewer workbook <code>Data.xlsx</code> (1,462 QA re-listens). These hold child data and are not copied into this repository.</li><li><a href="https://drive.google.com/drive/folders/1HA_Xhe5leHRIwbj-OkWmv9SgEdwa0U5D">The TIP assessments folder</a> — the LEAPS/CERP written diagnostic PDFs (English/Urdu all classes; maths Class 1–5). The read-through is in the TIP notes above.</li><li>The working folder with every intermediate (transcripts, per-child JSON, reconstructed stimuli, the full alignment-call transcript): <code>06_Logs &amp; Misc/Reports/Active/EGRA Student Assessment - Sep 2026/</code> in the Rumi workspace.</li></ul>
+</section>
+</div>
+</body></html>

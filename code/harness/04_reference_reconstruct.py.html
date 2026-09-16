@@ -1,0 +1,120 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/04_reference_reconstruct.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/04_reference_reconstruct.py</h1><p class=lede>Harness step 4: reconstruct the instrument&#x27;s reference texts by consensus across children.</p><p class="meta">Raw file: <a href="../../src/harness/04_reference_reconstruct.py">harness/04_reference_reconstruct.py</a></p><pre><code>&quot;&quot;&quot;Harness step 4: reconstruct the instrument&#x27;s reference texts by consensus across children.
+The SurveyCTO export carries only per-item correct/incorrect flags, not the stimulus text. But 100+ children read
+the same Urdu passage, the same word list, the same English passage. Take each child&#x27;s transcript inside the
+LLM-labelled window, align all of them with a positional majority vote, and recover the reference.
+Output: harness/reference/&lt;subtask&gt;.txt + a confidence report.
+Run: uv run --with pandas python harness/04_reference_reconstruct.py
+&quot;&quot;&quot;
+import os, json, glob, re, collections
+import pandas as pd
+
+os.makedirs(&#x27;harness/reference&#x27;, exist_ok=True)
+SEG_MODEL = &#x27;google_gemini-2.5-pro&#x27;
+URDU_RE = re.compile(r&#x27;[؀-ۿ]&#x27;)
+
+def tokens_in(tr, s, e, enum_spk=None):
+    out = []
+    for t in tr.get(&#x27;tokens&#x27;, []):
+        ts, te = t.get(&#x27;start_ms&#x27;, 0) / 1000, t.get(&#x27;end_ms&#x27;, 0) / 1000
+        if ts &gt;= s - 0.2 and te &lt;= e + 0.2:
+            out.append(t)
+    return out
+
+def clean(w):
+    w = re.sub(r&#x27;[؀-؅،؛؟٪-٭۔.,!?;:&quot;\&#x27;()\-–—]&#x27;, &#x27;&#x27;, w)
+    return w.strip().lower()
+
+def words(toks):
+    txt = &#x27;&#x27;.join(t.get(&#x27;text&#x27;, &#x27;&#x27;) for t in toks)
+    return [clean(w) for w in txt.split() if clean(w)]
+
+def enumerator_speaker(tr):
+    tot = collections.Counter()
+    for t in tr.get(&#x27;tokens&#x27;, []):
+        tot[t.get(&#x27;speaker&#x27;)] += t.get(&#x27;end_ms&#x27;, 0) - t.get(&#x27;start_ms&#x27;, 0)
+    return tot.most_common(1)[0][0] if tot else None
+
+def child_words(tr, s, e):
+    esp = enumerator_speaker(tr)
+    toks = [t for t in tokens_in(tr, s, e) if t.get(&#x27;speaker&#x27;) != esp]
+    return words(toks)
+
+def consensus(seqs, min_support=0.25):
+    &quot;&quot;&quot;Progressive alignment: seed with the longest sequence, align others by LCS-ish DP, vote per column.&quot;&quot;&quot;
+    if not seqs:
+        return [], []
+    seqs = sorted(seqs, key=len, reverse=True)
+    ref = list(seqs[0]); votes = [collections.Counter([w]) for w in ref]
+    for sq in seqs[1:]:
+        # DP alignment (edit distance with backtrace), match = same string
+        n, m = len(ref), len(sq)
+        D = [[0] * (m + 1) for _ in range(n + 1)]
+        for i in range(n + 1): D[i][0] = i
+        for j in range(m + 1): D[0][j] = j
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                c = 0 if ref[i - 1] == sq[j - 1] else 1
+                D[i][j] = min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + c)
+        i, j = n, m
+        while i &gt; 0 and j &gt; 0:
+            c = 0 if ref[i - 1] == sq[j - 1] else 1
+            if D[i][j] == D[i - 1][j - 1] + c:
+                votes[i - 1][sq[j - 1]] += 1; i -= 1; j -= 1
+            elif D[i][j] == D[i - 1][j] + 1:
+                i -= 1
+            else:
+                j -= 1
+    out, conf = [], []
+    for v in votes:
+        w, c = v.most_common(1)[0]
+        tot = sum(v.values())
+        if tot &gt;= max(3, min_support * len(seqs)):
+            out.append(w); conf.append(round(c / tot, 2))
+    return out, conf
+
+if __name__ == &#x27;__main__&#x27;:
+    per_sub = collections.defaultdict(list)
+    n_files = 0
+    for p in glob.glob(f&#x27;harness/segments_llm/{SEG_MODEL}__*.json&#x27;):
+        r = json.load(open(p)); f = r[&#x27;file&#x27;]
+        trp = &#x27;harness/soniox/&#x27; + f
+        if not os.path.exists(trp):
+            continue
+        tr_ur = json.load(open(trp)); n_files += 1
+        tr_en = json.load(open(&#x27;harness/soniox_en/&#x27; + f)) if os.path.exists(&#x27;harness/soniox_en/&#x27; + f) else None
+        for s in r[&#x27;segments&#x27;]:
+            tr = tr_en if (s[&#x27;sub&#x27;].endswith(&#x27;_eng&#x27;) and tr_en) else tr_ur
+            if s[&#x27;sub&#x27;].endswith(&#x27;_eng&#x27;) and not tr_en:
+                continue
+            if s[&#x27;sub&#x27;] in (&#x27;orf_urd&#x27;, &#x27;idwrd_urd&#x27;, &#x27;orf_eng&#x27;, &#x27;idwrd_eng&#x27;, &#x27;pw_eng&#x27;, &#x27;letterid_urd&#x27;, &#x27;letterid_eng&#x27;) and (s.get(&#x27;confidence&#x27;) or 0) &gt;= 0.7:
+                cw = child_words(tr, s[&#x27;start_s&#x27;], s[&#x27;end_s&#x27;])
+                if len(cw) &gt;= 8:
+                    per_sub[s[&#x27;sub&#x27;]].append(cw)
+    print(&#x27;files&#x27;, n_files)
+    for sub, seqs in per_sub.items():
+        ref, conf = consensus(seqs)
+        open(f&#x27;harness/reference/{sub}.txt&#x27;, &#x27;w&#x27;).write(&#x27; &#x27;.join(ref))
+        json.dump({&#x27;sub&#x27;: sub, &#x27;n_children&#x27;: len(seqs), &#x27;ref&#x27;: ref, &#x27;conf&#x27;: conf}, open(f&#x27;harness/reference/{sub}.json&#x27;, &#x27;w&#x27;), ensure_ascii=False)
+        lowc = sum(1 for c in conf if c &lt; 0.6)
+        print(f&quot;{sub:12s} children={len(seqs):3d} ref_len={len(ref):3d} mean_conf={sum(conf) / max(1, len(conf)):.2f} low_conf_positions={lowc}&quot;)
+        print(&#x27;   &#x27;, &#x27; &#x27;.join(ref[:40]))
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

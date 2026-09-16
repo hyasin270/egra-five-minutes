@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Eval harness results · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>Eval harness results</h1><p class=lede>Every model number beside the human floor, with method</p><h1 id="eval-harness-results-187-enumerator-recordings-human-floor-beside-every-model-number">Eval harness results — 187 enumerator recordings, human floor beside every model number</h1>
+<p><strong>Run:</strong> 2026-09-15 · <strong>Bead:</strong> bd-gqoz1 (harness child bead) · <strong>Total model spend:</strong> ≈ $49 (Soniox ≈ $8.5, Gemini 2.5 Pro segmenter $17.59, Gemini 2.5 Pro maths $18.54, whisper-1 $3.47, reference reconstruction $0.77, SpeechAce on the existing plan, Azure unavailable) → <strong>≈ $0.26 per child for every pass</strong>.
+<strong>Reproduce:</strong> scripts <code>01</code>–<code>09b</code> in this folder, in order; every intermediate is cached (<code>soniox/</code>, <code>segments_llm/</code>, <code>whisper_en/</code>, <code>maths/</code>, <code>english/</code>, <code>reference/</code>).</p>
+<h2 id="0-where-the-human-scores-come-from">0. Where the human scores come from</h2>
+<ul>
+<li><strong>Enumerator (primary):</strong> <code>EGRA_EGMA client N=2233.xlsx</code>, one row per child: per-item flags (1 = marked wrong) for letters/words/nonwords/passage, 60-s milestone counts, comprehension items, maths item flags, per-subtask timestamps.</li>
+<li><strong>QA reviewer (the floor):</strong> <code>Data.xlsx</code> → Reviews: 588 EGRA/EGMA re-listens by 7 reviewers marking each enumerator score <code>correct / incorrect / unknown</code>.</li>
+<li>187 of the 206 unique recordings join to an EGRA/EGMA row with both layers (the rest are ASER-instrument sessions).</li>
+<li>Audio is 8 kHz AAC ~12 kbps (SurveyCTO audio audit), classroom noise, fans, interruptions. Every number below is on that audio; WhatsApp voice notes are 16 kHz Opus.</li>
+</ul>
+<h2 id="1-the-human-floor-reviewer-agrees-with-the-enumerators-recorded-score">1. The human floor (reviewer agrees with the enumerator's recorded score)</h2>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">Verdicts</th>
+<th style="text-align: right;">Agree</th>
+<th style="text-align: right;">Disagree</th>
+<th style="text-align: right;">Unknown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Letters Urdu / English</td>
+<td style="text-align: right;">1,141 / 1,142</td>
+<td style="text-align: right;"><strong>89% / 90%</strong></td>
+<td style="text-align: right;">8 / 5</td>
+<td style="text-align: right;">3 / 5</td>
+</tr>
+<tr>
+<td>Word list Urdu / English</td>
+<td style="text-align: right;">971 / 951</td>
+<td style="text-align: right;"><strong>51% / 56%</strong></td>
+<td style="text-align: right;">30 / 25</td>
+<td style="text-align: right;">17 / 18</td>
+</tr>
+<tr>
+<td>Pseudowords English</td>
+<td style="text-align: right;">921</td>
+<td style="text-align: right;"><strong>52%</strong></td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr>
+<td>Passage (ORF) Urdu / English</td>
+<td style="text-align: right;">1,441 / 1,406</td>
+<td style="text-align: right;"><strong>54% / 62%</strong></td>
+<td style="text-align: right;">25 / 18</td>
+<td style="text-align: right;">20 / 20</td>
+</tr>
+<tr>
+<td>Listening comp Urdu / English</td>
+<td style="text-align: right;">568 / 570</td>
+<td style="text-align: right;">81% / 84%</td>
+<td style="text-align: right;">10 / 10</td>
+<td style="text-align: right;">9 / 6</td>
+</tr>
+<tr>
+<td>Reading comp Urdu / English</td>
+<td style="text-align: right;">491 / 457</td>
+<td style="text-align: right;">73% / 64%</td>
+<td style="text-align: right;">11 / 15</td>
+<td style="text-align: right;">15 / 21</td>
+</tr>
+<tr>
+<td>Maths (number ID, represent, computation, word problems, patterns, fluency L1)</td>
+<td style="text-align: right;">566–571 each</td>
+<td style="text-align: right;"><strong>81–90%</strong></td>
+<td style="text-align: right;">4–6</td>
+<td style="text-align: right;">6–14</td>
+</tr>
+<tr>
+<td>Maths fluency L4</td>
+<td style="text-align: right;">518</td>
+<td style="text-align: right;">72%</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">17</td>
+</tr>
+</tbody>
+</table>
+<p>Protocol-followed ≥ 96% everywhere. "Unknown" is mostly unverifiable audio. <strong>Implication:</strong> on the timed word and passage tasks two trained humans disagree roughly half the time on this audio; the machine's bar there is "agree with the enumerator as often as the reviewer does", not 90%.</p>
+<h2 id="2-segmenter-stt-timestamps-text-llm-labels-the-design-rule-from-probe-2">2. Segmenter — STT timestamps + text-LLM labels (the design rule from Probe 2)</h2>
+<p>Gemini 2.5 Pro reads the diarised, timestamped Soniox transcript and names first/last turn per subtask; windows inherit Soniox's clock. 181 files, 2,731 tablet subtasks, 2,429 labelled, 2,352 matched.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subtask start within 5 s of the enumerator's tablet tap</td>
+<td>43%</td>
+</tr>
+<tr>
+<td>within 15 s</td>
+<td>70%</td>
+</tr>
+<tr>
+<td>Timed letter grid recovered length when the tablet ran the full 60 s</td>
+<td>median <strong>60 s</strong> (Urdu, n=144) / <strong>61 s</strong> (English, n=121); within ±8 s in 69% / 66%</td>
+</tr>
+<tr>
+<td>Gemini Flash (text) on the same 12 files</td>
+<td>44% / 72% at 1/24 the cost</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>$0.096 per 20-min file (Pro), $0.004 (Flash)</td>
+</tr>
+</tbody>
+</table>
+<p>The tablet tap is not the child's first word (instructions run 5–15 s), so "within 15 s" is the honest comparability band. <strong>Where it fails:</strong> letter grids (see §3) and sessions where diarisation merges speakers. In the product the coach's own cue phrase + one voice note per block removes most of this.</p>
+<h2 id="3-reading-counts-from-stt-only-soniox-ur-for-urdu-whisper-1-forced-en-for-english-llm-reconstructed-reference-levenshtein-alignment-60-s-window-from-the-childs-first-word">3. Reading counts from STT only (Soniox <code>ur</code> for Urdu, whisper-1 forced <code>en</code> for English, LLM-reconstructed reference, Levenshtein alignment, 60-s window from the child's first word)</h2>
+<p>| Subtask | n | Window / transcript failure (|Δ| &gt; 20 words) | On the rest: r | MAE (words) | Bias | within ±3 | within ±5 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Urdu word list | 157 | 12% | <strong>0.97</strong> | 5.9 | −5.5 | 43% | 57% |
+| Urdu passage | 137 | 24% | <strong>0.98</strong> | 10.4 | −9.6 | 29% | 35% |
+| English word list | 137 | 28% | <strong>0.93</strong> | 5.9 | −4.7 | 47% | 60% |
+| English passage | 109 | 20% | <strong>0.97</strong> | 5.6 | −2.0 | 43% | 64% |
+| English pseudowords | 132 | 24% | 0.24 (floor effect: most children read 0–5) | 2.2 | −0.3 | 70% | 91% |
+| Urdu letters | 154 | <strong>84%</strong> | 0.71 | 11.4 | −11.1 | 24% | 28% |
+| English letters | 170 | <strong>62%</strong> | 0.95 | 11.7 | −5.5 | 14% | 16% |</p>
+<p>Readings: (a) once the window is right, <strong>rank-order and count agreement on words and passages is as good as the literature's r ≈ 0.96</strong>, even on 8 kHz audio; (b) STT under-counts (negative bias), most on the Urdu passage (−10 of ~60 words) — Soniox drops or merges words the child did say; (c) <strong>letters are the failure case</strong>: letter names come back in three scripts and get merged, so the grid window is lost 62–84% of the time — coach-decided in v1, exactly as the literature (Xhosa 6.9%) predicted.</p>
+<p><strong>Per-word verdicts (the chips):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Subtask</th>
+<th style="text-align: right;">Enumerator error rate</th>
+<th style="text-align: right;">Machine error rate</th>
+<th style="text-align: right;">Miscue precision</th>
+<th style="text-align: right;">Recall</th>
+<th style="text-align: right;">Per-word agreement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STT + Levenshtein</td>
+<td>Urdu words / passage</td>
+<td style="text-align: right;">0.13 / 0.13</td>
+<td style="text-align: right;">0.69 / 0.68</td>
+<td style="text-align: right;">0.18 / 0.17</td>
+<td style="text-align: right;">0.94 / 0.91</td>
+<td style="text-align: right;">0.42 / 0.43</td>
+</tr>
+<tr>
+<td>STT + Levenshtein</td>
+<td>English words / passage</td>
+<td style="text-align: right;">0.17 / 0.10</td>
+<td style="text-align: right;">0.78 / 0.70</td>
+<td style="text-align: right;">0.20 / 0.12</td>
+<td style="text-align: right;">0.90 / 0.81</td>
+<td style="text-align: right;">0.36 / 0.37</td>
+</tr>
+<tr>
+<td>SpeechAce (quality &lt; 40 = wrong), first 29 s</td>
+<td>English words / passage</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;"><strong>0.25 / 0.21</strong></td>
+<td style="text-align: right;">0.44 / 0.38</td>
+<td style="text-align: right;">0.53 / 0.56</td>
+</tr>
+</tbody>
+</table>
+<p>Free-text STT over-flags 4–6× more words than the enumerator; SpeechAce is better but still 3 of 4 flags are false. <strong>Per-word chips need forced alignment against the known stimulus, not free transcription</strong> (research/07 stack: Omnilingual/MMS-FA + CTC-GOP for Urdu; Azure PA scripted for English). v1 shows counts and the audio; v2 shows chips.</p>
+<p><strong>SpeechAce as a counter (threshold 40):</strong> count r = 0.74 (words) / 0.87 (passage), MAE 8–11, bias −8 to −10. Median quality score for words the enumerator marked correct: 40 (words) / 46 (passage); for words marked wrong: 30 / 34 — separation exists but is weak on this audio.</p>
+<p><strong>Azure Pronunciation Assessment:</strong> not evaluated — both documented keys return 401 from the Southeast Asia endpoint; the same key is on the production <code>digital coach</code> service. Filed as a P1 bead (prod English pronunciation is silently on the fallback path).</p>
+<h2 id="4-maths-from-speech-gemini-25-pro-over-the-diarised-maths-block-transcript-no-stimulus">4. Maths from speech (Gemini 2.5 Pro over the diarised maths-block transcript, no stimulus)</h2>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">r</th>
+<th style="text-align: right;">MAE (items)</th>
+<th style="text-align: right;">Bias</th>
+<th style="text-align: right;">Exact</th>
+<th style="text-align: right;">within 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Word problems (question is spoken)</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;"><strong>0.70</strong></td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">−1.3</td>
+<td style="text-align: right;">45%</td>
+<td style="text-align: right;">63%</td>
+</tr>
+<tr>
+<td>Computation (25+7, spoken)</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">−0.6</td>
+<td style="text-align: right;">33%</td>
+<td style="text-align: right;">60%</td>
+</tr>
+<tr>
+<td>Number representation</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: right;">−2.0</td>
+<td style="text-align: right;">14%</td>
+<td style="text-align: right;">39%</td>
+</tr>
+<tr>
+<td>Number identification (child reads a printed numeral)</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">−2.6</td>
+<td style="text-align: right;">11%</td>
+<td style="text-align: right;">36%</td>
+</tr>
+<tr>
+<td>Patterns (shapes on paper)</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">−2.6</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">39%</td>
+</tr>
+</tbody>
+</table>
+<p>Exactly the split you would predict: <strong>items whose question is spoken are gradable from audio; items whose stimulus is on paper are not, because the transcript never sees the numeral or the shape.</strong> In the product the item bank is known, so number ID becomes "did the child say 47" — a closed-vocabulary match. Cost $0.11 per child. Bias is negative everywhere (the LLM marks "unknown" when the child mumbles; the enumerator, who could see the child, gave credit).</p>
+<h2 id="5-what-this-changes-in-the-plan">5. What this changes in the plan</h2>
+<ol>
+<li><strong>Counts, rate and accuracy per block are shippable from STT now</strong> (words, passages, spoken maths with a known item bank); letters and per-word chips are coach-decided until the forced-alignment layer clears the reviewer floor.</li>
+<li><strong>Segmentation must be designed out, not modelled</strong>: one voice note per subtask-group with the coach's cue phrase, and the model's 60-s clock from the child's first word.</li>
+<li><strong>8 kHz classroom audio is the floor, not the ceiling</strong>: every number here should improve on 16 kHz WhatsApp audio; re-measure on the W3 pilot recordings.</li>
+<li><strong>The human floor is the calibration target</strong>: ship a subtask to "auto-confirm" when the machine agrees with the enumerator as often as the reviewer does (words/ORF ≈ 55–60%, letters/maths ≈ 85–90%), and publish that table per region each month.</li>
+</ol><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
