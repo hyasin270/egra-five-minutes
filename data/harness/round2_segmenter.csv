@@ -1,7 +1,0 @@
-model,files,common,within5,within15,mean_abs_start_err,cost_per_file
-google/gemini-2.5-flash,11,137,44,72,21.8,0.0039
-google/gemini-2.5-pro,181,2352,43,70,25.6,0.0958
-google/gemini-3-flash-preview,23,301,42,68,19.1,0.0064
-anthropic/claude-haiku-4.5,23,282,43,67,25.5,0.0145
-openai/gpt-5-mini,22,243,40,64,29.7,0.0146
-google/gemini-2.5-flash-lite,23,281,28,49,34.3,0.0014
