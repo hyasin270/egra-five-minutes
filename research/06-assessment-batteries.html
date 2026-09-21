@@ -1,0 +1,640 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assessment batteries walkthrough · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>Assessment batteries walkthrough</h1><p class=lede>EGRA, EGMA, ICAN, TIP, ASER, ELANA, DIBELS, MELQO, Literacy Boost, Pakistan incumbents, AI readers</p><h1 id="early-grade-assessment-batteries-a-decision-walkthrough">Early-grade assessment batteries — a decision walkthrough</h1>
+<p><strong>Purpose</strong>: give the operator a one-screen-per-instrument view of what each major early-grade assessment tests, how it is run, and what it reports, so we can adjudicate which items go into our 5-minute, coach-administered, AI-scored battery (English + Urdu + maths, Pakistani government primary, grades 1–5).
+<strong>Prepared</strong>: 2026-09-15. Companion to <a href="../research/01-egra-egma-structure.html">01_EGRA_EGMA_structure.md</a> (which holds the full EGRA/EGMA detail and is only summarised here). Claims not confirmed against a primary source are marked <strong>unverified</strong>.</p>
+<p><strong>Primary sources read directly</strong>: RTI EGRA Toolkit 2nd ed. and EGMA Toolkit (via 01_); PAL Network <em>ICAN 2020 Report</em> (https://neqmap.bangkok.unesco.org/wp-content/uploads/2020/07/2020_PAL-Network_ICAN-Report_EN-1-compressed.pdf) and <em>ICAN 2022-SSA Report</em> (https://palnetwork.org/wp-content/uploads/2023/06/ICAN-2022-SSA-Report.pdf); ASER Pakistan <em>ICAN page</em> (https://aserpakistan.org/International-Common-Assessment-of-Numeracy-ICAN), <em>FAQ 2023</em> (https://aserpakistan.org/document/2023/9/Frequently_Asked_Questions_ASER.pdf) and ITA <em>PSL Guide &amp; Training Manual</em> (https://itacec.org/document/2019/december/Guide_and_Training_Manual_PSL.pdf); PAL <em>ELANA</em> pages (https://palnetwork.org/elana/, https://palnetwork.org/pal-elana-advancing-early-learning-assessment-across-12-countries/); ACER <em>Assessment GEMS: Uwezo</em> (https://www.acer.org/files/AssessGEMs_Uwezo.pdf); U. Oregon <em>DIBELS 8 Administration &amp; Scoring Guide</em> (https://dibels.uoregon.edu/sites/default/files/2024-01/dibels8_admin_scoring_guide.pdf) and <em>Benchmark Goals</em> (https://dibels.uoregon.edu/sites/default/files/2024-01/dibels8_benchmark_goals.pdf); Frontiers in Public Health 2021 MELQO item paper (https://pmc.ncbi.nlm.nih.gov/articles/PMC7888256/); Room to Read <em>Sepedi 2017 Endline</em> (https://www.roomtoread.org/media/z2gaoxvy/za-sepedi-2017-endline-evaluation-technical-report.pdf); PIE <em>NAT 2023 Findings Report</em> (https://pie.gov.pk/SiteImage/Downloads/NAT%202023%20Findings%20Report%2006.03.2024%20-Final-%20v6%20.pdf); Andrabi et al. <em>Free to Choose</em> (TIP, https://tahir-andrabi.sites.pomona.edu/wp-content/uploads/2025/04/Free-to-choose.pdf); CERP TIP page (https://www.cerp.org.pk/targeted-instruction-program/); Amira ISIP Assess page (https://amiralearning.com/amira-isip-assess) and Oklahoma SDE Amira guidance (https://oklahoma.gov/content/dam/ok/en/osde/documents/services/literacy-policy-and-programs/strong-readers-for-schools/24-25%20Amira%20Screening%20Technical%20Guidance%20Amira.pdf).</p>
+<hr />
+<h2 id="1-egra-rti-usaid-summarised-from-01_">1. EGRA (RTI / USAID) — summarised from 01_</h2>
+<p><strong>Owner / reach</strong>: RTI International for USAID (2006–), 70+ countries; Pakistan versions under PRP (Urdu, Sindhi, Pashto), SRP and Sindh SELECT 2024 (7,248 G2 pupils on Tangerine). <strong>Target</strong>: grades 1–3. <strong>Purpose</strong>: system monitoring and impact evaluation; diagnostic only at aggregate level. <strong>Administration</strong>: 1:1 oral, trained enumerator, paper or Tangerine tablet; 15–20 min (Toolkit), 10–15 min for 5-subtask forms. Every timed grid is 60 s with an auto-stop if nothing is correct in the first line; 3-s hesitation = move on; self-corrections count. <strong>Score</strong>: rate per minute via <code>score / (60 − time_remaining) × 60</code>; comprehension as correct/asked. Reported as cwpm distributions, % zero scores and % meeting benchmarks (Urdu G2 "meets" = 60–90 cwpm; Sindh 2024 Urdu-medium mean 19 cwpm, 45% zero). <strong>Urdu</strong>: yes (PRP/SRP/SELECT); open design questions are letter-name vs letter-sound, aerab on/off, RTL first-line stop logic. <strong>Reliability</strong>: enumerators must hit 90% agreement with a scripted gold standard; field IRR 88–98%.</p>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th>Items</th>
+<th>Timed</th>
+<th>Stop rule</th>
+<th>Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listening comprehension</td>
+<td>3–5 Q on a ~30-word read-aloud</td>
+<td>no</td>
+<td>none</td>
+<td>oral language</td>
+</tr>
+<tr>
+<td>Letter sound (or name) ID</td>
+<td>100-letter grid</td>
+<td>60 s</td>
+<td>0 correct in first 10</td>
+<td>alphabetic knowledge, clspm</td>
+</tr>
+<tr>
+<td>Initial sound ID</td>
+<td>10 words</td>
+<td>no</td>
+<td>0 in first 5</td>
+<td>phonemic awareness</td>
+</tr>
+<tr>
+<td>Nonword reading</td>
+<td>50</td>
+<td>60 s</td>
+<td>0 in first 5</td>
+<td>decoding, cnwpm</td>
+</tr>
+<tr>
+<td>Familiar words</td>
+<td>50</td>
+<td>60 s</td>
+<td>0 in first 5</td>
+<td>sight/word reading, cwpm</td>
+</tr>
+<tr>
+<td>Oral reading fluency</td>
+<td>~60-word passage</td>
+<td>60 s</td>
+<td>0 in first line</td>
+<td>cwpm</td>
+</tr>
+<tr>
+<td>Reading comprehension</td>
+<td>3–5 Q (only text reached)</td>
+<td>no</td>
+<td>not asked past point read</td>
+<td>comprehension</td>
+</tr>
+<tr>
+<td>Dictation / vocabulary / maze</td>
+<td>optional</td>
+<td>—</td>
+<td>—</td>
+<td>weakly validated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Good at</strong>: continuous, comparable rates with known benchmarks; component skills. <strong>Bad at</strong>: too long for 5 min; rates are meaningless if the 60-s window is shortened without re-norming.</p>
+<h2 id="2-egma-rti-usaid-summarised-from-01_">2. EGMA (RTI / USAID) — summarised from 01_</h2>
+<p><strong>Owner / reach</strong>: RTI for USAID (2008–; Core EGMA 2014). <strong>Target</strong>: grades 1–3. <strong>Purpose</strong>: system monitoring / impact. <strong>Administration</strong>: 1:1 oral, ~20 min (plan 25); the child must <em>say</em> every answer (pointing "is insufficient evidence"); 5-s no-response prompt; untimed subtests stop after 4 successive errors. Pre-2014 versions had counting, one-to-one correspondence, shapes and patterns; they were cut for length. <strong>Score</strong>: timed subtests as rate/min, untimed as proportion correct; no criterion bands in the Toolkit (countries set their own, e.g. Tanzania A/S-L2 80%). <strong>Urdu/Pakistan</strong>: SRP adapted EGMA for Sindhi (grades 3 and 5); no published Urdu EGMA norms found (<strong>unverified</strong>).</p>
+<table>
+<thead>
+<tr>
+<th>Subtest</th>
+<th>Items</th>
+<th>Timed</th>
+<th>Stop rule</th>
+<th>Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number identification</td>
+<td>20 (0–999)</td>
+<td>60 s</td>
+<td>none</td>
+<td>numeral reading</td>
+</tr>
+<tr>
+<td>Number discrimination</td>
+<td>10 pairs</td>
+<td>no</td>
+<td>4 errors in a row</td>
+<td>magnitude</td>
+</tr>
+<tr>
+<td>Missing number</td>
+<td>10</td>
+<td>no</td>
+<td>4 errors</td>
+<td>patterns / number line</td>
+</tr>
+<tr>
+<td>Addition L1 / Subtraction L1</td>
+<td>20 + 20 (sums ≤19)</td>
+<td>60 s each</td>
+<td>none</td>
+<td>fact fluency</td>
+</tr>
+<tr>
+<td>Addition L2 / Subtraction L2</td>
+<td>5 + 5 (two-digit)</td>
+<td>no</td>
+<td>4 errors</td>
+<td>procedures; paper allowed</td>
+</tr>
+<tr>
+<td>Word problems</td>
+<td>6, read aloud</td>
+<td>no</td>
+<td>4 errors</td>
+<td>application</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Good at</strong>: fact fluency and procedure separately; oral so reading does not confound. <strong>Bad at</strong>: 20 minutes; no geometry/measurement/data.</p>
+<h2 id="3-ican-pal-network-2019">3. ICAN — PAL Network (2019–)</h2>
+<p><strong>Owner / reach</strong>: PAL Network (17 citizen-led members); ICAN 2019 in 13 countries, one rural district each, incl. Pakistan (ITA/ASER: Toba Tek Singh, 1,616 children age 5–16, 1,198 households); ICAN 2022-SSA repeated in Kenya, Mozambique, Nigeria. Open source, 11 languages incl. <strong>Urdu</strong>. <strong>Target</strong>: one tool for ages 5–16, items pitched at grade 2–3 (GPF-aligned). <strong>Purpose</strong>: system monitoring for SDG 4.1.1(a), household-based so out-of-school children are included; not a classroom diagnostic. <strong>Administration</strong>: oral, 1:1, in the home, by trained volunteers; paper and pencil allowed; <strong>average 15 min per child</strong> (20–30 min per household with the questionnaire). <strong>Structure</strong>: 26 items (2022 report; PAL's site now says 36 in the current version), <strong>half number knowledge</strong>, half geometry + measurement + data display, arranged in three sets: Set 1 (counting, comparing groups, shapes, position/direction, length/capacity, time/calendar, data chart) and Set 2 (number recognition, add/sub/mult/div "Task 1") go to <strong>every</strong> child; Set 3 (harder operations "Task 2" and subtraction/division word problems) only to children who got the corresponding Set 2 task right — a gated, two-tier design, not adaptive item selection. Number recognition uses the ASER rule: 4 of 5 correct. <strong>Scoring</strong>: total correct; policy-linking set the <strong>Minimum Proficiency Level at 17/26 for grade 2 and 21/26 for grade 3</strong>; reports show % of class 2–3 children who can do "at least 1 task each on spatial orientation, shape, measurement, number recognition and ≥3 number operations" (Pakistan 2019: 32.3%). <strong>Reliability</strong>: no psychometrics published in the two reports read (<strong>unverified</strong>); PAL cites ASER-style volunteer training and recheck protocols.</p>
+<table>
+<thead>
+<tr>
+<th>Domain (share)</th>
+<th>Tasks (Set)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number knowledge (50%)</td>
+<td>count objects, compare groups (S1); recognise 1-digit and 2-digit numbers, 4/5 rule (S2); +, −, ×, ÷ without and with carry/borrow/remainder (S2 → S3); word problems (S3)</td>
+</tr>
+<tr>
+<td>Geometry</td>
+<td>position/direction, shape recognition (S1)</td>
+</tr>
+<tr>
+<td>Measurement</td>
+<td>length/capacity, clock time, calendar day/date (S1)</td>
+</tr>
+<tr>
+<td>Data display</td>
+<td>read a bar chart, "how many more" (S1)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Good at</strong>: broad domain coverage (shapes, time, data) that EGMA lacks, in 15 min, comparable across countries. <strong>Bad at</strong>: no fluency/speed, few items per domain, one score with two cut-points.</p>
+<h2 id="4-tips-what-the-shared-folder-probably-is-unverified">4. "TIPS" — what the shared folder probably is (unverified)</h2>
+<p>We could not open the Drive folder, so this is an identification exercise. Candidates found, with evidence:</p>
+<table>
+<thead>
+<tr>
+<th>Candidate</th>
+<th>What it is</th>
+<th>Child test?</th>
+<th>Pakistan link</th>
+<th>Likelihood</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TIP — Targeted Instruction Program / "Targeted Instruction in Pakistan"</strong> (LEAPS-Harvard, CERP, EdTech Hub, KP govt)</td>
+<td>40-day TaRL-style remediation, grades 1–5, maths + Urdu + English. Starts with a <strong>written diagnostic</strong> covering Class 1–3 curriculum (4 equivalent forms, calibrated), children who fail Class-1 items get an <strong>oral KG-level assessment</strong>; pupils sorted into KG / C1 / C2 / C3 groups; teachers grade with a smartphone "tech tool" (offline-capable); quizzes every 5–7 lessons. ICT pilot 2022–23 (560 schools, ~91k pupils, 2,200 teachers); KP Peshawar + Mardan (1,250 schools, target 250k pupils). Gains 0.19 SD (optional tech).</td>
+<td>Yes</td>
+<td>Yes — federal + KP govt, Islamabad schools</td>
+<td><strong>High</strong> — a Pakistani grade 1–5 Urdu/English/maths placement test is exactly the shape of our brief; "TIPS" is plausibly "TIP assessment"</td>
+</tr>
+<tr>
+<td><strong>TIPPS — Teacher Instructional Practices and Processes System</strong> (NYU Global TIES)</td>
+<td>Classroom <strong>observation</strong> rubric of teacher behaviours; used in DRC, Uganda, Ghana, India; Pakistan roll-out "planned"</td>
+<td>No</td>
+<td>Planned only</td>
+<td>Low for a student test; medium if the folder is about coaching</td>
+</tr>
+<tr>
+<td><strong>TIPS — Teacher Induction Programmes</strong> (PIE / NAT 2023 glossary)</td>
+<td>Teacher-side programme name that appears in the NAT 2023 report's abbreviation list</td>
+<td>No</td>
+<td>Yes</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Pratham "TIPS", "Tool for Identifying Pupils' Skills"</td>
+<td>No such instrument found in any source</td>
+<td>—</td>
+<td>—</td>
+<td>None found</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict</strong>: treat the folder as the <strong>TIP diagnostic (LEAPS/CERP)</strong> until the operator confirms; ask for the folder to be shared with the service account. If it is TIP, its relevance is the level ladder (KG/C1/C2/C3 in three subjects) and the fact that it is <em>written and group-administered</em> — the opposite of what we are building, but the natural comparator for "what does the government already accept".</p>
+<h2 id="5-aser-pakistan-ita-aser-india-pratham">5. ASER Pakistan (ITA) / ASER India (Pratham)</h2>
+<p><strong>Owner / reach</strong>: ITA (Pakistan, 2008–), Pratham/ASER Centre (India, 2005–); 2023 Pakistan round 151 rural districts + 123 urban centres, 272,370 children. <strong>Target</strong>: ages 5–16, tool pitched at Class 1–2 curriculum. <strong>Purpose</strong>: system monitoring (district estimates) and TaRL grouping. <strong>Administration</strong>: household, 1:1 oral, volunteers with 3 days' training, untimed; reading + arithmetic ≈ <strong>10 min</strong> (Vagh 2012, India). The tester ticks the <strong>highest level reached</strong>, testing from the middle of the ladder and moving up or down. <strong>Languages</strong>: Urdu, Sindhi, Pashto, English; separate arithmetic and general-knowledge sheets; two sample forms per tool.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Ladder (bottom → top)</th>
+<th>Criterion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Urdu/Sindhi/Pashto reading</td>
+<td>beginner → letters → words → sentences (Class 1 text) → story (Class 2 text)</td>
+<td>4 of 5 letters; 4 of 5 words; sentences read "as sentences, not strings of words"; story "fluently with ease"; bonus comprehension Q at story level</td>
+</tr>
+<tr>
+<td>English</td>
+<td>beginner → capital letters → small letters → words → sentences</td>
+<td>4 of 5 at each list level; 2 of 4 sentences</td>
+</tr>
+<tr>
+<td>Arithmetic</td>
+<td>beginner → number recognition 1–9 → 10–99 (PSL variant adds 100–200) → subtraction (2 sums, both correct, borrowing) → division (1 sum, right method + answer)</td>
+<td>4 of 5 numbers; start at subtraction</td>
+</tr>
+<tr>
+<td>General knowledge</td>
+<td>picture/"largest" items, 60-s items</td>
+<td>new in 2019 PSL guide</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Score</strong>: an ordinal level per child; reported as % at each level (e.g. % of grade-5 children who can read a Class-2 story). <strong>Reliability</strong>: Hindi validation r = .90–.94 with EGRA-style fluency battery; test–retest κ .76; no Urdu mapping published (<strong>unverified</strong>). <strong>Relation to EGRA</strong>: untimed, criterion-referenced, 5-item sampling; "story level" ≈ 44+ wpm on grade-2 text in Hindi.</p>
+<p><strong>Good at</strong>: 10 minutes, any volunteer, one ladder the whole country already understands. <strong>Bad at</strong>: no rate, ceiling at Class 2, 5 items per rung so a single child's level is noisy.</p>
+<h2 id="6-uwezo-and-pal-elana-the-literacy-analogue-to-ican">6. Uwezo and PAL-ELANA (the literacy analogue to ICAN)</h2>
+<p><strong>Uwezo</strong> (Twaweza/PAL; Kenya, Tanzania, Uganda; ages 6–16; household; volunteers; grade-2 level) is the East-African ASER: literacy ladder letter/syllable (5 of 10) → words (5 of 10) → paragraph (4 sentences) → story (6–14 sentences) → 2 comprehension questions; numeracy: count objects 1–9 → recognise 10–99 → greater-than (Uganda) → 2-digit addition → subtraction → 1×1-digit multiplication → division (3 of 8 items each). Same virtues and limits as ASER; no Urdu.</p>
+<p><strong>PAL-ELANA</strong> (Early Language &amp; Literacy and Numeracy Assessment, 2021–; 12 countries incl. <strong>Pakistan via ITA</strong>; 9 languages incl. <strong>Urdu</strong>): ages 4–10; <strong>tablet-based</strong>, oral 1:1 (no child reading/writing needed); a <strong>three-stage multi-stage adaptive</strong> design — performance on the first stage routes the child to easier or harder blocks, ending in low/medium/high competency bands mapped to the GPF and ACER learning progressions. Literacy tasks cover oral language → decoding → reading comprehension in five levels; numeracy covers numbers, geometry, data, measurement, patterns in five levels. Item counts, minutes per child and psychometrics are not published on the pages read (<strong>unverified</strong>); rollout was 180 communities per country. This is the closest existing thing to "adaptive, digital, Urdu, 4–10" and the tool ITA will compare us to.</p>
+<h2 id="7-dibels-8-acadience-reading-the-one-minute-per-skill-template">7. DIBELS 8 / Acadience Reading (the "one minute per skill" template)</h2>
+<p><strong>Owner / reach</strong>: University of Oregon (DIBELS 8, 2018–; Amplify distributes) and Acadience Learning (Acadience Reading K-6, formerly DIBELS Next); the US universal-screening standard, K–8, three times a year. <strong>Purpose</strong>: classroom screening and progress monitoring (not system monitoring). <strong>Administration</strong>: 1:1, teacher, <strong>five 60-second subtests</strong> plus a 3-minute group Maze; whole benchmark ≈ 5–8 min in K–1; 3-s hesitation rule; self-correct within 3 s counts; discontinue if 0 correct in the first line (LNF) or first 5 (PSF/NWF/WRF); "gating" rules skip harder subtests for a child who scores 0 on an easier one. <strong>Score</strong>: raw count per minute per subtest plus a weighted <strong>composite</strong>; each score falls in a band — blue (negligible risk), green (core), yellow (strategic), red (intensive) — derived so that ~80% of children above/below the 40th percentile on an external reading test land in the right band. <strong>Reliability/validity</strong>: ORF concurrent validity with Iowa Total Reading .75 (fall G1) to .91 (winter/spring G1); accuracy alternate-form reliability median .79 (Technical Manual). <strong>Urdu</strong>: none; Latin-script only.</p>
+<table>
+<thead>
+<tr>
+<th>Subtest</th>
+<th>Grades</th>
+<th>Time</th>
+<th>Measures</th>
+<th>G1 end-of-year "core" goal (DIBELS 8)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LNF letter naming</td>
+<td>K–1</td>
+<td>60 s</td>
+<td>alphabet automaticity</td>
+<td>59+</td>
+</tr>
+<tr>
+<td>PSF phoneme segmentation</td>
+<td>K–1</td>
+<td>60 s</td>
+<td>phonemic awareness</td>
+<td>61+</td>
+</tr>
+<tr>
+<td>NWF nonsense words (CLS / WRC)</td>
+<td>K–3</td>
+<td>60 s</td>
+<td>decoding</td>
+<td>87+ letter-sounds / 28+ whole words</td>
+</tr>
+<tr>
+<td>WRF real words</td>
+<td>K–3</td>
+<td>60 s</td>
+<td>word reading</td>
+<td>50+</td>
+</tr>
+<tr>
+<td>ORF passage (words correct + accuracy)</td>
+<td>1–8</td>
+<td>60 s</td>
+<td>fluency</td>
+<td>76+ cwpm; 91%+ accuracy</td>
+</tr>
+<tr>
+<td>Maze (every 7th word blanked)</td>
+<td>2–8</td>
+<td>3 min, group</td>
+<td>comprehension</td>
+<td>G2 end 18.0+ (adjusted)</td>
+</tr>
+</tbody>
+</table>
+<p>Acadience end-of-year ORF goals: G1 47, G2 87, G3 100 cwpm; NWF-CLS G1 fall 27 / winter 43 / spring 58.</p>
+<p><strong>Why it matters for us</strong>: it proves a <em>complete</em> K–1 profile in ~5 minutes is a solved design problem — one skill, one minute, one risk band — and that gating on the easiest subtest is standard practice. <strong>Bad at</strong>: no oral language, no maths, English-only norms.</p>
+<h2 id="8-melqo-model-unesco-world-bank-brookings-unicef-2014">8. MELQO — MODEL (UNESCO / World Bank / Brookings / UNICEF, 2014–)</h2>
+<p><strong>Target</strong>: ages 4–6 (48–83 months), school readiness. <strong>Purpose</strong>: system monitoring of pre-primary; adaptable per country. <strong>Administration</strong>: 1:1 direct assessment by trained enumerator, untimed, ~20–30 min, plus a caregiver/teacher report. <strong>Structure (cross-country robust core, 12 countries, 24,533 children)</strong>: 16 tasks / 84 items — early literacy 27 items (letter ID 17, listening comprehension 4, initial sound 3, letter sound 2, name writing 1); early numeracy 29 (number ID 10, addition/subtraction 5, spatial position 4, set production 3, mental transformation 3, shape naming 3, number comparison 1); executive function 27 (Head-Toes-Knees-Shoulders 12, pencil tap 12, digit span 3); social-emotional 1. <strong>Score</strong>: domain scores, no fluency, no proficiency bands (countries set them). <strong>Urdu/Pakistan</strong>: not found (<strong>unverified</strong>); Bangladesh, Tanzania, Lao versions exist. <strong>Good at</strong>: what a pre-reader can do (EF, oral language, spatial). <strong>Bad at</strong>: ceiling by grade 1; 30 min.</p>
+<h2 id="9-literacy-boost-save-the-children-and-room-to-read">9. Literacy Boost (Save the Children) and Room to Read</h2>
+<p><strong>Literacy Boost</strong> (2009–; 30+ countries incl. Pakistan — Allai 2010 baseline, PEPAS/ICT 2014 with Numeracy Boost; Urdu forms exist): programme-evaluation tool for grades 1–3, 1:1 oral, enumerator; subtests are concepts about print, letter knowledge (letters known out of the alphabet), most-used/single-word reading, then passage <strong>fluency (wpm), accuracy (%), reading comprehension</strong>, with listening comprehension for non-readers; the headline indicator is "reading with comprehension" = <strong>≥75% of passage comprehension questions correct</strong>. Item counts and timings not confirmed in sources read (<strong>unverified</strong>). Reports % readers / % reading with comprehension. Useful mainly as precedent that an NGO tool with a Pakistan/Urdu form treats <em>accuracy</em> and <em>fluency</em> as separate scores.</p>
+<p><strong>Room to Read</strong> (Literacy Program endlines, 20 countries; SurveyCTO tablets): a <strong>4-task EGRA subset</strong> — letter sounding (60 s, clpm), nonword reading (60 s), oral passage (~60 words, <strong>up to 3 minutes</strong>, cwpm) and 5 comprehension questions. Bands: <strong>fluent reader ≥45 cwpm, emergent 20–45, non-reader below</strong>; comprehension "met" = 4 of 5; grade-1 letter-sound benchmark 45 lpm. Sepedi 2017: project G2 mean 31 cwpm, 2/5 comprehension. No Urdu. Precedent for a <em>four-task</em> EGRA that funders accept.</p>
+<h2 id="10-pakistan-specific-instruments">10. Pakistan-specific instruments</h2>
+<table>
+<thead>
+<tr>
+<th>Instrument</th>
+<th>Owner</th>
+<th>Who / when</th>
+<th>What is tested</th>
+<th>Format &amp; time</th>
+<th>Output</th>
+<th>Verdict for us</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LND (Literacy &amp; Numeracy Drive)</strong>, Punjab 2015–</td>
+<td>PITB + SED/PMIU</td>
+<td>Grade 3, monthly; MEA picks 7 pupils per school visit; 47k schools, ~329k pupils/month</td>
+<td>Urdu, English, maths SLOs: comprehension, sentence completion, 2–3-digit add/sub, ×, ÷</td>
+<td><strong>7 MCQs on the MEA's tablet</strong>, child taps; minutes</td>
+<td>% correct per school; feeds school ranking (3 marks)</td>
+<td>Recognition-only, no oral reading, no fluency; teachers "teach to the LND app". Not a model, but it is the <em>incumbent</em> accountability metric in Punjab</td>
+</tr>
+<tr>
+<td><strong>NAT 2023 (NEAS/PIE)</strong></td>
+<td>Pakistan Institute of Education</td>
+<td>Grade 4 and 8, sample of 1,304 schools, 23,456 pupils, 18–19 May 2023, every ~2 years</td>
+<td>G4: Urdu/Sindhi reading (52 items), English (48), maths (48) + a <strong>15-item Foundational Literacy test of letter and word recognition</strong>; G8 maths, science</td>
+<td><strong>Paper, group, 4-option MCQ</strong>; ~1 test booklet per subject</td>
+<td>% items correct (G4: FL 88%, Urdu/Sindhi 68%, English 56%, maths 49%; 1 in 6 at guessing level in maths)</td>
+<td>System monitoring only; no oral component; grade 4 is above our floor</td>
+</tr>
+<tr>
+<td><strong>PEC/PECTAA SBA</strong>, Punjab 2019–</td>
+<td>PEC (defunct) → PECTAA</td>
+<td>Grades 1–8 school-based assessment replaced the G5/G8 board exams under the 2019 Assessment Policy Framework</td>
+<td>Written papers per subject; 2025 SBA adds listening/speaking/reading rubrics on separate days</td>
+<td>Paper, whole class</td>
+<td>Marks</td>
+<td>Written; irrelevant to a 5-min oral screen except as the "grade level" reference</td>
+</tr>
+<tr>
+<td><strong>Sindh SELECT EGRA 2024</strong> (World Bank)</td>
+<td>RSU Sindh</td>
+<td>Grade 2, 7,248 pupils, 604 schools, Tangerine</td>
+<td>5 subtasks: initial sound (10), nonwords (60 s), expressive vocabulary (10 pictures), 60-word passage (60 s) + 5 Q, listening (3 Q); Urdu + Sindhi</td>
+<td>1:1 oral, ~10 min</td>
+<td>cwpm, % zero, % meeting SELD standards</td>
+<td><strong>The Urdu template that already exists and is government-owned</strong> — see 01_ §4</td>
+</tr>
+<tr>
+<td><strong>ASER Pakistan</strong></td>
+<td>ITA</td>
+<td>see §5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>TIP diagnostic</strong></td>
+<td>LEAPS/CERP</td>
+<td>see §4</td>
+<td>written placement, oral for KG level</td>
+<td></td>
+<td>KG/C1/C2/C3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Urdu phonics / phonological tools</strong></td>
+<td>academic</td>
+<td>U-PASS (Frontiers 2025): 10 PA/PM/RAN subtests, Urdu nonwords built on the <em>mohmil</em> convention, Nastaliq</td>
+<td>tele-assessment</td>
+<td>research</td>
+<td>Only published Urdu nonword construction rule; no school screener found (<strong>unverified</strong> that any exists)</td>
+<td></td>
+</tr>
+<tr>
+<td>SDIP / EG-EQUIP tools</td>
+<td>—</td>
+<td><strong>Not found</strong> in any accessible source; the World Bank Sindh project's grade-3 EGRA (baseline Apr 2023, province-wide Apr 2024) is the nearest match (<strong>unverified</strong>)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="11-adaptive-ai-native-readers">11. Adaptive / AI-native readers</h2>
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>What one session measures</th>
+<th>Length</th>
+<th>Languages</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amira Learning / ISIP Assess</strong> (HMH)</td>
+<td>Child reads aloud to the app; ASR scores <strong>ORF (wcpm), accuracy</strong>, plus RAN (2 min), word manipulation/PA (3–5), letter names+sounds (2), word ID fluency (2–3), nonsense words (2–3), vocabulary (2), spelling (5), reading comprehension (2–3); dyslexia-risk flag; Lexile and mastery scores</td>
+<td><strong>≤20 min</strong>, self-administered on a device</td>
+<td>English, Spanish</td>
+<td>NCII "highest" ratings; sensitivity/specificity &gt;.80 (vendor); sole state screener in 5 US states</td>
+</tr>
+<tr>
+<td><strong>Google Read Along</strong> (Bolo)</td>
+<td>Child reads a levelled story to "Diya"; on-device ASR gives <strong>accuracy, speed (wpm), comprehension (embedded Qs), phonics skills</strong>, per story and last-5 trend in Classroom</td>
+<td>one story, ~3–10 min; no fixed test</td>
+<td><strong>Urdu</strong>, Hindi, English + 7 others</td>
+<td>64% of India-pilot children improved on ASER; internal "&lt;45 cwpm beginner" metric; no ASR-vs-human accuracy published</td>
+</tr>
+<tr>
+<td><strong>Microsoft Reading Progress / Coach</strong> (Teams)</td>
+<td>Teacher assigns any passage; child records; ASR reports <strong>accuracy rate, correct wpm, mispronunciations, omissions, insertions, repetitions, self-corrections</strong>; Coach adds practice and attempts</td>
+<td>passage length set by teacher; 1–5 min</td>
+<td>100+ passage languages, Coach fewer; <strong>Urdu unverified</strong></td>
+<td>8-week study +22 wpm vs +10.5 control (Microsoft blog)</td>
+</tr>
+<tr>
+<td><strong>Curious Learning</strong> (Feed the Monster / Curious Reader)</td>
+<td>Instructional game (letter sounds, phonics, sight words); <strong>no published in-app assessment</strong>; outcomes measured externally with EGRA</td>
+<td>—</td>
+<td>50+ languages</td>
+<td>World Bank Nigeria 9,000-household study cites app use second only to tutoring</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Read-across</strong>: every AI-native product converges on the same three numbers per read-aloud — <strong>wcpm, accuracy %, error taxonomy</strong> — and adds comprehension questions; only Amira attempts the sub-word skills (letters, nonwords, PA) by machine.</p>
+<hr />
+<h2 id="12-comparison-table">12. Comparison table</h2>
+<table>
+<thead>
+<tr>
+<th>Assessment</th>
+<th>Reading domains</th>
+<th>Maths domains</th>
+<th>Min / child</th>
+<th>Administration</th>
+<th>Outcome metric</th>
+<th>Urdu / Pakistan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EGRA</td>
+<td>listening, letters, PA, nonwords, words, ORF, comprehension</td>
+<td>—</td>
+<td>10–20</td>
+<td>1:1 oral, enumerator, tablet</td>
+<td>cwpm rates, % zero, benchmark bands</td>
+<td>Yes (PRP, SRP, SELECT)</td>
+</tr>
+<tr>
+<td>EGMA</td>
+<td>—</td>
+<td>number ID, discrimination, missing number, ± L1/L2, word problems</td>
+<td>20</td>
+<td>1:1 oral</td>
+<td>rates + % correct</td>
+<td>Sindhi; Urdu unverified</td>
+</tr>
+<tr>
+<td>ICAN</td>
+<td>—</td>
+<td>number, operations, word problems, geometry, measurement, data</td>
+<td>15</td>
+<td>1:1 oral, household, gated sets</td>
+<td>total/26, MPL 17 (G2) / 21 (G3)</td>
+<td>Yes (ITA, Urdu)</td>
+</tr>
+<tr>
+<td>ELANA</td>
+<td>oral language, decoding, comprehension (5 levels)</td>
+<td>numbers, geometry, data, measurement, patterns</td>
+<td>n/p</td>
+<td>tablet, 1:1, 3-stage adaptive</td>
+<td>low/med/high band</td>
+<td>Yes (ITA, Urdu)</td>
+</tr>
+<tr>
+<td>ASER PK</td>
+<td>letters→words→sentences→story; English ladder</td>
+<td>numbers 1–9, 10–99, subtraction, division</td>
+<td>~10 (both)</td>
+<td>1:1 oral, household, volunteers</td>
+<td>ordinal level</td>
+<td>Yes (Urdu/Sindhi/Pashto)</td>
+</tr>
+<tr>
+<td>Uwezo</td>
+<td>letter→word→paragraph→story+2 Q</td>
+<td>count→recognise→+→−→×→÷</td>
+<td>~10</td>
+<td>household, volunteers</td>
+<td>ordinal level</td>
+<td>No</td>
+</tr>
+<tr>
+<td>DIBELS 8 / Acadience</td>
+<td>LNF, PSF, NWF, WRF, ORF, Maze</td>
+<td>—</td>
+<td>5–8 (K–1)</td>
+<td>1:1, teacher, 60 s each</td>
+<td>counts/min, 4 risk bands, composite</td>
+<td>No</td>
+</tr>
+<tr>
+<td>MELQO MODEL</td>
+<td>letters, sounds, listening, name writing</td>
+<td>number ID, ±, shapes, spatial, sets</td>
+<td>20–30</td>
+<td>1:1, enumerator</td>
+<td>domain scores</td>
+<td>Unverified</td>
+</tr>
+<tr>
+<td>Literacy Boost</td>
+<td>print concepts, letters, words, fluency, accuracy, comprehension, listening</td>
+<td>(Numeracy Boost)</td>
+<td>n/p</td>
+<td>1:1 oral</td>
+<td>% readers; ≥75% comprehension</td>
+<td>Yes (Urdu forms)</td>
+</tr>
+<tr>
+<td>Room to Read</td>
+<td>letter sounds, nonwords, ORF, comprehension</td>
+<td>—</td>
+<td>~8</td>
+<td>1:1, tablet</td>
+<td>cwpm; fluent ≥45 / emergent 20–45 / non-reader</td>
+<td>No</td>
+</tr>
+<tr>
+<td>LND Punjab</td>
+<td>comprehension, sentence MCQs</td>
+<td>± ,×,÷ MCQs</td>
+<td>~3</td>
+<td>child taps MEA's tablet</td>
+<td>% correct per school</td>
+<td>Yes (Urdu, English)</td>
+</tr>
+<tr>
+<td>NAT 2023</td>
+<td>G4 reading MCQ + 15-item letter/word FL</td>
+<td>G4 maths MCQ</td>
+<td>~60</td>
+<td>paper, group</td>
+<td>% correct</td>
+<td>Yes (Urdu/Sindhi)</td>
+</tr>
+<tr>
+<td>TIP diagnostic</td>
+<td>Urdu, English written, oral at KG</td>
+<td>Class 1–3 written</td>
+<td>n/p</td>
+<td>written, teacher-graded via app</td>
+<td>KG/C1/C2/C3 group</td>
+<td>Yes (ICT, KP)</td>
+</tr>
+<tr>
+<td>Amira</td>
+<td>ORF, accuracy, PA, letters, nonwords, vocab, spelling, comprehension</td>
+<td>—</td>
+<td>≤20</td>
+<td>self, ASR</td>
+<td>wcpm, risk, Lexile</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Read Along</td>
+<td>accuracy, wpm, comprehension, phonics</td>
+<td>—</td>
+<td>per story</td>
+<td>self, on-device ASR</td>
+<td>per-story stats</td>
+<td>Yes (Urdu)</td>
+</tr>
+<tr>
+<td>Reading Progress</td>
+<td>accuracy, cwpm, error types</td>
+<td>—</td>
+<td>per passage</td>
+<td>self, ASR</td>
+<td>per-passage stats</td>
+<td>Urdu unverified</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-what-this-means-for-our-5-minutes">13. What this means for our 5 minutes</h2>
+<p><strong>The invariants — components in nearly every battery</strong>
+1. <strong>Letter knowledge</strong> (names or sounds) — EGRA, DIBELS, ASER, Uwezo, MELQO, Literacy Boost, Room to Read, NAT-FL, Amira. The universal floor item; the only disagreement is name vs sound.
+2. <strong>Decoding via nonwords or single words</strong> — EGRA, DIBELS (NWF/WRF), ASER/Uwezo (word rung), Room to Read, Amira. Every serious tool separates "can decode" from "has memorised".
+3. <strong>Connected-text oral reading with a rate</strong> — EGRA, DIBELS, Room to Read, Literacy Boost, and all three AI readers; ASER/Uwezo have the rung but not the rate. cwpm is the one number every funder and ministry already understands (Urdu G2 60–90; Sindh 2024 mean 19).
+4. <strong>Comprehension questions on that text</strong> — universal; 3–5 literal + 1 inferential; ≥75–80% is the common "meets" bar.
+5. <strong>Number recognition</strong> — EGMA, ICAN, ASER, Uwezo, MELQO; and <strong>basic operations</strong> (addition/subtraction; ASER's subtraction-with-borrowing rung; ICAN gates ×/÷ behind them). Word problems appear in EGMA and ICAN only.</p>
+<p><strong>Unique to one family (drop unless we have a reason)</strong>: phoneme segmentation (DIBELS PSF); maze (DIBELS); RAN, spelling, executive function (Amira, MELQO); shapes/time/calendar/data display (ICAN/ELANA/MELQO); dictation (EGRA optional, "hard to score consistently"); listening comprehension (EGRA, MELQO, Literacy Boost — valuable but slow; Sindh 2024 kept 3 questions).</p>
+<p><strong>What the 5-minute budget forces</strong>: the timed EGRA/DIBELS grids are 60 s <em>each</em> plus instructions; five of them alone exceed 5 minutes. Every short instrument in the table solves this the same two ways — <strong>gating</strong> (ASER/ICAN/DIBELS: stop or skip on the easy rung) and <strong>subsetting</strong> (Room to Read 4 tasks, Sindh 2024 5 tasks, Tanzania 5). A defensible 5-minute core is therefore: <strong>letter-sound grid (gated) → nonword or word grid → 60-word passage + 3 questions → number recognition → one timed addition/subtraction strip, with ASER-style 4-of-5 stop rules</strong>, and everything else optional per grade.</p>
+<p><strong>What AI scoring buys that paper never could</strong>
+1. <strong>Rate on every item, not just the passage</strong>: with audio timestamps, ASER's ordinal ladder gains a cwpm for free, and the 5-item rungs can grow to 10 without adding tester time.
+2. <strong>Accuracy and an error taxonomy</strong> (omissions, substitutions, self-corrections) as separate scores — the AI-reader convention; paper enumerators only tick right/wrong.
+3. <strong>Comprehension answers in any language, LLM-graded</strong> (Henkel et al. QWK .92) — lets us ask more inferential questions.
+4. <strong>Automatic time-remaining and stop-rule enforcement</strong> — the two things Tangerine had to build UI for and where human IRR is lowest.
+5. <strong>Oral maths as first-class</strong>: EGMA insists the child <em>says</em> the answer; audio makes that the record, and strategy (fingers, paper) can be photographed.
+6. <strong>Adaptive routing</strong> across grades 1–5 (ELANA's three-stage idea) without a bigger paper kit.</p>
+<p><strong>What AI does not fix</strong>: letter- and nonword-level ASR for children in a low-resource script is the hard case (Xhosa 6.9% off-the-shelf; ~91% only after per-item fine-tuning with 200–300 labelled clips), and ASR over-flags errors on weak readers. The coach's tap remains the record of truth per subtask until the AI meets the 90%-agreement enumerator bar (01_ §6).</p>
+<p><strong>Open decisions for the operator</strong> (the ones this walkthrough cannot make): letter <em>names</em> vs <em>sounds</em> for Urdu; aerab on/off in nonwords and passages; whether to keep ASER's ordinal levels as the reported outcome (government-legible) with cwpm as the secondary metric, or the reverse; whether maths gets 90 s (number ID + one operations strip) or 2 min (add ICAN's shapes/time item); and whether the TIPS folder is the TIP diagnostic — if so, its KG/C1/C2/C3 ladder is the grouping the ICT and KP governments already use and we should map onto it.</p><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

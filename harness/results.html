@@ -1,0 +1,1304 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The evaluation · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>The evaluation</h1><p class=lede>Every model we tested, one table per subtask, the human floor and the baseline beside every number, and the stack we recommend</p><h1 id="the-evaluation-every-scorer-we-tried-beside-the-humans">The evaluation: every scorer we tried, beside the humans</h1>
+<p><strong>Data:</strong> 187 enumerator recordings from the May 2026 Rawalpindi EGRA/EGMA study that join to a child's tablet scores and a reviewer's re-listen; 8 kHz classroom audio. <strong>Scripts:</strong> <code>harness/01…15</code> (numbered for reproduction; every model reply is cached). <strong>Model spend for the whole evaluation:</strong> ≈ $70 (LLMs through OpenRouter $57.77, whisper-1 $3.47, Soniox ≈ $8.50; SpeechAce on the existing plan; Azure unavailable).</p>
+<h2 id="1-how-a-score-is-judged">1. How a score is judged</h2>
+<ul>
+<li><strong>Primary human:</strong> the enumerator's live tablet marks: per-item right/wrong flags up to the word reached, the 60-second counts, comprehension and maths items.</li>
+<li><strong>Second human (the floor):</strong> a QA reviewer re-listened to the recording and marked whether each enumerator score was right. How often the two humans agree is the realistic ceiling for any scorer on this audio; it is printed beside every model number.</li>
+<li><strong>Counts:</strong> correlation (r), mean absolute error in words (MAE), bias (machine minus enumerator), and the share of children within ±5 words.</li>
+<li><strong>Per-word marks:</strong> compared only on words both the enumerator and the scorer reached (the export writes 0 for both "correct" and "never reached"). Precision = of the words the scorer flagged wrong, the share the enumerator also marked wrong; recall = of the enumerator's wrong words, the share the scorer caught.</li>
+<li><strong>Baseline:</strong> speech-to-text (Soniox for Urdu, whisper-1 forced to English) plus spelling alignment to the printed text, on the very same windows.</li>
+<li><strong>Worked examples:</strong> twelve real windows with every artefact (printed text, clip, transcript, every scorer's per-word verdicts) are in <code>harness/examples/</code> and on the site.</li>
+</ul>
+<h2 id="2-the-human-floor">2. The human floor</h2>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">Reviewer agreed with enumerator</th>
+<th style="text-align: right;">Disagreed</th>
+<th style="text-align: right;">Could not tell</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>letterid_urd</td>
+<td style="text-align: right;">89%</td>
+<td style="text-align: right;">8%</td>
+<td style="text-align: right;">3%</td>
+</tr>
+<tr>
+<td>letterid_eng</td>
+<td style="text-align: right;">90%</td>
+<td style="text-align: right;">5%</td>
+<td style="text-align: right;">5%</td>
+</tr>
+<tr>
+<td>idwrd_urd</td>
+<td style="text-align: right;">51%</td>
+<td style="text-align: right;">30%</td>
+<td style="text-align: right;">17%</td>
+</tr>
+<tr>
+<td>idwrd_eng</td>
+<td style="text-align: right;">56%</td>
+<td style="text-align: right;">25%</td>
+<td style="text-align: right;">18%</td>
+</tr>
+<tr>
+<td>pw_eng</td>
+<td style="text-align: right;">52%</td>
+<td style="text-align: right;">21%</td>
+<td style="text-align: right;">24%</td>
+</tr>
+<tr>
+<td>orf_urd</td>
+<td style="text-align: right;">54%</td>
+<td style="text-align: right;">25%</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>orf_eng</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">18%</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr>
+<td>listcomp_urd</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">10%</td>
+<td style="text-align: right;">9%</td>
+</tr>
+<tr>
+<td>rdcomp_urd</td>
+<td style="text-align: right;">73%</td>
+<td style="text-align: right;">11%</td>
+<td style="text-align: right;">14%</td>
+</tr>
+<tr>
+<td>idnummag</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">4%</td>
+<td style="text-align: right;">14%</td>
+</tr>
+<tr>
+<td>numrep</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">6%</td>
+<td style="text-align: right;">7%</td>
+</tr>
+<tr>
+<td>computation</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">6%</td>
+<td style="text-align: right;">6%</td>
+</tr>
+<tr>
+<td>word_problems</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">6%</td>
+<td style="text-align: right;">6%</td>
+</tr>
+<tr>
+<td>patterns</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">5%</td>
+<td style="text-align: right;">9%</td>
+</tr>
+<tr>
+<td>blfluency_l1</td>
+<td style="text-align: right;">90%</td>
+<td style="text-align: right;">4%</td>
+<td style="text-align: right;">6%</td>
+</tr>
+</tbody>
+</table>
+<p>On the timed word lists and stories two trained humans agree only about half the time on this audio; on letters and maths about nine times in ten. That is the bar.</p>
+<h2 id="3-reading-windows-counts-and-per-word-marks">3. Reading windows: counts and per-word marks</h2>
+<h3 id="3a-the-baseline-on-every-recording-speech-to-text-alignment">3a. The baseline on every recording (speech-to-text + alignment)</h3>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">wrong-window cases</th>
+<th style="text-align: right;">on the rest: r</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">within ±5</th>
+<th style="text-align: right;">human floor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>English word list (60 s)</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">-4.7</td>
+<td style="text-align: right;">60%</td>
+<td style="text-align: right;">56%</td>
+</tr>
+<tr>
+<td>Urdu word list (60 s)</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">12%</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">-5.5</td>
+<td style="text-align: right;">57%</td>
+<td style="text-align: right;">51%</td>
+</tr>
+<tr>
+<td>English letters (60 s)</td>
+<td style="text-align: right;">170</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">11.7</td>
+<td style="text-align: right;">-5.5</td>
+<td style="text-align: right;">16%</td>
+<td style="text-align: right;">90%</td>
+</tr>
+<tr>
+<td>Urdu letters (60 s)</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">84%</td>
+<td style="text-align: right;">0.71</td>
+<td style="text-align: right;">11.4</td>
+<td style="text-align: right;">-11.1</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">89%</td>
+</tr>
+<tr>
+<td>English story (60 s)</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">20%</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">-2.0</td>
+<td style="text-align: right;">64%</td>
+<td style="text-align: right;">62%</td>
+</tr>
+<tr>
+<td>Urdu story (60 s)</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">24%</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">10.4</td>
+<td style="text-align: right;">-9.6</td>
+<td style="text-align: right;">35%</td>
+<td style="text-align: right;">54%</td>
+</tr>
+<tr>
+<td>English pseudowords (60 s)</td>
+<td style="text-align: right;">132</td>
+<td style="text-align: right;">24%</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">-0.3</td>
+<td style="text-align: right;">91%</td>
+<td style="text-align: right;">52%</td>
+</tr>
+</tbody>
+</table>
+<p>"Wrong-window cases" are recordings where the segmenter cut the wrong part of the 20-minute session (|error| &gt; 20 words); the product design removes them (one voice note per block). Letters fail for the machine as they nearly fail for the reviewer's ear: letter names came back in three scripts.</p>
+<h3 id="3b-every-scorer-on-the-same-sixty-second-windows-with-the-printed-text-supplied">3b. Every scorer on the same sixty-second windows, with the printed text supplied</h3>
+<p>Audio scorers heard the clip; transcript scorers read the STT transcript of it; every scorer saw the exact printed text and returned a verdict per word. Baseline = alignment on the very same windows. Sorted by MAE within each subtask.</p>
+<p><strong>Urdu story (60 s)</strong> — human floor 54%</p>
+<table>
+<thead>
+<tr>
+<th>Scorer</th>
+<th>input</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">count r</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">within ±5</th>
+<th style="text-align: right;">word precision</th>
+<th style="text-align: right;">word recall</th>
+<th style="text-align: right;">$/window</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline: STT + alignment</td>
+<td>transcript</td>
+<td style="text-align: right;">129</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">15.7</td>
+<td style="text-align: right;">-15.0</td>
+<td style="text-align: right;">25%</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>audio</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">-2.0</td>
+<td style="text-align: right;">89%</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.0551</td>
+</tr>
+<tr>
+<td>Gemini 3.8 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">129</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">-1.2</td>
+<td style="text-align: right;">74%</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">0.0097</td>
+</tr>
+<tr>
+<td>Gemini 3.5 Flash-Lite</td>
+<td>audio</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">7.0</td>
+<td style="text-align: right;">-0.1</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.0037</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5</td>
+<td>text</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">8.5</td>
+<td style="text-align: right;">-8.1</td>
+<td style="text-align: right;">46%</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.0418</td>
+</tr>
+<tr>
+<td>GPT-5 mini</td>
+<td>text</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">12.8</td>
+<td style="text-align: right;">-12.4</td>
+<td style="text-align: right;">26%</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.0081</td>
+</tr>
+<tr>
+<td>GPT audio</td>
+<td>audio</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">13.1</td>
+<td style="text-align: right;">-9.2</td>
+<td style="text-align: right;">27%</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.0302</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">13.6</td>
+<td style="text-align: right;">+10.1</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">0.57</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.0047</td>
+</tr>
+<tr>
+<td>MiMo 2.5</td>
+<td>audio</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">13.8</td>
+<td style="text-align: right;">+7.7</td>
+<td style="text-align: right;">58%</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0014</td>
+</tr>
+<tr>
+<td>Gemini 3 Flash</td>
+<td>text</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">14.9</td>
+<td style="text-align: right;">-14.8</td>
+<td style="text-align: right;">29%</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">0.0029</td>
+</tr>
+<tr>
+<td>Nemotron omni (free)</td>
+<td>audio</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">nan</td>
+<td style="text-align: right;">17.8</td>
+<td style="text-align: right;">+17.8</td>
+<td style="text-align: right;">53%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>Voxtral small</td>
+<td>audio</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">nan</td>
+<td style="text-align: right;">20.0</td>
+<td style="text-align: right;">+20.0</td>
+<td style="text-align: right;">45%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0065</td>
+</tr>
+<tr>
+<td>DeepSeek 3.2</td>
+<td>text</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">21.5</td>
+<td style="text-align: right;">-21.5</td>
+<td style="text-align: right;">24%</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">0.0007</td>
+</tr>
+<tr>
+<td>GPT audio mini</td>
+<td>audio</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">25.9</td>
+<td style="text-align: right;">-11.1</td>
+<td style="text-align: right;">29%</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">0.0036</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Urdu word list (60 s)</strong> — human floor 51%</p>
+<table>
+<thead>
+<tr>
+<th>Scorer</th>
+<th>input</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">count r</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">within ±5</th>
+<th style="text-align: right;">word precision</th>
+<th style="text-align: right;">word recall</th>
+<th style="text-align: right;">$/window</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline: STT + alignment</td>
+<td>transcript</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">-8.7</td>
+<td style="text-align: right;">49%</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>audio</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">+0.1</td>
+<td style="text-align: right;">97%</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.0566</td>
+</tr>
+<tr>
+<td>GPT audio</td>
+<td>audio</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">+1.3</td>
+<td style="text-align: right;">92%</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.0294</td>
+</tr>
+<tr>
+<td>Gemini 3.8 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">+0.2</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">0.0098</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5</td>
+<td>text</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">-3.7</td>
+<td style="text-align: right;">89%</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">0.0379</td>
+</tr>
+<tr>
+<td>Gemini 3 Flash</td>
+<td>text</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">-6.1</td>
+<td style="text-align: right;">63%</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">0.0025</td>
+</tr>
+<tr>
+<td>Gemini 3.5 Flash-Lite</td>
+<td>audio</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">-0.9</td>
+<td style="text-align: right;">69%</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">0.0032</td>
+</tr>
+<tr>
+<td>GPT-5 mini</td>
+<td>text</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">8.9</td>
+<td style="text-align: right;">-8.4</td>
+<td style="text-align: right;">65%</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">0.0077</td>
+</tr>
+<tr>
+<td>DeepSeek 3.2</td>
+<td>text</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">11.5</td>
+<td style="text-align: right;">-11.1</td>
+<td style="text-align: right;">40%</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.92</td>
+<td style="text-align: right;">0.0008</td>
+</tr>
+<tr>
+<td>GPT audio mini</td>
+<td>audio</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">11.9</td>
+<td style="text-align: right;">-2.1</td>
+<td style="text-align: right;">57%</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">0.0030</td>
+</tr>
+<tr>
+<td>MiMo 2.5</td>
+<td>audio</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">11.9</td>
+<td style="text-align: right;">+7.3</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.0011</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">12.8</td>
+<td style="text-align: right;">+10.9</td>
+<td style="text-align: right;">57%</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.0043</td>
+</tr>
+<tr>
+<td>Nemotron omni (free)</td>
+<td>audio</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">15.3</td>
+<td style="text-align: right;">+15.3</td>
+<td style="text-align: right;">47%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>Voxtral small</td>
+<td>audio</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">nan</td>
+<td style="text-align: right;">22.8</td>
+<td style="text-align: right;">+22.8</td>
+<td style="text-align: right;">40%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0065</td>
+</tr>
+</tbody>
+</table>
+<p><strong>English story (60 s)</strong> — human floor 62%</p>
+<table>
+<thead>
+<tr>
+<th>Scorer</th>
+<th>input</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">count r</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">within ±5</th>
+<th style="text-align: right;">word precision</th>
+<th style="text-align: right;">word recall</th>
+<th style="text-align: right;">$/window</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline: STT + alignment</td>
+<td>transcript</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">-8.2</td>
+<td style="text-align: right;">52%</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>GPT audio</td>
+<td>audio</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">-4.0</td>
+<td style="text-align: right;">73%</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.0293</td>
+</tr>
+<tr>
+<td>Gemini 3.5 Flash-Lite</td>
+<td>audio</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">-2.4</td>
+<td style="text-align: right;">72%</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.0033</td>
+</tr>
+<tr>
+<td>Gemini 3.8 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">-0.2</td>
+<td style="text-align: right;">74%</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.0092</td>
+</tr>
+<tr>
+<td>Gemini 3.1 Pro</td>
+<td>audio</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">-1.5</td>
+<td style="text-align: right;">71%</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.0573</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Flash</td>
+<td>audio</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">+5.2</td>
+<td style="text-align: right;">68%</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.0046</td>
+</tr>
+<tr>
+<td>MiMo 2.5</td>
+<td>audio</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">+4.2</td>
+<td style="text-align: right;">52%</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.0011</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5</td>
+<td>text</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">9.2</td>
+<td style="text-align: right;">-8.4</td>
+<td style="text-align: right;">55%</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">0.0330</td>
+</tr>
+<tr>
+<td>Gemini 3 Flash</td>
+<td>text</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">-10.8</td>
+<td style="text-align: right;">44%</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.0027</td>
+</tr>
+<tr>
+<td>DeepSeek 3.2</td>
+<td>text</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">11.6</td>
+<td style="text-align: right;">-10.7</td>
+<td style="text-align: right;">43%</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">0.0016</td>
+</tr>
+<tr>
+<td>GPT-5 mini</td>
+<td>text</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">-19.0</td>
+<td style="text-align: right;">42%</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.0082</td>
+</tr>
+<tr>
+<td>Nemotron omni (free)</td>
+<td>audio</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">nan</td>
+<td style="text-align: right;">21.5</td>
+<td style="text-align: right;">+21.3</td>
+<td style="text-align: right;">42%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr>
+<td>Voxtral small</td>
+<td>audio</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">nan</td>
+<td style="text-align: right;">22.2</td>
+<td style="text-align: right;">+22.0</td>
+<td style="text-align: right;">30%</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0065</td>
+</tr>
+<tr>
+<td>GPT audio mini</td>
+<td>audio</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">-0.05</td>
+<td style="text-align: right;">31.7</td>
+<td style="text-align: right;">-17.0</td>
+<td style="text-align: right;">29%</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.0033</td>
+</tr>
+</tbody>
+</table>
+<p>Baseline per-word precision / recall on all recordings (same rule, words both sides reached):</p>
+<ul>
+<li>English word list (60 s): precision 0.25, recall 0.87 (3,822 words)</li>
+<li>Urdu word list (60 s): precision 0.32, recall 0.91 (4,444 words)</li>
+<li>English letters (60 s): precision 0.06, recall 0.77 (12,401 words)</li>
+<li>Urdu letters (60 s): precision 0.08, recall 0.94 (8,643 words)</li>
+<li>English story (60 s): precision 0.25, recall 0.78 (3,444 words)</li>
+<li>Urdu story (60 s): precision 0.23, recall 0.88 (5,262 words)</li>
+<li>English pseudowords (60 s): precision 0.41, recall 0.84 (1,747 words)</li>
+</ul>
+<h2 id="4-comprehension-answers-urdu-six-questions-graded-from-the-transcript">4. Comprehension answers (Urdu, six questions), graded from the transcript</h2>
+<p>Human floor for this subtask: 73%. The grader sees the passage and the diarised question window.</p>
+<table>
+<thead>
+<tr>
+<th>Grader</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">r</th>
+<th style="text-align: right;">MAE (questions)</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">exact</th>
+<th style="text-align: right;">within 1</th>
+<th style="text-align: right;">$/child</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">-0.70</td>
+<td style="text-align: right;">40%</td>
+<td style="text-align: right;">79%</td>
+<td style="text-align: right;">0.0012</td>
+</tr>
+<tr>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">1.13</td>
+<td style="text-align: right;">-1.06</td>
+<td style="text-align: right;">37%</td>
+<td style="text-align: right;">73%</td>
+<td style="text-align: right;">0.0121</td>
+</tr>
+<tr>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">-1.06</td>
+<td style="text-align: right;">34%</td>
+<td style="text-align: right;">75%</td>
+<td style="text-align: right;">0.0030</td>
+</tr>
+<tr>
+<td>DeepSeek 3.2</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">-0.89</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">66%</td>
+<td style="text-align: right;">0.0002</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Flash-Lite</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">1.57</td>
+<td style="text-align: right;">+0.66</td>
+<td style="text-align: right;">34%</td>
+<td style="text-align: right;">64%</td>
+<td style="text-align: right;">0.0002</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-finding-the-windows-segmenter-labeller-on-stt-timestamps">5. Finding the windows (segmenter labeller on STT timestamps)</h2>
+<p>The labeller reads the diarised, timestamped transcript and names first/last turn per subtask; the clock is Soniox's. Compared with the enumerator's tablet taps, which precede the child's first word by 5–15 s.</p>
+<table>
+<thead>
+<tr>
+<th>Labeller</th>
+<th style="text-align: right;">files</th>
+<th style="text-align: right;">subtasks matched</th>
+<th style="text-align: right;">start within 5 s</th>
+<th style="text-align: right;">within 15 s</th>
+<th style="text-align: right;">mean abs error</th>
+<th style="text-align: right;">$/file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini 2.5 Flash</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">44%</td>
+<td style="text-align: right;">72%</td>
+<td style="text-align: right;">21.8 s</td>
+<td style="text-align: right;">0.0039</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">181</td>
+<td style="text-align: right;">2352</td>
+<td style="text-align: right;">43%</td>
+<td style="text-align: right;">70%</td>
+<td style="text-align: right;">25.6 s</td>
+<td style="text-align: right;">0.0958</td>
+</tr>
+<tr>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">301</td>
+<td style="text-align: right;">42%</td>
+<td style="text-align: right;">68%</td>
+<td style="text-align: right;">19.1 s</td>
+<td style="text-align: right;">0.0064</td>
+</tr>
+<tr>
+<td>Claude Haiku 4.5</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">282</td>
+<td style="text-align: right;">43%</td>
+<td style="text-align: right;">67%</td>
+<td style="text-align: right;">25.5 s</td>
+<td style="text-align: right;">0.0145</td>
+</tr>
+<tr>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">243</td>
+<td style="text-align: right;">40%</td>
+<td style="text-align: right;">64%</td>
+<td style="text-align: right;">29.7 s</td>
+<td style="text-align: right;">0.0146</td>
+</tr>
+<tr>
+<td>Gemini 2.5 Flash-Lite</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">49%</td>
+<td style="text-align: right;">34.3 s</td>
+<td style="text-align: right;">0.0014</td>
+</tr>
+</tbody>
+</table>
+<p>Audio-native models were also tried as the clock: Gemini 2.5 Pro drifted 20–75 s and Gemini 2.5 Flash returned a transcript dump. The clock must come from speech-to-text; a text labeller then only has to name turns. In the product the coach's cue phrase replaces most of this.</p>
+<h2 id="6-maths-from-the-spoken-transcript">6. Maths from the spoken transcript</h2>
+<p>The grader sees the diarised maths-block transcript with no item bank (the study export has none). Items whose question is spoken are gradable; items whose stimulus is on paper are not from audio alone, and the product will have the bank.</p>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th>Grader</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">r</th>
+<th style="text-align: right;">MAE (items)</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">exact</th>
+<th style="text-align: right;">within 1</th>
+<th style="text-align: right;">human floor</th>
+<th style="text-align: right;">$/child</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wrdpblm</td>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">-1.29</td>
+<td style="text-align: right;">45%</td>
+<td style="text-align: right;">63%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr>
+<td>wrdpblm</td>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">1.52</td>
+<td style="text-align: right;">-1.00</td>
+<td style="text-align: right;">52%</td>
+<td style="text-align: right;">74%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr>
+<td>wrdpblm</td>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">-0.97</td>
+<td style="text-align: right;">46%</td>
+<td style="text-align: right;">69%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr>
+<td>wrdpblm</td>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">1.74</td>
+<td style="text-align: right;">-1.11</td>
+<td style="text-align: right;">46%</td>
+<td style="text-align: right;">63%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr>
+<td>bleffcomp</td>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">1.25</td>
+<td style="text-align: right;">-1.25</td>
+<td style="text-align: right;">42%</td>
+<td style="text-align: right;">58%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr>
+<td>bleffcomp</td>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">-1.46</td>
+<td style="text-align: right;">38%</td>
+<td style="text-align: right;">46%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr>
+<td>bleffcomp</td>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">1.72</td>
+<td style="text-align: right;">-0.58</td>
+<td style="text-align: right;">33%</td>
+<td style="text-align: right;">60%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr>
+<td>bleffcomp</td>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">-0.16</td>
+<td style="text-align: right;">20%</td>
+<td style="text-align: right;">52%</td>
+<td style="text-align: right;">88%</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr>
+<td>numrep</td>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">-1.97</td>
+<td style="text-align: right;">14%</td>
+<td style="text-align: right;">39%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr>
+<td>numrep</td>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">-1.87</td>
+<td style="text-align: right;">11%</td>
+<td style="text-align: right;">39%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr>
+<td>numrep</td>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">2.52</td>
+<td style="text-align: right;">-2.33</td>
+<td style="text-align: right;">6%</td>
+<td style="text-align: right;">36%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr>
+<td>numrep</td>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">2.67</td>
+<td style="text-align: right;">-2.67</td>
+<td style="text-align: right;">8%</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">87%</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr>
+<td>idnummag</td>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">2.54</td>
+<td style="text-align: right;">-2.00</td>
+<td style="text-align: right;">16%</td>
+<td style="text-align: right;">43%</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr>
+<td>idnummag</td>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">3.09</td>
+<td style="text-align: right;">-2.59</td>
+<td style="text-align: right;">11%</td>
+<td style="text-align: right;">36%</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr>
+<td>idnummag</td>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">3.28</td>
+<td style="text-align: right;">-3.22</td>
+<td style="text-align: right;">14%</td>
+<td style="text-align: right;">33%</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr>
+<td>idnummag</td>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">3.33</td>
+<td style="text-align: right;">-2.80</td>
+<td style="text-align: right;">17%</td>
+<td style="text-align: right;">30%</td>
+<td style="text-align: right;">81%</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr>
+<td>patterns</td>
+<td>Gemini 3 Flash</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">2.68</td>
+<td style="text-align: right;">-2.53</td>
+<td style="text-align: right;">21%</td>
+<td style="text-align: right;">37%</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr>
+<td>patterns</td>
+<td>Claude Sonnet 5</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">2.76</td>
+<td style="text-align: right;">-2.45</td>
+<td style="text-align: right;">27%</td>
+<td style="text-align: right;">39%</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr>
+<td>patterns</td>
+<td>Gemini 2.5 Pro</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">2.78</td>
+<td style="text-align: right;">-2.64</td>
+<td style="text-align: right;">28%</td>
+<td style="text-align: right;">39%</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr>
+<td>patterns</td>
+<td>GPT-5 mini</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">2.86</td>
+<td style="text-align: right;">-2.69</td>
+<td style="text-align: right;">22%</td>
+<td style="text-align: right;">42%</td>
+<td style="text-align: right;">86%</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-english-pronunciation-services-speechace-vs-azure">7. English pronunciation services: SpeechAce vs Azure</h2>
+<p>SpeechAce was run on the first 29 s of every English window (its scripted endpoint caps audio at 30 s on our plan; the reference was cut to the words the child reached). Compared on words both sides reached, quality score &lt; 40 = wrong:</p>
+<table>
+<thead>
+<tr>
+<th>Subtask</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">count r</th>
+<th style="text-align: right;">MAE (words, 29-s window)</th>
+<th style="text-align: right;">per-word precision</th>
+<th style="text-align: right;">per-word recall</th>
+<th style="text-align: right;">F1</th>
+<th>Gemini 3.8 Flash on the full 60 s, same children</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>English word list</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.43</td>
+<td>count MAE 5.9, per-word F1 0.34</td>
+</tr>
+<tr>
+<td>English story</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.41</td>
+<td>count MAE 5.8, per-word F1 0.34</td>
+</tr>
+</tbody>
+</table>
+<p>So on English, SpeechAce's per-word marks are the best we measured (the audio LLMs are stronger on Urdu, where SpeechAce cannot run), its counts are on par, and it is the only scorer that also names the mispronounced sound. Costs: $0.008 per 15 s of audio (about 3 cents per 60-s window in two calls) plus a plan tier; en-US/en-GB dialect models only; every number here is on 8 kHz audio and should be re-measured on 16 kHz voice notes.</p>
+<p><strong>Azure Pronunciation Assessment</strong> was not evaluated: both documented keys return 401 and the same key is on the production service, so English reading has been on the silent fallback path (P1 bug filed). Given the SpeechAce result there is no reason to regenerate it: SpeechAce covers the same job with child-speech evidence, nonword phone-list scoring and a working key.</p>
+<h2 id="8-what-it-adds-up-to-the-stack-we-recommend">8. What it adds up to: the stack we recommend</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Use</th>
+<th>Because</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cutting the audio into subtask windows</td>
+<td>The coach's cue phrase per block + speech-to-text timestamps (Soniox for Urdu, whisper-1 forced to English)</td>
+<td>STT clocks were exact to the second; every audio LLM's clock drifted</td>
+<td>A cheap text labeller (Gemini 3 Flash tier) on the diarised transcript when a coach forgets the cue</td>
+</tr>
+<tr>
+<td>Counting words correct in 60 s, Urdu and English</td>
+<td><strong>Gemini 3.8 Flash on the clip with the printed text</strong> (Gemini 3.1 Pro where a second opinion is worth 6× the cost)</td>
+<td>Best MAE and rank agreement of everything tried, on par with or better than the alignment baseline while also giving per-word marks; ~1¢ per window</td>
+<td>STT + alignment (the round-1 baseline) if the audio model is unavailable</td>
+</tr>
+<tr>
+<td>Per-word chips for the coach</td>
+<td>Gemini 3.1 Pro / 3.8 Flash verdicts, shown only where the model and the alignment agree</td>
+<td>Their precision is the best measured but still well under 1, so chips are suggestions, not marks</td>
+<td>Coach marks the word</td>
+</tr>
+<tr>
+<td>Letters and initial sounds</td>
+<td>Coach marks; keep the audio for a later open forced-alignment / GOP layer</td>
+<td>Letter names transcribe in three scripts; the window is lost most of the time</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Comprehension answers</td>
+<td>A text grader on the diarised question window (Gemini 3 Flash tier is enough)</td>
+<td>Within one answer of the enumerator for ~75–80% of children at ~$0.001</td>
+<td>Claude Sonnet 5 / GPT-5 mini give the same result at higher cost</td>
+</tr>
+<tr>
+<td>Spoken maths</td>
+<td>Transcript + the item bank + a number-word grammar; text grader only for word problems</td>
+<td>Word problems r ≈ 0.7 without the bank; number ID needs the bank</td>
+<td>Coach marks</td>
+</tr>
+<tr>
+<td>Written maths (photo)</td>
+<td>Gemini 3.1 Pro vision with the answer key</td>
+<td>Best on handwriting benchmarks; not yet tested on our sheets</td>
+<td>Coach marks</td>
+</tr>
+<tr>
+<td>English per-word marks and phoneme detail</td>
+<td><strong>SpeechAce</strong> scripted scoring, two 30-s calls per window, plus its phone-list endpoint for nonwords</td>
+<td>Best per-word F1 on English of anything tried (0.41–0.43), counts on par with Gemini, names the mispronounced sound; retire Azure rather than regenerate its dead key</td>
+<td>Gemini 3.8 Flash counts with coach-decided chips</td>
+</tr>
+<tr>
+<td>Coach protocol audit</td>
+<td>Gemini-class audio model over the whole block, once, in the background</td>
+<td>Caught a slip the human reviewer missed</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Models tried and set aside:</strong> GPT audio mini and Nemotron omni (counts wrong by 15–30 words); MiMo 2.5, Voxtral small and Gemini 2.5 Flash (lenient, +8–10 words); every transcript-only LLM (no better than alignment, and harsher); GPT audio (good on word lists, poor on the Urdu story, 4× the cost of Gemini 3.8 Flash).</p><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

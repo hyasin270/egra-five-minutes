@@ -1,0 +1,421 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What a recording can yield · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>What a recording can yield</h1><p class=lede>Constructs recoverable from a read-aloud beyond WCPM, with evidence and phase</p><h1 id="05-what-a-5-minute-recording-can-yield-beyond-wcpm">05 — What a 5-minute recording can yield beyond WCPM</h1>
+<p><strong>Type</strong>: research memo | <strong>Status</strong>: draft v1 | <strong>Date</strong>: 2026-09-15 | <strong>Author</strong>: Rumi research (Claude) | <strong>Scope</strong>: EGRA/EGMA-style, coach-administered, AI-scored battery; Urdu + English reading, spoken maths, optional photo of written work; children 6–11, Pakistani government schools; audio arrives as WhatsApp voice notes (Ogg/Opus, 16 kHz mono, ~16–24 kbps).</p>
+<p><strong>The operator's question</strong>: <em>"Given that we want granularity, is there more stuff that we can infer from a recording? One can infer WCPM. What else could be inferred … we are inventing a new era of standardized assessments that are AI driven. What more could we glean?"</em></p>
+<p><strong>One-paragraph answer.</strong> A timed oral read is a time series, not a count. Once the audio is force-aligned to the passage text, every word carries an onset, an offset, a correctness label and a confidence, and every gap between words carries a silence duration. From that word-level table alone you can recover (a) per-word latency distributions, (b) a miscue record (substitution / omission / insertion / repetition / self-correction, with the <em>content</em> of each substitution), (c) pause-based prosody, (d) a per-grapheme error profile, (e) rate curves across the minute, and (f) a model-based fluency score with a per-child standard error — all of which the paper form discards. The acoustics add pitch contour, intensity and voicing for expression scoring, and speech-rate/pause markers for affect. The same recording also scores the <em>assessor</em>: whether they prompted, how long they waited, whether the timing was honest, how noisy the room was. The evidence base is strong for the word-level table (NAEP's machine WCPM correlates .96 with human; DIBELS/CORE psychometrics; Dutch/English miscue-detection F1 up to ~.73), moderate for prosody (automated NAEP-scale scoring reaches ~62–76% exact agreement, humans themselves only 58%), thin-but-real for maths strategy inference from latency (well-founded in Siegler/Thevenot chronometry, but no automated field product), and speculative for affect/anxiety. Everything is computable on 16 kHz WhatsApp audio except fine fricative/aspiration phonetics, which the ~16–24 kbps Opus encode degrades.</p>
+<hr />
+<h2 id="0-how-to-read-this-memo">0. How to read this memo</h2>
+<p>Each construct gets: <strong>how it is computed</strong> (from ASR, forced alignment, or raw acoustics), <strong>evidence</strong> (reliability/prediction, with URLs), and <strong>16 kHz WhatsApp feasibility</strong>. Claims I could not verify against a primary source are tagged <strong>unverified</strong>. Vendor marketing numbers are tagged <strong>vendor claim</strong>. Section F ranks everything into v1 / v2 / research.</p>
+<p>A design fact that shapes everything below: WhatsApp voice notes carry <strong>no item-level timestamps</strong>. The only clock inside the recording is the coach's own voice ("Begin", "next", the maths item read aloud). So the first processing step is always <strong>coach/child diarization + coach-utterance detection</strong>, and the coach's speech becomes the item-onset marker. That is what makes response latency (A1, B1) and protocol adherence (Section C) recoverable at all. WhatsApp encodes voice notes as Ogg/Opus at 16 kHz mono, roughly 16 kbps on capture and re-transcoded to ~24 kbps server-side (<a href="https://chattopdf.app/blog/whatsapp-audio-format">WhatsApp audio format</a>; <a href="https://github.com/openclaw/openclaw/pull/144507">openclaw PR #144507 on WhatsApp's 16 kHz Opus expectation</a>). Wideband Opus keeps everything up to ~8 kHz, so pitch (children's F0 is 200–400 Hz), intensity, timing and vowel formants survive; what is lost is fine detail above 8 kHz and some spectral resolution at low bitrate — relevant only to the phonetic constructs (A4, A5).</p>
+<hr />
+<h2 id="a-reading-constructs-recoverable-from-a-timed-oral-read">A. Reading constructs recoverable from a timed oral read</h2>
+<h3 id="a0-the-base-layer-word-level-alignment-everything-else-is-derived-from-this">A0. The base layer: word-level alignment (everything else is derived from this)</h3>
+<p><strong>Computation.</strong> Transcribe with a child-adapted ASR (Whisper large-v2/v3 or wav2vec2/HuBERT fine-tuned on children), <em>prompt the recogniser with the reference passage</em>, force-align hypothesis ↔ reference (SCTK / Levenshtein alignment) to label each reference word as correct / substituted / omitted, and each extra hypothesis word as insertion. Keep per-word timestamps and per-word confidence.</p>
+<p><strong>Evidence.</strong>
+- NAEP's 2018 ORF study did exactly this at national scale: the machine-vs-human correlation for words-correct counts was <strong>.96</strong> (per passage .93–.99), while two humans agreed at .99/.97 on word lists (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NCES 2021-025, Methods + Appendix A</a>). The engine accepted dialect and second-language pronunciations "as long as the speaking pattern remains consistent" and was validated as unbiased against ELs and Black students (<a href="https://doi.org/10.1177/0013164411412590">Balogh et al. 2012</a>).
+- Amira reports human-item-level agreement of 96% and WCPM correlation of 98–99% with human raters, similar across gender/race/MLL subgroups — <strong>vendor claim</strong>, no independent technical report located (<a href="https://amiralearning.com/amira-isip-assess">Amira ISIP page</a>; <a href="https://charts.intensiveintervention.org/progressmonitoring/tool/?id=b2bb72b4d4b4597c">NCII progress-monitoring entry</a>).
+- Child ASR is worse than adult ASR everywhere: Whisper reaches ~13% WER on children's English, ~9% after child fine-tuning (<a href="https://www.researchgate.net/publication/373248680_Adaptation_of_Whisper_models_to_child_speech_recognition">Adaptation of Whisper to child speech</a>; <a href="https://the-learning-agency.com/the-cutting-ed/article/how-speech-recognition-systems-struggle-with-childrens-voices/">Learning Agency summary</a>); on Dutch primary readers Whisper large-v2 gave 9.8% WER child vs 6.7% adult (<a href="https://arxiv.org/pdf/2406.07060">Gao et al., Interspeech 2024</a>).
+- <strong>The key trap</strong>: a language-model-decoded ASR (Whisper) <em>corrects</em> the child's misreadings into the right word. In the Dutch study Whisper's "error ratio" was 0.58 (it under-detects reading errors), and recognition accuracy on <em>incorrectly read</em> words was only .53–.60 and on part-word attempts .23–.29, versus .90–.93 on correctly read words (<a href="https://arxiv.org/pdf/2406.07060">Gao et al. 2024</a>). The fix — prompting Whisper with the reference text seeded with synthetic mistakes, plus an LLM rescoring step and a hallucination filter (hypotheses &gt;20% longer or &gt;5% shorter than the text are discarded) — cut WER 9.4%→5.1% and lifted reading-mistake F1 from <strong>0.39 to 0.73</strong> (<a href="https://www.isca-archive.org/interspeech_2025/gao25c_interspeech.pdf">Gao et al., Interspeech 2025</a>). A Kaldi system with passage-specific LMs matched or beat Whisper for error detection in the same lab (<a href="https://arxiv.org/abs/2306.03444">Automatic assessment of oral reading accuracy, 2023</a>, word-level MCC = .63).
+- <strong>Urdu is the weak link.</strong> Off-the-shelf Whisper-Small gives ~34% WER on adult Urdu (Tiny 67%, Base 54%) (<a href="https://arxiv.org/pdf/2508.09865">Lightweight Whisper for Urdu, 2025</a>; <a href="https://aclanthology.org/2025.chipsal-1.20/">N-shot Whisper on Pashto/Punjabi/Urdu, CHiPSAL 2025</a>). On Arabic <em>children</em>, Whisper large-v3 hit 66% WER, 4.1× its adult Arabic rate (<a href="https://arxiv.org/pdf/2510.23319">Arabic Little STT, 2025</a>). There is no published child-Urdu read-speech corpus that I could find (<strong>unverified</strong> that none exists privately). Reference-prompted decoding and a closed passage vocabulary mitigate this a lot — the task is verification against a known text, not open transcription — but Urdu miscue precision must be measured, not assumed.</p>
+<p><strong>16 kHz feasibility.</strong> Yes; every cited system runs at 16 kHz. Low bitrate mainly hurts confidence calibration on fricatives.</p>
+<h3 id="a1-per-word-latency-response-time-distributions">A1. Per-word latency / response-time distributions</h3>
+<p><strong>Computation.</strong> From alignment: inter-word gap before each word, word duration, and the child's onset latency after the coach says "Begin". Summaries: median gap, 90th-percentile gap, count of gaps &gt; 1 s and &gt; 3 s (the EGRA prompt threshold), and gaps conditioned on word properties (length, frequency, decodability, position after punctuation).</p>
+<p><strong>Evidence.</strong> On the CORE dataset (2,094 Grade 2–4 US students, ~50–100-word passages), a random forest using only <em>relative silence times before and after specific word chunks</em> plus grade explained <strong>58.4%</strong> of WCPM variance out of sample (52.7% without grade) (<a href="https://www.psychologie-aktuell.com/fileadmin/Redaktion/Journale/ptam_2023-1/PTAM__1-2023_2_kor.pdf">Kara et al., PTAM 2023</a>). Pause statistics, syllable rate and intensity dynamics — with no ASR at all — discriminated decoding-deficit categories "close to" an ASR-based system (<a href="https://arxiv.org/abs/2112.00635">Predicting lexical skills from oral reading with acoustic measures, 2021</a>). Children with weaker comprehension make more inappropriate pauses and more pauses before commas (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4661265/">Álvarez-Cañizo et al. 2015</a>).</p>
+<p><strong>Feasibility.</strong> Trivial at 16 kHz; timing precision (~10–20 ms frames) is far below the 100 ms resolution that matters.</p>
+<h3 id="a2-automaticity-vs-effortful-decoding-audible-sounding-out-letter-by-letter-syllabification">A2. Automaticity vs effortful decoding (audible sounding-out, letter-by-letter, syllabification)</h3>
+<p><strong>Computation.</strong> Three signals: (i) intra-word silences and multiple onsets for a single reference word (the alignment produces several short hypothesis fragments mapped to one word — Gao et al. label these "part-of-word attempts"); (ii) word duration normalised by syllable count (a 3-syllable word taking &gt;1.5 s is effortful); (iii) phone-level decoding of the fragment to detect letter-sound-by-letter-sound production. Report a per-child "effortful decoding rate" = words with ≥2 attempts or intra-word pause ÷ words attempted.</p>
+<p><strong>Evidence.</strong> Hesitation is already an ORF construct ("hesitations for more than 3 seconds are marked", <a href="https://acadiencelearning.org/help-center/oral-reading-fluency-orf-and-retell/">Acadience ORF guidance</a>); the EGRA protocol prompts after 3 s (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf">EGRA Toolkit V2, 2016</a>). ASR recognises part-word attempts poorly (.23–.29 accuracy, <a href="https://arxiv.org/pdf/2406.07060">Gao et al. 2024</a>) — but <em>detecting that an attempt happened</em> (a fragment + a silence + a restart) is much easier than transcribing it. Phone-level CTC models trained on young readers reach PER ~28% and "better detect reading mistakes" because CTC forces monotonic attention (<a href="https://arxiv.org/abs/2103.02899">Gelin et al. 2021</a>). No paper reports reliability for an "effortful decoding rate" as a score — <strong>unverified</strong> as a psychometric quantity; treat as v2 with a human-coded validation set.</p>
+<p><strong>Feasibility.</strong> Fragment/restart detection: yes. Letter-by-letter phone identification in Urdu: research-grade.</p>
+<h3 id="a3-miscue-taxonomy-substitution-sub-types-omission-insertion-repetition-reversal-self-correction-rate-and-latency">A3. Miscue taxonomy (substitution sub-types, omission, insertion, repetition, reversal, self-correction rate and latency)</h3>
+<p><strong>Computation.</strong> Omission/insertion/substitution fall directly out of alignment. Repetition = hypothesis word(s) re-matching the immediately preceding reference span. Self-correction = an error followed within N words by the correct token for the same reference position (EGRA already scores this as correct; <a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf">EGRA Toolkit V2</a>, Annex instructions "Count self-corrections as correct"). Self-correction latency = time from the erroneous token offset to the corrected token onset. Substitution sub-type = compare the <em>spoken</em> substitute to the target: graphophonic (shares onset/rime/letters), semantic (synonym/same class — use an LLM judge), visual (similar shape in Nastaliq — needs an Urdu grapheme-confusion table, <strong>to be built</strong>), nonword.</p>
+<p><strong>Evidence.</strong>
+- Miscue categories are the running-record tradition (Clay) and the Dutch team formalised them for ASR: Wav2Vec2-Large recall .83, Whisper precision .52 / F1 .52 overall, but substitution precision as low as .17 for Wav2Vec2 and insertion recall .17 for Whisper (<a href="https://arxiv.org/pdf/2406.07060">Gao et al. 2024</a>); with prompting, F1 .73 (<a href="https://www.isca-archive.org/interspeech_2025/gao25c_interspeech.pdf">Gao et al. 2025</a>). Microsoft Reading Progress auto-detects errors and lets teachers re-label them by type (mispronunciation, omission, insertion, repetition, self-correction), and states auto-detect "is currently best for English" and "may not recognize accents and dialects well" (<a href="https://learn.microsoft.com/en-us/training/educator-center/product-guides/reading-progress/">Reading Progress product guide</a>). SoapBox's fluency API returns substitutions, omissions, repetitions at phoneme level (<a href="https://www.isca-archive.org/interspeech_2020/kelly20b_interspeech.html">Kelly et al., Interspeech 2020</a>; <a href="https://www.soapboxlabs.com/technology/">SoapBox technology page</a>).
+- <strong>Self-corrections are predictive.</strong> In 3,184 running records from 140 struggling first-graders, self-corrections significantly and positively predicted reading progress (<a href="https://www.tandfonline.com/doi/abs/10.1080/02702711.2019.1629518">D'Agostino, Kelly &amp; Rodgers 2019</a>); a generalisability study shows accuracy and self-correction scores need several passages to be dependable (<a href="https://www.tandfonline.com/doi/full/10.1080/02702711.2021.1880177">2021</a>). Errors on <em>content</em> words hurt comprehension more than errors on function words; frequency and relevance of the misread word matter (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13289664/">Reading Errors of Importance, 2025</a>). Error rate in Grades 2–3 has a non-linear relation to comprehension (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3852696/">Abbott et al. 2013</a>).
+- Graphemic–phonemic classification of substitutions has a classic template: Labov's GAREC coded inner-city children's reading errors by grapheme, phoneme and dialect rule (<a href="https://www.ling.upenn.edu/~wlabov/Papers/GAREC/GAREC.html">GAREC</a>).</p>
+<p><strong>Feasibility.</strong> Counts: yes. Substitution <em>content</em> (needed for sub-typing): depends on the ASR not auto-correcting; needs the prompted-decoding trick. In Urdu, expect lower precision until a child corpus exists.</p>
+<h3 id="a4-prosody-expression-naep-scale-phrasing-pitch-pausing-at-punctuation">A4. Prosody / expression (NAEP scale, phrasing, pitch, pausing at punctuation)</h3>
+<p><strong>Computation.</strong> From alignment: pause at punctuation vs mid-phrase ("pause intrusions"), phrase length between pauses, sentence-final pitch fall (F0 declination), pitch range/variability, intensity contour, word stress on multisyllables. Feature extractors: Praat, openSMILE (eGeMAPS) or wav2vec2 embeddings; target: NAEP 4-level scale (word-by-word → phrase groups → mostly phrases → sentence-level with expression) (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NAEP scale and rubric, NCES 2021-025 Fig. 2</a>).</p>
+<p><strong>Evidence.</strong>
+- Human ceiling is low: two NAEP scorers agreed exactly 58%, adjacent 39% (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NCES 2021-025</a>); a five-rater G-study on 177 Grade 1–3 children examined the NAEP and MDFS rubrics (<a href="https://www.tandfonline.com/doi/abs/10.1080/02702711.2018.1555361">Reading Psychology 2018</a>).
+- Automated: Bolaños et al. (FLORA) used 5 lexical + 15 prosodic features and reached ~76% exact agreement in-domain (<a href="https://www.sciencedirect.com/science/article/abs/pii/S0167639312000933">Bolaños et al. 2013</a>; <a href="https://dl.acm.org/doi/abs/10.1145/1998384.1998390">FLORA</a>); a 2024 CNN on 5,841 CORE recordings from 1,811 Grade 2–4 students, using openSMILE features, got 62.5% accuracy / QWK .38 when both passage and student were unseen (<a href="https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2024.1440760/full">Frontiers in Education 2024</a>). A wav2vec2 model on 1,447 recordings of Indian 10–14-year-old ESL readers predicted the NAEP-style comprehensibility rating at Pearson <strong>.827</strong> vs human (inter-rater .76), beating a 39-feature hand-crafted system at .794 — and it did so without the reference text (<a href="https://arxiv.org/pdf/2405.19426">Vaidya, Sahoo &amp; Rao, IIT Bombay 2024</a>). Rubric-guided speech-LLMs are the 2026 frontier (<a href="https://arxiv.org/pdf/2603.16889">arXiv 2603.16889</a>).
+- Why it matters: children whose pause count fell from Grade 1 to 2 and who had an adult-like intonation contour early comprehended better in Grade 3 (<a href="https://ila.onlinelibrary.wiley.com/doi/10.1598/RRQ.43.4.2">Miller &amp; Schwanenflugel 2008</a>); pause intrusions, child–adult pitch match and sentence-final pitch change predicted comprehension in Taiwanese children (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9150736/">Acoustic Features of Oral Reading Prosody, 2022</a>). In NAEP 2018, fourth-graders below Basic-Low averaged below expression level 3 — "they often paused in the middle of a phrase" (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NCES 2021-025</a>). Microsoft ships exactly the pause-based subset: monotone reading, long pauses, not pausing at full stops/commas, inflection on ?/!, stress on multisyllables (<a href="https://www.microsoft.com/en-us/education/blog/2022/03/reach-every-learner-with-reading-programs-from-microsoft-education/">Microsoft Education blog, Mar 2022</a>).</p>
+<p><strong>Feasibility.</strong> Pause-based prosody (the most predictive subset) is pure timing — yes. F0 contour survives Opus wideband — yes. Note: Urdu and Punjabi are prosodically different from English (Punjabi/Pothwari are tonal, <a href="https://gssrjournal.com/fulltext/urdu-punjabi-pothwari-striking-similarities-uniqueness-of-the-three-indoaryan-languages">Urdu–Punjabi–Pothwari comparison</a>); the NAEP rubric transfers, the acoustic thresholds do not. <strong>Unverified</strong>: any Urdu reading-prosody norms.</p>
+<h3 id="a5-decoding-profile-by-graphemephoneme-correspondence-phonics-gap-map">A5. Decoding profile by grapheme–phoneme correspondence ("phonics gap map")</h3>
+<p><strong>Computation.</strong> For every substitution/nonword where the spoken form is recovered, align target grapheme string ↔ produced phone string, and tally which GPCs fail (e.g., English short vowels, digraphs <em>th/sh/ch</em>, silent-e; Urdu: the four <em>z</em> letters, <em>aspirated vs unaspirated stops</em>, retroflex/dental, nasalisation, short-vowel diacritics that are usually absent in print). Aggregate per child over Urdu + English passages and — critically — over the class (Section E2).</p>
+<p><strong>Evidence.</strong> Amira advertises "error types to reveal decoding vs language gaps" and a class-level Skills Status Report with red/yellow/green per skill (<a href="https://amiralearning.com/blog/5-ways-to-utilize-assessment-data-in-the-classroom">Amira 5 ways</a>; <a href="https://explore.amiralearning.com/hubfs/Customer_Resources/AmiraTheoreticalFramework.pdf">Amira Theoretical Framework</a>) — the closest shipped analogue, no independent validation found. Phone-level recognition for young readers is feasible (PER 28.1%, <a href="https://arxiv.org/abs/2103.02899">Gelin et al.</a>) but degrades sharply in noise: PER 14.6% at SNR &gt; 25 dB vs 40.6% at SNR &lt; 10 dB (<a href="https://arxiv.org/pdf/2503.04710">Self-supervised phoneme recognition for reading, 2025</a>). The Dutch study shows ASR confusions on children cluster on specific phones (/v/→/f/, /z/→/s/) — i.e., the recogniser's own errors overlap with the child's likely errors (<a href="https://arxiv.org/pdf/2406.07060">Gao et al. 2024</a>). No study I found validates an automated GPC error map against a phonics diagnostic — <strong>unverified as a psychometric</strong>; it is a plausible v2 <em>teaching</em> output rather than a v1 <em>score</em>.</p>
+<p><strong>Feasibility.</strong> English: v2 with noise gating. Urdu: research; aspiration and sibilant contrasts are exactly what 16–24 kbps Opus blurs (<strong>my judgement, unverified</strong>).</p>
+<h3 id="a6-sight-word-vs-decodable-word-split-and-error-consistency-across-items">A6. Sight-word vs decodable-word split, and error consistency across items</h3>
+<p><strong>Computation.</strong> Tag each passage word a priori as high-frequency sight word / regular decodable / irregular. Report accuracy and latency by class. Consistency = does the child fail the <em>same</em> GPC or the same word every time it recurs (within the passage, across Urdu/English, across sessions).</p>
+<p><strong>Evidence.</strong> DIBELS 8 separates Word Reading Fluency (mixed list) from ORF and nonsense-word fluency precisely to isolate decoding (<a href="https://dibels.uoregon.edu/sites/default/files/DIBELS8-TechnicalManual_04152020.pdf">DIBELS 8 Technical Manual</a>); EGRA carries a non-word subtask for the same reason and Sindh's 2024 EGRA reports it separately (<a href="https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf">Sindh EGRA 2024</a>). Deriving the split <em>inside</em> the passage instead of from a separate subtask is a design shortcut; its reliability is <strong>unverified</strong> and will be low with only ~60 passage words (few irregulars per passage).</p>
+<h3 id="a7-comprehension-monitoring-behaviours-re-reading-hesitation-before-hard-words">A7. Comprehension-monitoring behaviours (re-reading, hesitation before hard words)</h3>
+<p><strong>Computation.</strong> Regressive repetitions of a phrase (not a single word), pauses &gt; 1 s immediately before low-frequency words, and self-corrections on meaning-changing errors versus meaning-preserving ones.</p>
+<p><strong>Evidence.</strong> Repetition and self-correction are standard running-record codes; self-correction predicts progress (<a href="https://www.tandfonline.com/doi/abs/10.1080/02702711.2019.1629518">D'Agostino 2019</a>). NAEP explicitly did <em>not</em> penalise expression for meaning-preserving substitutions (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NCES 2021-025</a>), which is the same distinction. Automated "monitoring" scores — <strong>unverified</strong>; treat as research.</p>
+<h3 id="a8-reading-rate-curve-within-the-60-s-warm-up-fatigue">A8. Reading-rate curve within the 60 s (warm-up, fatigue)</h3>
+<p><strong>Computation.</strong> Cumulative words-correct against time; fit slope for 0–20 s, 20–40 s, 40–60 s; report start latency and rate change.</p>
+<p><strong>Evidence.</strong> I found no published study on within-minute rate change in children — <strong>unverified construct</strong>. The nearest evidence is on <em>duration</em>: reading-duration effects on ORF reliability in middle school (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4274619/">Effect of Reading Duration, 2014</a>) and Piper &amp; Zuilkowski's 4,385-student Kenya study showing timed vs untimed EGRA did not change performance (<a href="https://eric.ed.gov/?id=EJ1088004">Language Testing 2016</a>). Cheap to compute, unknown meaning — log it, do not report it to teachers in v1.</p>
+<h3 id="a9-vocabulary-knowledge-language-of-response-code-switching-from-comprehension-answers">A9. Vocabulary knowledge, language of response, code-switching (from comprehension answers)</h3>
+<p><strong>Computation.</strong> Transcribe the child's answers; LLM-judge each against the rubric (correct / partial / wrong / no response); tag language of each answer (Urdu / English / Punjabi / mixed) and whether the child answered in a language other than the passage's.</p>
+<p><strong>Evidence.</strong> Open-ended child answers are scorable by LLMs at human-comparable flagging accuracy in far lower-resource settings than ours: Gemini-Flash scored MAIN narrative comprehension for 4–5-year-old Afrikaans/isiXhosa children with 89% accuracy (96% recall) at flagging who needs support, on ASR with 28–34% character error rate, with only five minutes of child speech used to train the ASR (<a href="https://arxiv.org/html/2507.13205">Louw et al., SLaTE 2025</a>). Pakistani classroom speech is heavily code-mixed (<a href="https://gssrjournal.com/fulltext/urdu-punjabi-pothwari-striking-similarities-uniqueness-of-the-three-indoaryan-languages">Urdu–Punjabi–Pothwari</a>). Sindh EGRA 2024 found 46% zero scores on comprehension questions vs 28% on CWPM (<a href="https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf">Sindh EGRA 2024</a>) — the language-of-answer tag is what would tell you how much of that is comprehension and how much is production language. <strong>Unverified</strong>: any validated code-switch measure for reading assessment.</p>
+<h3 id="a10-retell-30-s-add-on-idea-units-story-grammar">A10. Retell (~30 s add-on): idea units, story grammar</h3>
+<p><strong>Computation.</strong> Transcribe retell; LLM scores idea units against the passage's proposition list and a story-grammar checklist (setting, characters, problem, resolution); also words-in-retell (DIBELS-style).</p>
+<p><strong>Evidence.</strong> Meta-analysis of 23 studies (N = 4,705): retell correlates r = <strong>.46</strong> with other comprehension measures, r = .58 when three prompts are given; scoring reliabilities .57–1.00 (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7806198/">Is Retell a Valid Measure?, 2021</a>). Fluency-based (word-count) retell correlated poorly with comprehension (<a href="https://onlinelibrary.wiley.com/doi/10.1002/pits.20563">Bellinger &amp; DiPerna 2011</a>); Acadience keeps Retell as a check on children for whom ORF over-predicts comprehension (<a href="https://acadiencelearning.org/help-center/oral-reading-fluency-orf-and-retell/">Acadience ORF &amp; Retell</a>). LLM scoring of narrative recall correlates r ≈ .65 with humans (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12739032/">LLM narrative recall scoring, 2025</a>). Verdict: worth 30 s only if scored for content, never for word count.</p>
+<h3 id="a11-expressive-language-measures-from-any-child-speech-mlu-lexical-diversity-grammaticality">A11. Expressive-language measures from any child speech (MLU, lexical diversity, grammaticality)</h3>
+<p><strong>Computation.</strong> Pool the child's spontaneous utterances (answers, retell, maths explanations); compute MLU in words, VocD/MTLD, and an LLM grammaticality judgement.</p>
+<p><strong>Evidence.</strong> Clinical language-sample analysis (SALT/CLAN) gets reliable MLU from 25–50 utterances (<a href="https://pubs.asha.org/doi/10.1044/2019_LSHSS-18-0148">Using computer programs for LSA, LSHSS 2019</a>); VocD is the strongest diversity measure (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9257278/">Lexical diversity in children's speech, 2022</a>); ASR errors inflate/deflate complexity indices (<a href="https://arxiv.org/pdf/2104.08529">Impact of ASR on complexity measures, 2021</a>). Our battery yields perhaps 10–20 utterances per child — <strong>below the reliability floor</strong>; research only.</p>
+<hr />
+<h2 id="b-numeracy-constructs-from-spoken-maths-and-a-photo-of-written-work">B. Numeracy constructs from spoken maths (and a photo of written work)</h2>
+<h3 id="b1-response-latency-retrieval-vs-counting-strategy">B1. Response latency → retrieval vs counting strategy</h3>
+<p><strong>Computation.</strong> Item onset = end of the coach's spoken item (diarized); response onset = first child voicing; latency = the difference. Add: audible sub-vocal counting (a run of short, rhythmic, low-intensity syllables — detectable as a syllable-rate pattern even when unintelligible), and the <em>slope</em> of latency against operand size within the child (the problem-size effect).</p>
+<p><strong>Evidence.</strong> Siegler's strategy-choice work established that children mix retrieval, counting-on/min, counting-all and decomposition, and that averaging RTs over strategies is misleading (<a href="https://journals.sagepub.com/doi/10.1111/1467-9280.00076">SCADS, Shrager &amp; Siegler 1998</a>; <a href="https://files.eric.ed.gov/fulltext/ED572413.pdf">Assessing children's strategy choices, ERIC</a>). Chronometry distinguishes them: a linear increase of RT with operand magnitude signals a sequential counting procedure — present even in adults' "retrieved" small sums (<a href="https://pubmed.ncbi.nlm.nih.gov/26491834/">Thevenot et al. 2016</a>; <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7704498/">rejoinder 2020</a>; <a href="https://pubmed.ncbi.nlm.nih.gov/23583543/">problem-size effect, 2013</a>). Children with dyscalculia show longer latencies, more finger counting and more procedural errors, and fail to shift from counting to retrieval (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7847199/">Geary line of work summarised in an ERP study, 2021</a>; <a href="https://www.sciencedirect.com/science/article/abs/pii/S073231232200075X">counting strategies in a computer environment, 2022</a>). EGMA already asks the assessor to record strategy — in RTI's samples 52.3% of Level-1 addition items were solved with fingers, 1.6% with tick marks (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf">EGMA Toolkit 2014, Table 4</a>) — so the construct is field-standard; only the measurement is new. <strong>No automated field product does this from audio</strong> that I could find (<strong>unverified</strong>); it is a v2 build with a human-coded strategy-observation set for validation. Caveat: finger counting is silent; a long, silent latency is ambiguous between finger counting and not knowing — the coach's EGMA strategy tick remains the ground truth, and the audio latency becomes its <em>cross-check</em>.</p>
+<h3 id="b2-error-type-near-miss-place-value-operation-confusion">B2. Error type: near-miss, place-value, operation confusion</h3>
+<p><strong>Computation.</strong> Compare spoken answer to key: off-by-one/off-by-two (counting slip), answer = a−b when a+b was asked (operation confusion), answer with correct digits in wrong place or a digit dropped (place-value), answer equals an operand (no computation), no response. Classify with rules first, LLM only for verbal explanations.</p>
+<p><strong>Evidence.</strong> EGMA's addition/subtraction subtests have α = .81/.79 (Level 1) but Word Problems only .44 and Missing Number .58, and Rasch fit was poor for several items (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf">EGMA Toolkit 2014, Table 1</a>) — so per-item error <em>types</em> will be noisy with 5–10 items; the value is diagnostic, not psychometric. Rule-based typing is deterministic once the answer is recognised; the risk is ASR on Urdu number words (see B3).</p>
+<h3 id="b3-number-naming-errors-by-structure-teens-decades-three-digit">B3. Number-naming errors by structure (teens, decades, three-digit)</h3>
+<p><strong>Computation.</strong> Number-identification items: tag each numeral by structure (single digit, teen, decade, two-digit non-teen, three-digit with/without internal zero); recover the spoken form; classify inversion (24↔42), fragmentation ("thirty-six five" for 365), hundred-in-wrong-position, lexical (wrong word for a memorised item).</p>
+<p><strong>Evidence.</strong> Transcoding error taxonomies are well studied: inversion errors are frequent in inverted-number-word languages and cluster on teens in non-inverted ones; young children fragment three-digit numbers (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3990049/">Sixty-four or four-and-sixty?, 2014</a>; <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8615580/">Arabic units/decades order, 2021</a>). Urdu/Hindustani number words are effectively <strong>unique lexical items for 1–99</strong> (each must be memorised; teens are irregular) (<a href="https://preply.com/en/blog/urdu-numbers-how-to-count/">Urdu numbers guide</a> — a language-learning source, <strong>not a research citation</strong>); this predicts a <em>lexical retrieval</em> failure pattern rather than an English-style syntactic one, and makes the "which decade band fails" tally a genuinely Urdu-specific output. Automated number-word recognition is a small closed vocabulary — good ASR territory even in Urdu.</p>
+<h3 id="b4-consistency-of-strategy-across-items">B4. Consistency of strategy across items</h3>
+<p><strong>Computation.</strong> Within-child variance of latency after removing operand-size; proportion of items with audible counting; switch-rate between apparent strategies.</p>
+<p><strong>Evidence.</strong> Adaptive strategy choice (retrieval for easy, counting for hard) is the <em>healthy</em> pattern in Siegler's model (<a href="https://journals.sagepub.com/doi/10.1111/1467-9280.00076">SCADS</a>); "consistency" is therefore not a virtue in itself — the interpretable score is <em>whether the child retrieves the small facts</em>. Research, not v1.</p>
+<h3 id="b5-from-a-photo-of-written-work-strategy-traces-algorithm-errors-digit-formation">B5. From a photo of written work: strategy traces, algorithm errors, digit formation</h3>
+<p><strong>Computation.</strong> Vision-LLM prompt over the photo: detect tally marks, decompositions, column algorithm with carries, crossed-out attempts; transcribe final answers; flag digit reversals.</p>
+<p><strong>Evidence.</strong> Smartphone-photo homework grading exists (BAGS, <a href="https://arxiv.org/pdf/1906.03767">arXiv 1906.03767</a>; EDM 2023 image-response auto-scoring, <a href="https://educationaldatamining.org/edm2023/proceedings/2023.EDM-short-papers.36/">EDM 2023</a>), but "even cutting-edge multimodal LLMs perform poorly on STEM handwritten solution recognition" (<a href="https://arxiv.org/pdf/2602.00095">EDU-CIRCUIT-HW, 2026</a>); children's handwriting needs its own models (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12736956/">children's Arabic handwriting ensemble, 2025</a>). Digit reversal is developmentally normal to age ~7 (digit 3 reversed in 45.6% of cases, 4 in 16.2%; rapid decline after 6) (<a href="https://pubmed.ncbi.nlm.nih.gov/21377665/">Fischer 2011</a>; <a href="https://www.sciencedirect.com/science/article/abs/pii/S002209651300043X">Fischer 2013</a>) — report it as an observation, never a deficit. Strategy-trace detection from photos: <strong>unverified</strong> anywhere; v2 for "final answer + presence of tally marks", research for algorithm-error typing.</p>
+<hr />
+<h2 id="c-assessor-administration-quality-from-the-same-recording">C. Assessor / administration quality from the same recording</h2>
+<p>The recording captures the coach as well as the child. Five checks, all from diarized coach speech + timing:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Computation</th>
+<th>Evidence that it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Protocol adherence</strong> (instructions given, practice item done, story read once/twice as scripted, comprehension questions asked verbatim)</td>
+<td>Align coach utterances to the script with an LLM; count missing / extra / paraphrased steps</td>
+<td>Trained, paid examiners on a Texas fluency study made uncorrectable administration errors (coaching students, wrong prompts, asking the child to repeat) in <strong>8%</strong> of records and correctable scoring errors in <strong>91%</strong> of the rest (<a href="https://sciencedirect.com/science/article/pii/S0022440514000491">Reed &amp; Sturges 2013</a>; <a href="https://www.researchgate.net/publication/256365398_An_Examination_of_Assessment_Fidelity_in_the_Administration_and_Interpretation_of_Reading_Tests">assessment-fidelity review</a>).</td>
+</tr>
+<tr>
+<td><strong>Prompting / correcting the child</strong></td>
+<td>Coach speech overlapping or inside the child's timed window; coach says the target word; coach repeats an item</td>
+<td>EGRA allows one prompt after a 3-s hesitation and nothing else (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf">EGRA Toolkit V2</a>); EGMA scripts a single "do you know another way?" nudge and a 5-s allowance for inefficient strategies (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf">EGMA Toolkit 2014</a>). Anything beyond that is construct-irrelevant variance.</td>
+</tr>
+<tr>
+<td><strong>Timing honesty</strong></td>
+<td>Elapsed audio between "Begin" and "Stop" vs the nominal 60 s; whether the child kept reading after 60 s and those words were counted</td>
+<td>The toolkit relies on a stopwatch and "time remaining" fields; Tangerine tablets replace human timing (<a href="https://www.tangerinecentral.org/impact/egra-egma-ghana-2022-analysis">Tangerine</a>). With audio, the timer is the recording itself — the coach's stopwatch becomes redundant.</td>
+</tr>
+<tr>
+<td><strong>Room noise</strong></td>
+<td>SNR estimate on the child's segments; count of overlapping third-party voices</td>
+<td>Phoneme error rate rises from 14.6% (SNR &gt; 25 dB) to 40.6% (SNR &lt; 10 dB) (<a href="https://arxiv.org/pdf/2503.04710">2025</a>); classroom-noise-robust ASR is an active field (<a href="https://arxiv.org/pdf/2409.14494">CPT-boosted wav2vec2 for classrooms</a>). A noise flag tells you which scores to trust and which schools need a quieter corner.</td>
+</tr>
+<tr>
+<td><strong>Child affect / anxiety cues</strong></td>
+<td>Long silences, falling speech rate, low pitch, minimal pitch variation, whisper-level intensity</td>
+<td>A 3-minute speech task identified 3–7-year-olds with internalising disorders at 80% accuracy (54% sensitivity, 93% specificity) (<a href="https://pubmed.ncbi.nlm.nih.gov/31034426/">McGinnis et al. 2019</a>); math-anxious children respond more slowly and err more (<a href="https://digitalcommons.usu.edu/etd2023/736/">The Role of Response Time in Math Anxiety, 2023</a>). <strong>But</strong>: no evidence that these cues predict <em>score validity</em> in an assessment; the constructs confound with low skill. Log as a research signal only; never surface per child in v1.</td>
+</tr>
+</tbody>
+</table>
+<p>Two further points. First, RTI's own quality gate is inter-rater reliability against a gold-standard assessment, with ≥90% agreement typically required before enumerators go to the field (<a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf">EGRA Toolkit V2, Annex K</a>; Sindh 2024 reported IRR of 88–97% across subtasks (<a href="https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf">Sindh EGRA 2024</a>); Liberia required ≥90% (<a href="https://documents1.worldbank.org/curated/en/772611468057237703/pdf/724570WP0Liber0012020120Box371917B.pdf">World Bank Liberia EGRA evaluation</a>)). With audio, IRR becomes <em>continuous</em>: every recording can be re-scored by machine, so coach drift is measurable per coach per week instead of once at training. Second, DIBELS 8 estimates inter-rater ICCs precisely because "test administrators must decide whether student pronunciation … is correct" (<a href="https://dibels.uoregon.edu/sites/default/files/DIBELS8-TechnicalManual_04152020.pdf">DIBELS 8 Technical Manual, Inter-rater Reliability</a>); the coach's own live tally, compared with the machine tally, yields a per-coach leniency/severity estimate — the "coach quality" signal the operator asked for.</p>
+<hr />
+<h2 id="d-psychometrics-for-a-5-minute-ai-scored-battery">D. Psychometrics for a 5-minute AI-scored battery</h2>
+<h3 id="d1-what-the-incumbents-achieve-from-1-minute-per-subtask">D1. What the incumbents achieve from ~1 minute per subtask</h3>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Concurrent alternate-form</th>
+<th>Delayed alt-form / test-retest</th>
+<th>SEM</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DIBELS 8 ORF (words correct)</td>
+<td>median .93 (Gr 1 .96)</td>
+<td>delayed .88; test-retest .91</td>
+<td><strong>5–8 wcpm Gr 1; 9–11 Gr 2; ~10–12 Gr 3+</strong> (Table 2.34: Gr 2 8.5–10.6; Gr 3 10.8–12.3)</td>
+<td><a href="https://dibels.uoregon.edu/sites/default/files/DIBELS8-TechnicalManual_04152020.pdf">DIBELS 8 Tech Manual</a></td>
+</tr>
+<tr>
+<td>DIBELS 8 ORF accuracy (%)</td>
+<td>median .83</td>
+<td>delayed .73; test-retest .75</td>
+<td>5–10 pts Gr 1, 4–7 Gr 2, 1–2 by Gr 8</td>
+<td>same</td>
+</tr>
+<tr>
+<td>DIBELS 8 Maze</td>
+<td>.72</td>
+<td>.77 / .82</td>
+<td>3–4</td>
+<td>same</td>
+</tr>
+<tr>
+<td>CBM-ORF generally</td>
+<td>—</td>
+<td>AIMSweb test-retest .94</td>
+<td>5–20, "realistic" 8–10 wcpm; 10–15 per occasion in progress monitoring</td>
+<td><a href="https://www.researchgate.net/publication/232440479_Curriculum-based_measurement_of_oral_reading_fluency_The_standard_error_of_measurement">Christ &amp; Silberglitt 2007</a>; <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472650/">Barth et al. 2012</a></td>
+</tr>
+<tr>
+<td>EGMA subtests (Cronbach α)</td>
+<td>Number ID .94, Add L1 .81, Sub L1 .79, Missing Number .58, Word Problems .44</td>
+<td>—</td>
+<td>—</td>
+<td><a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf">EGMA Toolkit 2014</a></td>
+</tr>
+</tbody>
+</table>
+<p>Two implications. (i) A single 60-s passage carries a ±10 wcpm standard error for a Grade 2–3 child; a 95% CI of ±20 wcpm is wider than a term's expected growth, which is why Christ et al. conclude you need ~14 weeks of weekly probes for a reliable slope (<a href="https://pubmed.ncbi.nlm.nih.gov/23375171/">Christ et al. 2013</a>). (ii) Accuracy is <em>less</em> reliable than rate and the five-item EGMA subtests are unreliable — item-level reporting from them is diagnostic colour, not measurement.</p>
+<h3 id="d2-form-effects-and-why-published-cwpm-benchmarks-are-fragile">D2. Form effects and why published cwpm benchmarks are fragile</h3>
+<p>Passages written to the same readability formula produced mean wcpm from <strong>67.9 to 93.9</strong> in the same Grade-2 children (<a href="https://link.springer.com/chapter/10.1007/978-1-4939-2803-3_9">Francis et al. 2008</a>; <a href="https://www.researchgate.net/publication/259311955_Form_Effects_on_DIBELS_Next_Oral_Reading_Fluency_Progress-_Monitoring_Passages">DIBELS Next form effects</a>). Comparability to Hasbrouck–Tindal norms (<a href="https://files.eric.ed.gov/fulltext/ED594994.pdf">Technical Report 1702</a>) or to Pakistan's adopted Urdu benchmark (up to 90 cwpm; <a href="https://ierc-publicfiles.s3.amazonaws.com/public/resources/Asia%20ACR%20Benchmarking%20Report_FINAL%20REVISED_21%20Dec%2017.pdf">ACR-Asia benchmarking</a>) therefore requires <strong>equated passages</strong>, not "grade-level" passages. Sindh's 2024 baseline (Urdu-medium Grade 3: 19.25 cwpm mean, 34.81 excluding zero-scorers; 28% zero) is the local anchor (<a href="https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf">Sindh EGRA 2024</a>); PRP reported 30→57 cwpm in Sindh/Urdu 2014→2017 (<a href="https://www.creativeassociatesinternational.com/story/pakistan-reading-project-wins-2020-international-prize-for-literacy-program-of-the-year/">Creative Associates</a>). If we want to compare to any of these, one of our passages must <em>be</em> (or be equated to) theirs.</p>
+<h3 id="d3-the-model-based-alternative-this-is-the-actual-new-era-psychometrics">D3. The model-based alternative (this is the actual "new era" psychometrics)</h3>
+<p>CORE (IES-funded, Nese &amp; Kamata) replaces the raw count with a latent model fitted to <strong>word-level</strong> data: a binomial accuracy component (per-word correct/incorrect with a person accuracy θ and passage difficulty) and a lognormal speed component (per-passage reading time with a person speed τ), estimated jointly by Bayesian MCMC, from which a model-based WCPM with a <em>conditional</em> standard error is derived. On 58 fourth-graders × 4 short passages the mean CSEM was <strong>8.00</strong> (range 3.42–12.93) vs DIBELS Grade-4 SEM 9.63–12.86; model-based and observed WCPM correlated .99; and simulation showed the <strong>number of passages matters more than sample size</strong> — N = 50 children suffices to calibrate if each reads enough passages (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7425326/">Nese &amp; Kamata 2020</a>; <a href="https://doi.org/10.1177/23328584211071112">Nese 2022 growth comparison</a>; equating extension <a href="https://doi.org/10.1177/00131644221148122">Kara et al. 2024</a> — abstract only, details <strong>unverified</strong>; project list at <a href="https://jnese.github.io/core-blog/publications.html">CORE publications</a>). This is precisely the machinery a WhatsApp-audio pipeline feeds naturally: every recording yields the per-word table the model needs.</p>
+<h3 id="d4-adaptivity-with-fixed-stimuli">D4. Adaptivity with fixed stimuli</h3>
+<p>True CAT needs a large calibrated item bank; ORF passages are testlets, and testlet models outperform unidimensional ones when several items share a passage (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6413677/">Item selection for CAT with passages, 2019</a>). The realistic design for us is <em>two-stage</em> branching (a short screener decides which of 2–3 passage difficulties the coach opens) rather than item-level CAT. For single-word/lexical-decision tasks, CAT is proven: ROAR-CAT reached reliability .90 with 75 items vs 125 in random order, correlated .89 (Gr 1) with FAST CBMreading, and its item parameters were invariant across SES/EL/LD subgroups (r = .82–.93) (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11732908/">ROAR-CAT, 2025</a>). MAP Reading Fluency runs a 20-minute adaptive, speech-scored ORF (<a href="https://charts.intensiveintervention.org/screening/tool/?id=444748c77834b793">NCII entry</a>). Where response data are thin, item parameters can be <em>predicted</em> from item features (AutoIRT: AutoML + BERT features → explanatory IRT, then Fisher-information bandit selection) (<a href="https://arxiv.org/abs/2410.21033">Sharpnack et al. 2024</a>) — relevant for calibrating new Urdu passages from text features before we have thousands of reads.</p>
+<h3 id="d5-item-level-vs-level-reporting">D5. Item-level vs level reporting</h3>
+<p>Report (a) the level, (b) the model-based score with its CSEM as a band, (c) item-level <em>diagnostics</em> explicitly labelled as low-reliability (EGMA α .44–.58 subtests; single-passage GPC tallies). Amira's shipped pattern — a class Skills Status grid, per-student skill mastery, generated grouping and lesson recommendations (<a href="https://amiralearning.com/blog/5-ways-to-utilize-assessment-data-in-the-classroom">Amira 5 ways</a>; <a href="https://amiralearning.com/instruct">Amira Instruct</a>) — and Read Along's per-word feedback (<a href="https://blog.google/intl/en-in/products/google-companies/reinforcing-our-commitment-to/">Google Read Along India</a>) are the "assessment for learning" reference points; neither publishes the reliability of its skill-level cells, so treat them as UX precedent, not psychometric precedent.</p>
+<hr />
+<h2 id="e-what-the-ai-driven-new-era-can-add-that-paper-never-could">E. What the AI-driven "new era" can add that paper never could</h2>
+<ol>
+<li><strong>Longitudinal growth per child from repeated 5-minute samples.</strong> Paper EGRA is cross-sectional by construction (different children each round). A retained recording lets you re-score every past sample under the same model, fit a per-child growth curve, and put a CSEM on each point. Evidence for what it takes: ~14 weeks of weekly probes for a trustworthy slope (<a href="https://pubmed.ncbi.nlm.nih.gov/23375171/">Christ et al. 2013</a>); confidence-interval overlap can flag reliable growth (<a href="https://pubmed.ncbi.nlm.nih.gov/26866285/">Christ et al. 2016</a>); model-based scores narrow the CSEM (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7425326/">Nese &amp; Kamata 2020</a>). Amira and DIBELS 8 both ship progress-monitoring on this basis (<a href="https://charts.intensiveintervention.org/progressmonitoring/tool/?id=b2bb72b4d4b4597c">NCII Amira</a>).</li>
+<li><strong>Error-pattern clustering across a class ("what to teach tomorrow").</strong> Aggregate A3/A5 tallies over 30 children → the three GPCs and the two number-word bands the class fails most. Amira's Skills Status Report is the shipped precedent (<a href="https://amiralearning.com/blog/5-ways-to-utilize-assessment-data-in-the-classroom">Amira</a>); the Labov GAREC scheme is the analytic precedent (<a href="https://www.ling.upenn.edu/~wlabov/Papers/GAREC/GAREC.html">GAREC</a>). Nobody has published a validation that such clusters change teaching or outcomes (<strong>unverified</strong>).</li>
+<li><strong>Automatic item calibration from thousands of recordings.</strong> Word-level tables from every read feed the binomial-lognormal model; passage difficulty parameters come out per passage and per grade, and equating between old and new passages becomes routine (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7425326/">Nese &amp; Kamata 2020</a>; <a href="https://doi.org/10.1177/00131644221148122">Kara et al. 2024</a>). CORE calibrated 30 passages from 1,811 students (<a href="https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2024.1440760/full">Frontiers 2024 dataset description</a>). For new Urdu passages before data exist, AutoIRT-style feature-based priors (<a href="https://arxiv.org/abs/2410.21033">arXiv 2410.21033</a>).</li>
+<li><strong>Speaker-independent passage difficulty, and per-word difficulty.</strong> Because the model separates person from passage, you get a difficulty <em>per word</em> (which words in "the Urdu Grade-2 passage" are actually hard) — a direct feedback loop to passage authors. Francis's 26-wcpm spread between "equivalent" passages is the problem this solves (<a href="https://link.springer.com/chapter/10.1007/978-1-4939-2803-3_9">Francis 2008</a>).</li>
+<li><strong>Dialect-aware scoring.</strong> NAEP's engine accepted consistent dialect/L2 pronunciations and was tested for bias against ELs and Black students (<a href="https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf">NCES 2021-025</a>; <a href="https://doi.org/10.1177/0013164411412590">Balogh 2012</a>). The general-ASR baseline is bad: 35% WER for Black speakers vs 19% for white speakers across five commercial systems, driven by acoustic modelling not vocabulary (<a href="https://www.pnas.org/doi/10.1073/pnas.1915768117">Koenecke et al., PNAS 2020</a>). For us, "dialect" means Punjabi/Pothwari-influenced Urdu (phonemic interference from Punjabi is "perceptible" in Punjabi speakers' Urdu, Pothwari is tonal; <a href="https://gssrjournal.com/fulltext/urdu-punjabi-pothwari-striking-similarities-uniqueness-of-the-three-indoaryan-languages">GSSR 2021</a>) — an accepted-pronunciation lexicon per target word, built from our own recordings, is the concrete deliverable. <strong>Unverified</strong>: any existing Pothwari-Urdu pronunciation variant list.</li>
+<li><strong>Bias / fairness checks as a standing report.</strong> The recommended practice for automated child language assessment is to test differential ASR error and differential score validity by subgroup and to treat exclusion of dialects from training data as the root cause (<a href="https://onlinelibrary.wiley.com/doi/10.1111/jedm.12435">Bailey, JEDM 2024</a>); a 2025 Language Testing paper examines exactly "linguistic equity of automated ORF assessment with prosody" (<a href="https://journals.sagepub.com/doi/10.1177/02655322251348956">Hannah et al. 2025</a> — paywalled, findings <strong>unverified</strong>); recent SoapBox research reports lower human–machine agreement on phonologically complex tasks and examines racial differences (<a href="https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2026.1671946/pdf">Frontiers in Education 2026</a>); ROAR-CAT reports item-parameter invariance by subgroup (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11732908/">ROAR-CAT</a>). Our version: per-district, per-gender, per-L1 WER and machine-vs-human score gaps, published with every release.</li>
+<li><strong>The coach becomes a measured instrument</strong> (Section C): per-coach severity, prompting rate, timing error — continuous IRR instead of a one-off training check.</li>
+</ol>
+<hr />
+<h2 id="f-ranked-table-construct-block-computation-evidence-cost-phase">F. Ranked table: construct × block × computation × evidence × cost × phase</h2>
+<p>Ranking criterion: value to a teacher/coach × strength of evidence ÷ cost. U = Urdu read, E = English read, M = spoken maths, P = photo.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Construct</th>
+<th>Block</th>
+<th>How computed</th>
+<th>Reliability / prediction evidence</th>
+<th>Cost &amp; complexity</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Words correct, rate, WCPM, accuracy (machine)</td>
+<td>U E</td>
+<td>Prompted child-ASR + forced alignment</td>
+<td>Machine–human r = .96 (NAEP); DIBELS ORF alt-form .93, SEM ±5–12 wcpm</td>
+<td>Low (E), medium (U: no child corpus; must measure Urdu miscue precision)</td>
+<td><strong>v1</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Coach protocol adherence + prompting + timing honesty</td>
+<td>all</td>
+<td>Diarize coach; LLM-align to script; count prompts inside timed window</td>
+<td>Examiner error 8% uncorrectable / 91% correctable (Reed &amp; Sturges); EGRA IRR gate ≥90%</td>
+<td>Low–medium</td>
+<td><strong>v1</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Room noise / recording-quality flag</td>
+<td>all</td>
+<td>SNR on child segments</td>
+<td>PER 14.6%→40.6% from low to high noise</td>
+<td>Low</td>
+<td><strong>v1</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Pause-based prosody (pauses at punctuation vs intrusions, phrase length, start latency)</td>
+<td>U E</td>
+<td>Alignment timing only</td>
+<td>Relative silence times explain 58% of WCPM variance; pause intrusions predict comprehension; Miller &amp; Schwanenflugel longitudinal</td>
+<td>Low</td>
+<td><strong>v1</strong> (report as descriptive, not a level)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Miscue counts: omission / insertion / substitution / repetition / self-correction (+ SC latency)</td>
+<td>U E</td>
+<td>Alignment rules</td>
+<td>F1 .39→.73 with prompted Whisper (Dutch); SC predicts progress (D'Agostino)</td>
+<td>Medium; Urdu precision unknown</td>
+<td><strong>v1</strong> counts (E), <strong>v2</strong> (U)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Per-word latency distribution; effortful-decoding rate (restarts, intra-word pauses)</td>
+<td>U E</td>
+<td>Alignment + fragment detection</td>
+<td>Construct is standard (3-s hesitation rule); no published score reliability</td>
+<td>Medium</td>
+<td><strong>v2</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Model-based WCPM with CSEM; passage calibration &amp; equating</td>
+<td>U E</td>
+<td>Binomial-lognormal latent model on word-level table</td>
+<td>CSEM 8.0 vs DIBELS 9.6–12.9; needs ≥3–4 short passages/child; N≈50 calibrates</td>
+<td>Medium (statistics), low (data)</td>
+<td><strong>v2</strong> (design the passage set for it in v1)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Comprehension answers: LLM scoring + language-of-answer + code-switch tag</td>
+<td>U E</td>
+<td>Transcribe answers; LLM rubric judge</td>
+<td>LLM flagging 89% accuracy on 4–5-yr-old low-resource narratives; retell r = .46–.58</td>
+<td>Low–medium</td>
+<td><strong>v1</strong> scoring, <strong>v2</strong> language tags</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Maths response latency; problem-size slope; audible counting</td>
+<td>M</td>
+<td>Coach-utterance offset → child onset; syllable-rhythm detector</td>
+<td>Strong cognitive theory (Siegler, Thevenot, Geary); EGMA strategy tick is field-standard; no automated precedent</td>
+<td>Medium</td>
+<td><strong>v2</strong> (validate against coach's EGMA strategy tick)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Maths error typing (near-miss / operation / place-value / no-computation)</td>
+<td>M</td>
+<td>Rules on recognised answer</td>
+<td>EGMA α .79–.81 (add/sub L1), .44–.58 (word problems, missing number)</td>
+<td>Low</td>
+<td><strong>v1</strong> as diagnostic colour, never as a score</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Number-naming error by structure (teens, decades, 3-digit, Urdu lexical)</td>
+<td>M</td>
+<td>Closed-vocabulary ASR; structural tags</td>
+<td>Transcoding taxonomy well established; Urdu-specific pattern is a hypothesis</td>
+<td>Low</td>
+<td><strong>v2</strong></td>
+</tr>
+<tr>
+<td>12</td>
+<td>NAEP-scale expression (acoustic: F0 contour, intensity, stress)</td>
+<td>U E</td>
+<td>openSMILE/wav2vec2 → 4-level classifier</td>
+<td>Automated 62–76% exact vs human–human 58%; wav2vec2 r = .83 on Indian ESL readers</td>
+<td>Medium–high; needs Urdu-rated training set</td>
+<td><strong>v2</strong> (E), <strong>research</strong> (U)</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Phonics gap map (GPC error profile) per child and per class</td>
+<td>U E</td>
+<td>Phone-level decoding of substitutions vs target graphemes</td>
+<td>Amira ships it (no independent validation); phone ASR PER ~28%, worse in noise; Opus blurs fricatives/aspiration</td>
+<td>High</td>
+<td><strong>v2</strong> (E, class-level only), <strong>research</strong> (U)</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Photo: final answers + presence of tally marks / decomposition; digit reversal (non-judgemental)</td>
+<td>P</td>
+<td>Vision-LLM</td>
+<td>Handwriting grading exists; MLLMs weak on STEM handwriting; reversals normal to age 7</td>
+<td>Medium</td>
+<td><strong>v2</strong> answers, <strong>research</strong> strategy traces</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Retell (30 s) idea units / story grammar</td>
+<td>U E</td>
+<td>Transcribe + LLM against proposition list</td>
+<td>Retell r = .46 with comprehension (.58 with 3 prompts); LLM–human r ≈ .65</td>
+<td>Low–medium; costs 30 s per child</td>
+<td><strong>v2</strong> only if a slot exists</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Sight-word vs decodable split from passage words</td>
+<td>U E</td>
+<td>A-priori word tags</td>
+<td>Few irregulars per 60-word passage; reliability unverified</td>
+<td>Low</td>
+<td><strong>research</strong> (use a word list subtask instead)</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Within-minute rate curve (warm-up/fatigue)</td>
+<td>U E</td>
+<td>Cumulative words vs time</td>
+<td>No literature found</td>
+<td>Trivial</td>
+<td><strong>research</strong> (log only)</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Child affect / anxiety cues</td>
+<td>all</td>
+<td>Speech rate, pitch, long silences</td>
+<td>80% accuracy for internalising disorders in 3–7-yr-olds; zero evidence for score validity; confounds with skill</td>
+<td>Low compute, high ethical cost</td>
+<td><strong>research</strong> (never per-child in product)</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Expressive language (MLU, lexical diversity)</td>
+<td>all</td>
+<td>LSA on pooled utterances</td>
+<td>Needs 25–50 utterances; we have ~10–20</td>
+<td>Low</td>
+<td><strong>research</strong></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Dialect-aware accepted-pronunciation lexicon; subgroup fairness report</td>
+<td>U E</td>
+<td>Cluster consistent variants per target word; per-subgroup WER and machine–human gaps</td>
+<td>NAEP/Balogh precedent; PNAS 35% vs 19% WER warning; Bailey recommendations</td>
+<td>Medium, ongoing</td>
+<td><strong>v1</strong> fairness report; <strong>v2</strong> lexicon</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="g-honest-limits-and-what-is-unverified">G. Honest limits and what is unverified</h2>
+<ul>
+<li><strong>No child-Urdu read-speech ASR benchmark exists in the literature I found.</strong> Everything about Urdu miscue precision is extrapolation from adult Urdu (34% WER, Whisper-Small), Arabic children (66% WER, Whisper large-v3) and Dutch/English children (5–10% WER with prompting). The first engineering milestone is a 200-child human-transcribed Urdu set and a precision/recall table by miscue type.</li>
+<li><strong>Prosody scoring in Urdu has no norms</strong> and Punjabi/Pothwari tone will interact with pitch features. English prosody has a large literature; Urdu has none that I found.</li>
+<li><strong>Maths strategy from latency</strong> is theoretically sound and field-relevant (EGMA already asks coaches to observe it) but has no automated precedent; it needs its own validation against coach observation before it appears in any report.</li>
+<li><strong>Phonics gap maps</strong> and <strong>class-level clustering</strong> are shipped by Amira but not independently validated; the Opus bitrate is a specific risk for the phonetic contrasts Urdu cares about.</li>
+<li><strong>Affect/anxiety</strong> cues are detectable but unrelated to score validity in any study I found, and would be ethically fraught to surface per child.</li>
+<li>Vendor numbers (Amira 96% agreement / 98–99% WCPM correlation / "99% dyslexia accuracy"; Read Along 38%→88%) are unaudited marketing claims.</li>
+<li>I could not read three paywalled primary sources (Kara et al. 2024 equating; Bailey 2024 JEDM; Hannah et al. 2025 Language Testing) beyond their abstracts.</li>
+</ul>
+<h2 id="reference-list-primary-sources-used">Reference list (primary sources used)</h2>
+<p>NAEP 2018 ORF study — https://nces.ed.gov/nationsreportcard/subject/studies/orf/2021025_orf_study.pdf · Balogh et al. 2012 — https://doi.org/10.1177/0013164411412590 · DIBELS 8 Technical Manual — https://dibels.uoregon.edu/sites/default/files/DIBELS8-TechnicalManual_04152020.pdf · EGRA Toolkit V2 — https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGRA%20Toolkit%20V2%202016.pdf · EGMA Toolkit 2014 — https://ierc-publicfiles.s3.amazonaws.com/public/resources/EGMA%20Toolkit_March2014.pdf · Sindh EGRA Baseline 2024 — https://rsusindh.gov.pk/contents/SELECT/EGRA_Baseline_Assessment_Report_Sindh.pdf · Nese &amp; Kamata 2020 — https://pmc.ncbi.nlm.nih.gov/articles/PMC7425326/ · Kara et al. PTAM 2023 — https://www.psychologie-aktuell.com/fileadmin/Redaktion/Journale/ptam_2023-1/PTAM__1-2023_2_kor.pdf · Gao et al. 2024 — https://arxiv.org/pdf/2406.07060 · Gao et al. 2025 — https://www.isca-archive.org/interspeech_2025/gao25c_interspeech.pdf · Frontiers 2024 prosody — https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2024.1440760/full · Vaidya, Sahoo &amp; Rao 2024 — https://arxiv.org/pdf/2405.19426 · Bolaños et al. 2013 — https://www.sciencedirect.com/science/article/abs/pii/S0167639312000933 · Miller &amp; Schwanenflugel 2008 — https://ila.onlinelibrary.wiley.com/doi/10.1598/RRQ.43.4.2 · Retell meta-analysis — https://pmc.ncbi.nlm.nih.gov/articles/PMC7806198/ · D'Agostino et al. 2019 — https://www.tandfonline.com/doi/abs/10.1080/02702711.2019.1629518 · Christ &amp; Silberglitt 2007 — https://www.researchgate.net/publication/232440479 · Christ et al. 2013 — https://pubmed.ncbi.nlm.nih.gov/23375171/ · Francis et al. 2008 — https://link.springer.com/chapter/10.1007/978-1-4939-2803-3_9 · Reed &amp; Sturges 2013 — https://sciencedirect.com/science/article/pii/S0022440514000491 · Thevenot et al. 2016 — https://pubmed.ncbi.nlm.nih.gov/26491834/ · Shrager &amp; Siegler 1998 — https://journals.sagepub.com/doi/10.1111/1467-9280.00076 · Transcoding (PMC3990049) — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3990049/ · Digit reversal — https://pubmed.ncbi.nlm.nih.gov/21377665/ · McGinnis et al. 2019 — https://pubmed.ncbi.nlm.nih.gov/31034426/ · Koenecke et al. 2020 — https://www.pnas.org/doi/10.1073/pnas.1915768117 · ROAR-CAT — https://pmc.ncbi.nlm.nih.gov/articles/PMC11732908/ · AutoIRT — https://arxiv.org/abs/2410.21033 · Louw et al. 2025 — https://arxiv.org/html/2507.13205 · Urdu Whisper — https://arxiv.org/pdf/2508.09865 · Arabic child ASR — https://arxiv.org/pdf/2510.23319 · Phoneme recognition in noise — https://arxiv.org/pdf/2503.04710 · Microsoft Reading Progress guide — https://learn.microsoft.com/en-us/training/educator-center/product-guides/reading-progress/ · Amira framework — https://explore.amiralearning.com/hubfs/Customer_Resources/AmiraTheoreticalFramework.pdf · WhatsApp Opus — https://chattopdf.app/blog/whatsapp-audio-format</p><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

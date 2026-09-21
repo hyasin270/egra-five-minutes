@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/01_soniox_batch.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/01_soniox_batch.py</h1><p class=lede>Harness step 1: Soniox stt-async-v3 (diarised, hints ur+en) over every recording → harness/soniox/&lt;file&gt;.json</p><p class="meta">Raw file: <a href="../../src/harness/01_soniox_batch.py">harness/01_soniox_batch.py</a></p><pre><code>&quot;&quot;&quot;Harness step 1: Soniox stt-async-v3 (diarised, hints ur+en) over every recording → harness/soniox/&lt;file&gt;.json
+Run: uv run --with requests python harness/01_soniox_batch.py   (idempotent; 4 workers)&quot;&quot;&quot;
+import os, sys, requests, time, json, subprocess, concurrent.futures as cf
+ROOT=&quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+key=[l.split(&#x27;=&#x27;,1)[1].strip() for l in open(os.path.join(ROOT,&#x27;02_Main Rumi Bot/.env&#x27;)) if l.startswith(&#x27;SONIOX_API_KEY=&#x27;)][-1]
+H={&#x27;Authorization&#x27;:f&#x27;Bearer {key}&#x27;}
+def one(fn):
+    out=f&#x27;harness/soniox/{fn}.json&#x27;
+    if os.path.exists(out): return fn,&#x27;cached&#x27;
+    src=f&#x27;audio/{fn}&#x27;; wav=f&#x27;harness/soniox/{fn}.wav&#x27;
+    subprocess.run([&#x27;ffmpeg&#x27;,&#x27;-y&#x27;,&#x27;-loglevel&#x27;,&#x27;error&#x27;,&#x27;-i&#x27;,src,&#x27;-ar&#x27;,&#x27;16000&#x27;,&#x27;-ac&#x27;,&#x27;1&#x27;,wav],check=True)
+    try:
+        f=requests.post(&#x27;https://api.soniox.com/v1/files&#x27;,headers=H,files={&#x27;file&#x27;:open(wav,&#x27;rb&#x27;)},timeout=300).json(); fid=f[&#x27;id&#x27;]
+        t=requests.post(&#x27;https://api.soniox.com/v1/transcriptions&#x27;,headers=H,json={&#x27;file_id&#x27;:fid,&#x27;model&#x27;:&#x27;stt-async-v3&#x27;,&#x27;language_hints&#x27;:[&#x27;ur&#x27;,&#x27;en&#x27;],&#x27;enable_language_identification&#x27;:True,&#x27;enable_speaker_diarization&#x27;:True,&#x27;speaker_diarization_config&#x27;:{&#x27;min_speakers&#x27;:2,&#x27;max_speakers&#x27;:4}},timeout=60).json(); tid=t[&#x27;id&#x27;]
+        while True:
+            s=requests.get(f&#x27;https://api.soniox.com/v1/transcriptions/{tid}&#x27;,headers=H,timeout=60).json()
+            if s[&#x27;status&#x27;] in (&#x27;completed&#x27;,&#x27;error&#x27;): break
+            time.sleep(3)
+        if s[&#x27;status&#x27;]!=&#x27;completed&#x27;: return fn,&#x27;error:&#x27;+str(s.get(&#x27;error_message&#x27;))[:100]
+        tr=requests.get(f&#x27;https://api.soniox.com/v1/transcriptions/{tid}/transcript&#x27;,headers=H,timeout=120).json()
+        json.dump(tr,open(out,&#x27;w&#x27;),ensure_ascii=False)
+        requests.delete(f&#x27;https://api.soniox.com/v1/transcriptions/{tid}&#x27;,headers=H,timeout=30); requests.delete(f&#x27;https://api.soniox.com/v1/files/{fid}&#x27;,headers=H,timeout=30)
+        return fn,f&quot;ok:{len(tr.get(&#x27;tokens&#x27;,[]))}tok&quot;
+    finally:
+        if os.path.exists(wav): os.remove(wav)
+files=sorted(f for f in os.listdir(&#x27;audio&#x27;) if f.endswith(&#x27;.m4a&#x27;))
+print(len(files),&#x27;files&#x27;,flush=True)
+with cf.ThreadPoolExecutor(4) as ex:
+    for i,(fn,st) in enumerate(ex.map(one,files)): print(i+1,fn[:20],st,flush=True)
+print(&#x27;BATCH_DONE&#x27;,flush=True)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

@@ -1,0 +1,129 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/03b_segmenter_llm.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/03b_segmenter_llm.py</h1><p class=lede>Harness step 3b: LLM-labelled segmentation on STT timestamps (&quot;STT cuts, LLM labels&quot;).</p><p class="meta">Raw file: <a href="../../src/harness/03b_segmenter_llm.py">harness/03b_segmenter_llm.py</a></p><pre><code>&quot;&quot;&quot;Harness step 3b: LLM-labelled segmentation on STT timestamps (&quot;STT cuts, LLM labels&quot;).
+The diarised Soniox transcript is rendered as numbered turns with start/end seconds; a TEXT LLM assigns each
+subtask a first/last turn. Windows therefore inherit Soniox&#x27;s timestamps. Compared against the tablet&#x27;s
+per-subtask start/end (relative durations + one fitted offset).
+Run: uv run --with requests --with pandas python harness/03b_segmenter_llm.py [model] [max_files]
+&quot;&quot;&quot;
+import os, sys, json, glob, re, time, requests, concurrent.futures as cf
+import pandas as pd
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+KEY = [l.split(&#x27;=&#x27;, 1)[1].strip() for l in open(os.path.join(ROOT, &#x27;.env&#x27;)) if l.startswith(&#x27;NIETE_STAGING_OPENROUTER_API_KEY=&#x27;)][-1]
+MODEL = sys.argv[1] if len(sys.argv) &gt; 1 else &#x27;google/gemini-2.5-flash&#x27;
+MAXF = int(sys.argv[2]) if len(sys.argv) &gt; 2 else 10000
+os.makedirs(&#x27;harness/segments_llm&#x27;, exist_ok=True)
+SUBS = [&#x27;listcomp_urd&#x27;, &#x27;letterid_urd&#x27;, &#x27;idwrd_urd&#x27;, &#x27;orf_urd&#x27;, &#x27;rdcomp_urd&#x27;, &#x27;listcomp_eng&#x27;, &#x27;letterid_eng&#x27;, &#x27;pw_eng&#x27;, &#x27;idwrd_eng&#x27;, &#x27;orf_eng&#x27;, &#x27;rdcomp_eng&#x27;,
+        &#x27;idnummag&#x27;, &#x27;numrep&#x27;, &#x27;blfluency&#x27;, &#x27;bleffcomp&#x27;, &#x27;wrdpblm&#x27;, &#x27;patterns&#x27;]
+
+PROMPT = &quot;&quot;&quot;You are segmenting a transcript of an enumerator administering an EGRA/EGMA battery to one child in a Pakistani school. The transcript is diarised and numbered; each turn has [start-end seconds] and a speaker id. The battery order is usually:
+URDU: listcomp_urd (enumerator reads a story twice, asks 6 questions) → letterid_urd (child names Urdu letters for 60 s after &quot;start&quot;) → idwrd_urd (child reads a list of Urdu words) → orf_urd (child reads an Urdu story/passage aloud) → rdcomp_urd (questions about that passage)
+ENGLISH: listcomp_eng (English story + questions) → letterid_eng (English letters, 60 s) → pw_eng (made-up/nonsense words) → idwrd_eng (English word list) → orf_eng (English passage) → rdcomp_eng (questions)
+MATH: idnummag (which number is bigger / identify numbers) → numrep (represent numbers, sticks/bundles, place value) → blfluency (rapid addition then subtraction, timed) → bleffcomp (computation like 25+7) → wrdpblm (word problems) → patterns (shape/number patterns)
+Some subtasks may be skipped. For every subtask you can identify, output the turn number where the CHILD&#x27;S RESPONSE begins (for timed reads: the child&#x27;s first letter/word after the enumerator says start; for question tasks: the first question) and the turn number where it ends. Also output the turn number of the enumerator&#x27;s instruction that introduced it.
+Return ONLY JSON: {&quot;segments&quot;:[{&quot;sub&quot;:&quot;letterid_urd&quot;,&quot;instr_turn&quot;:12,&quot;first_turn&quot;:13,&quot;last_turn&quot;:14,&quot;confidence&quot;:0.9}, ...]}&quot;&quot;&quot;
+
+
+def render(path):
+    tr = json.load(open(path))
+    toks = tr.get(&#x27;tokens&#x27;, [])
+    turns = []
+    for t in toks:
+        s, e, sp, tx = t.get(&#x27;start_ms&#x27;, 0) / 1000, t.get(&#x27;end_ms&#x27;, 0) / 1000, t.get(&#x27;speaker&#x27;), t.get(&#x27;text&#x27;, &#x27;&#x27;)
+        if turns and turns[-1][&#x27;spk&#x27;] == sp and s - turns[-1][&#x27;e&#x27;] &lt; 1.5:
+            turns[-1][&#x27;text&#x27;] += tx; turns[-1][&#x27;e&#x27;] = e
+        else:
+            turns.append({&#x27;spk&#x27;: sp, &#x27;s&#x27;: s, &#x27;e&#x27;: e, &#x27;text&#x27;: tx})
+    lines = [f&quot;{i} [{tu[&#x27;s&#x27;]:.0f}-{tu[&#x27;e&#x27;]:.0f}] spk{tu[&#x27;spk&#x27;]}: {tu[&#x27;text&#x27;].strip()[:400]}&quot; for i, tu in enumerate(turns)]
+    return turns, &#x27;\n&#x27;.join(lines)
+
+
+def label(path):
+    out = f&quot;harness/segments_llm/{MODEL.replace(&#x27;/&#x27;, &#x27;_&#x27;)}__{os.path.basename(path)}&quot;
+    if os.path.exists(out):
+        return json.load(open(out))
+    turns, text = render(path)
+    for attempt in range(3):
+        try:
+            r = requests.post(&#x27;https://openrouter.ai/api/v1/chat/completions&#x27;, headers={&#x27;Authorization&#x27;: f&#x27;Bearer {KEY}&#x27;},
+                              json={&#x27;model&#x27;: MODEL, &#x27;messages&#x27;: [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: PROMPT + &#x27;\n\nTRANSCRIPT:\n&#x27; + text}], &#x27;max_tokens&#x27;: 16000, &#x27;temperature&#x27;: 0}, timeout=300)
+            j = r.json(); c = j[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]
+            m = re.search(r&#x27;\{.*\}&#x27;, c, re.S); segs = json.loads(m.group(0))[&#x27;segments&#x27;]
+            res = {&#x27;file&#x27;: os.path.basename(path), &#x27;model&#x27;: MODEL, &#x27;cost&#x27;: j.get(&#x27;usage&#x27;, {}).get(&#x27;cost&#x27;), &#x27;segments&#x27;: []}
+            for sg in segs:
+                try:
+                    ft, lt, it = int(sg[&#x27;first_turn&#x27;]), int(sg[&#x27;last_turn&#x27;]), int(sg.get(&#x27;instr_turn&#x27;, sg[&#x27;first_turn&#x27;]))
+                    res[&#x27;segments&#x27;].append({&#x27;sub&#x27;: sg[&#x27;sub&#x27;], &#x27;instr_s&#x27;: turns[it][&#x27;s&#x27;], &#x27;start_s&#x27;: turns[ft][&#x27;s&#x27;], &#x27;end_s&#x27;: turns[lt][&#x27;e&#x27;], &#x27;confidence&#x27;: sg.get(&#x27;confidence&#x27;)})
+                except Exception:
+                    pass
+            json.dump(res, open(out, &#x27;w&#x27;), ensure_ascii=False)
+            return res
+        except Exception as ex:
+            time.sleep(2 + attempt * 3)
+    return None
+
+
+def compare(res, gt):
+    st = gt[&#x27;subtask_times&#x27;]
+    T = lambda k, w: pd.to_datetime(st[k][w]) if st.get(k, {}).get(w) else None
+    tab = {}
+    for k in SUBS:
+        a, b = T(k, &#x27;start&#x27;), T(k, &#x27;end&#x27;)
+        if a is not None and b is not None and 0 &lt; (b - a).total_seconds() &lt; 900:
+            tab[k] = (a, (b - a).total_seconds())
+    got = {s[&#x27;sub&#x27;]: s for s in res[&#x27;segments&#x27;]}
+    common = [k for k in tab if k in got]
+    if len(common) &lt; 2:
+        return {&#x27;n_tablet&#x27;: len(tab), &#x27;n_llm&#x27;: len(got), &#x27;n_common&#x27;: len(common)}
+    # fit offset: median over common of (llm start - tablet start seconds-since-form-start)
+    fs = pd.to_datetime(gt[&#x27;form_start&#x27;])
+    diffs = [got[k][&#x27;start_s&#x27;] - (tab[k][0] - fs).total_seconds() for k in common]
+    off = sorted(diffs)[len(diffs) // 2]
+    errs = {k: round(got[k][&#x27;start_s&#x27;] - ((tab[k][0] - fs).total_seconds() + off), 1) for k in common}
+    lens = {k: (round(got[k][&#x27;end_s&#x27;] - got[k][&#x27;start_s&#x27;], 1), round(tab[k][1], 1)) for k in common}
+    within5 = sum(1 for v in errs.values() if abs(v) &lt;= 5); within15 = sum(1 for v in errs.values() if abs(v) &lt;= 15)
+    timed = [k for k in common if k in (&#x27;letterid_urd&#x27;, &#x27;letterid_eng&#x27;, &#x27;idwrd_urd&#x27;, &#x27;idwrd_eng&#x27;, &#x27;pw_eng&#x27;, &#x27;orf_urd&#x27;, &#x27;orf_eng&#x27;, &#x27;blfluency&#x27;)]
+    len_err = [abs(lens[k][0] - lens[k][1]) for k in timed]
+    return {&#x27;n_tablet&#x27;: len(tab), &#x27;n_llm&#x27;: len(got), &#x27;n_common&#x27;: len(common), &#x27;within5&#x27;: within5, &#x27;within15&#x27;: within15,
+            &#x27;mean_abs_start_err&#x27;: round(sum(abs(v) for v in errs.values()) / len(errs), 1), &#x27;timed_len_err&#x27;: round(sum(len_err) / len(len_err), 1) if len_err else None,
+            &#x27;errs&#x27;: errs, &#x27;lens&#x27;: lens, &#x27;cost&#x27;: res.get(&#x27;cost&#x27;)}
+
+
+if __name__ == &#x27;__main__&#x27;:
+    files = sorted(glob.glob(&#x27;harness/soniox/*.json&#x27;))[:MAXF]
+    files = [f for f in files if os.path.exists(&#x27;harness/gt/&#x27; + os.path.basename(f))]
+    print(MODEL, len(files), &#x27;files&#x27;, flush=True)
+    rows = []
+    with cf.ThreadPoolExecutor(4) as ex:
+        for res in ex.map(label, files):
+            if not res:
+                continue
+            gt = json.load(open(&#x27;harness/gt/&#x27; + res[&#x27;file&#x27;]))
+            c = compare(res, gt); c[&#x27;file&#x27;] = res[&#x27;file&#x27;][:20]; rows.append(c)
+            print(res[&#x27;file&#x27;][:20], {k: v for k, v in c.items() if k in (&#x27;n_tablet&#x27;, &#x27;n_llm&#x27;, &#x27;n_common&#x27;, &#x27;within5&#x27;, &#x27;within15&#x27;, &#x27;mean_abs_start_err&#x27;, &#x27;timed_len_err&#x27;, &#x27;cost&#x27;)}, flush=True)
+    df = pd.DataFrame(rows)
+    df.to_csv(f&quot;harness/segmenter_llm_{MODEL.replace(&#x27;/&#x27;, &#x27;_&#x27;)}.csv&quot;, index=False)
+    if &#x27;within5&#x27; in df:
+        d = df.dropna(subset=[&#x27;within5&#x27;])
+        print(f&quot;\nSUMMARY {MODEL}: files={len(d)} subtasks tablet={d.n_tablet.sum()} llm={d.n_llm.sum()} common={d.n_common.sum()} &quot;
+              f&quot;start within 5s={d.within5.sum()} ({100 * d.within5.sum() / d.n_common.sum():.0f}%) within 15s={d.within15.sum()} ({100 * d.within15.sum() / d.n_common.sum():.0f}%) &quot;
+              f&quot;mean|start err|={d.mean_abs_start_err.mean():.1f}s timed-len err={d.timed_len_err.mean():.1f}s cost/file=${d.cost.mean():.4f}&quot;)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

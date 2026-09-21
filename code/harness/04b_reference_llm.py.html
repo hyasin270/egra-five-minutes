@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/04b_reference_llm.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/04b_reference_llm.py</h1><p class=lede>Harness step 4b: reconstruct the reference stimuli with an LLM instead of positional voting.</p><p class="meta">Raw file: <a href="../../src/harness/04b_reference_llm.py">harness/04b_reference_llm.py</a></p><pre><code>&quot;&quot;&quot;Harness step 4b: reconstruct the reference stimuli with an LLM instead of positional voting.
+Give Gemini 2.5 Pro up to 30 children&#x27;s transcripts of the same subtask window and ask for the most likely original
+printed stimulus in order (passage / word list / letter grid). Positional voting (04) degraded as N grew because it
+seeds on the longest, insertion-heavy read; an LLM reads across children and recovers the text far better.
+Output: harness/reference/&lt;sub&gt;.json  {ref:[...], source:&#x27;llm&#x27;, n_children}
+Run: uv run --with requests python harness/04b_reference_llm.py
+&quot;&quot;&quot;
+import os, json, glob, re, collections, requests, time, sys
+sys.path.insert(0, &#x27;harness&#x27;)
+import importlib.util
+spec = importlib.util.spec_from_file_location(&#x27;rr&#x27;, &#x27;harness/04_reference_reconstruct.py&#x27;); rr = importlib.util.module_from_spec(spec); spec.loader.exec_module(rr)
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+KEY = [l.split(&#x27;=&#x27;, 1)[1].strip() for l in open(os.path.join(ROOT, &#x27;.env&#x27;)) if l.startswith(&#x27;NIETE_STAGING_OPENROUTER_API_KEY=&#x27;)][-1]
+MODEL = &#x27;google/gemini-2.5-pro&#x27;
+SEG_MODEL = &#x27;google_gemini-2.5-pro&#x27;
+DESC = {
+    &#x27;orf_urd&#x27;: &#x27;a ~60–70-word Urdu story passage for Grade 2–3 (about Bilal going to the river Jhelum with his father)&#x27;,
+    &#x27;idwrd_urd&#x27;: &#x27;a list of ~50 common Urdu words (بچہ، دروازہ، پانی، کتاب …) read in order&#x27;,
+    &#x27;letterid_urd&#x27;: &#x27;a grid of 100 Urdu letters read by NAME in order (many repeats)&#x27;,
+    &#x27;orf_eng&#x27;: &#x27;a ~60-word English story passage for Grade 2–3 (about Imran, school, a plant)&#x27;,
+    &#x27;idwrd_eng&#x27;: &#x27;a list of ~50 common English words (boy, girl, school, book, teacher …) read in order&#x27;,
+    &#x27;pw_eng&#x27;: &#x27;a list of ~50 English pseudowords / nonsense words (e.g. lip, nape, dut …) read in order&#x27;,
+    &#x27;letterid_eng&#x27;: &#x27;a grid of 100 English letters read by name in order (many repeats)&#x27;,
+}
+PROMPT = &quot;&quot;&quot;You are reconstructing the ORIGINAL PRINTED STIMULUS of an EGRA subtask from transcripts of many different children reading it aloud in a noisy classroom (speech-to-text, so transcripts contain errors, omissions, repetitions and self-corrections). The stimulus is: {desc}.
+Below are the children&#x27;s transcripts, one per line. Reconstruct the most likely original text, in order, as a JSON array of tokens (one word / letter-name per token). Stop where the evidence runs out (later positions were reached by few children). Do not invent content that no child said. Return ONLY JSON: {{&quot;ref&quot;: [&quot;...&quot;, &quot;...&quot;], &quot;notes&quot;: &quot;...&quot;}}&quot;&quot;&quot;
+
+
+def collect():
+    per = collections.defaultdict(list)
+    for p in glob.glob(f&#x27;harness/segments_llm/{SEG_MODEL}__*.json&#x27;):
+        r = json.load(open(p)); f = r[&#x27;file&#x27;]
+        trp = &#x27;harness/soniox/&#x27; + f
+        if not os.path.exists(trp):
+            continue
+        tr_ur = json.load(open(trp))
+        tr_en = json.load(open(&#x27;harness/soniox_en/&#x27; + f)) if os.path.exists(&#x27;harness/soniox_en/&#x27; + f) else None
+        for s in r[&#x27;segments&#x27;]:
+            sub = s[&#x27;sub&#x27;]
+            if sub not in DESC or (s.get(&#x27;confidence&#x27;) or 0) &lt; 0.7:
+                continue
+            tr = tr_en if sub.endswith(&#x27;_eng&#x27;) else tr_ur
+            if tr is None:
+                continue
+            cw = rr.child_words(tr, s[&#x27;start_s&#x27;], s[&#x27;end_s&#x27;])
+            if len(cw) &gt;= 8:
+                per[sub].append(&#x27; &#x27;.join(cw))
+    return per
+
+
+if __name__ == &#x27;__main__&#x27;:
+    per = collect()
+    for sub, lines in per.items():
+        lines = sorted(lines, key=len, reverse=True)[:30]
+        body = PROMPT.format(desc=DESC[sub]) + &#x27;\n\n&#x27; + &#x27;\n&#x27;.join(f&#x27;{i + 1}. {l[:700]}&#x27; for i, l in enumerate(lines))
+        for attempt in range(3):
+            try:
+                j = requests.post(&#x27;https://openrouter.ai/api/v1/chat/completions&#x27;, headers={&#x27;Authorization&#x27;: f&#x27;Bearer {KEY}&#x27;},
+                                  json={&#x27;model&#x27;: MODEL, &#x27;messages&#x27;: [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: body}], &#x27;max_tokens&#x27;: 16000, &#x27;temperature&#x27;: 0}, timeout=300).json()
+                c = j[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]; m = re.search(r&#x27;\{.*\}&#x27;, c, re.S); out = json.loads(m.group(0))
+                ref = [rr.clean(str(w)) for w in out[&#x27;ref&#x27;] if rr.clean(str(w))]
+                json.dump({&#x27;sub&#x27;: sub, &#x27;n_children&#x27;: len(lines), &#x27;ref&#x27;: ref, &#x27;source&#x27;: &#x27;llm&#x27;, &#x27;notes&#x27;: out.get(&#x27;notes&#x27;, &#x27;&#x27;), &#x27;cost&#x27;: j.get(&#x27;usage&#x27;, {}).get(&#x27;cost&#x27;)}, open(f&#x27;harness/reference/{sub}.json&#x27;, &#x27;w&#x27;), ensure_ascii=False)
+                open(f&#x27;harness/reference/{sub}.txt&#x27;, &#x27;w&#x27;).write(&#x27; &#x27;.join(ref))
+                print(f&quot;{sub:12s} children={len(lines):3d} ref_len={len(ref):3d} cost=${j.get(&#x27;usage&#x27;, {}).get(&#x27;cost&#x27;, 0):.3f}  {&#x27; &#x27;.join(ref[:25])}&quot;)
+                break
+            except Exception as ex:
+                print(sub, &#x27;retry&#x27;, attempt, str(ex)[:100]); time.sleep(3)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

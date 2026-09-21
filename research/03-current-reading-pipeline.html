@@ -1,0 +1,129 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What the main bot already has · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../index.html">EGRA in Five Minutes</a><a href="../index.html#experiment">Experiment</a><a href="../harness/results.html">Harness results</a><a href="../files.html">All files</a><a href="../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>What the main bot already has</h1><p class=lede>The reading pipeline and the live ASER tool, file by file</p><h1 id="03-what-the-main-bot-already-has-reading-assessment-the-live-aser-tool">03 — What the main bot already has: reading assessment + the live ASER tool</h1>
+<p><strong>Written:</strong> 2026-09-15 (traced by hand from <code>origin/main</code> @ <code>2d5a3925</code>, after the agent trace hit a session limit). Repo: <code>hyasin270/whatsapp-ai-bot</code> (<code>02_Main Rumi Bot</code>). Note the local <code>main</code> checkout is behind origin — the <code>shared/services/aser/</code> directory only exists on <code>origin/main</code>.</p>
+<h2 id="two-student-assessment-stacks-exist-today">Two student-assessment stacks exist today</h2>
+<table>
+<thead>
+<tr>
+<th>Stack</th>
+<th>Entry</th>
+<th>Unit</th>
+<th>Scoring</th>
+<th>HITL</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Reading assessment v3</strong> (PROJ-047)</td>
+<td>menu → WhatsApp Flow <code>READING_ASSESSMENT_FLOW_V3_ID</code></td>
+<td>one child, one generated passage (letters / words / sentences / paragraph / story)</td>
+<td>Soniox STT → <code>FluencyService</code> alignment → WCPM/LCPM → ASER level; Azure PA for English pronunciation</td>
+<td>none — teacher sees the report</td>
+<td>live PK-wide since Jul 2026</td>
+</tr>
+<tr>
+<td><strong>ASER assessment tool</strong> (bd-2716 → bd-2767, Aug–Sep 2026)</td>
+<td><code>/asertest</code> text command, or the coach region-flow (<code>aser-coach-region-flow.json</code> v6.3: REGION → MARKAZ → SCHOOL → REVIEW_STUDENTS)</td>
+<td>one child, three subjects (local literacy, English literacy, numeracy), each an <strong>adaptive ladder</strong></td>
+<td>same reading pipeline on fixed ASER content + numeracy vision/STT</td>
+<td><strong>Auto (Rumi) or Manual (enumerator) per subject</strong>, plus a "Correct it" coach-level override; both values persisted</td>
+<td>live on main; <strong>field team rejected it on 2026-09-11</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-reading-pipeline-shared-by-both">The reading pipeline (shared by both)</h2>
+<pre><code>voice note → R2 reading_audio/{userId}/{assessmentId}_{ts}.{ext}
+  → TranscriptionService.transcribeReading(rowId, audioUrl, lang, passageText)     shared/services/reading/transcription.service.js:70
+      Soniox stt-async-v3, diarization ON, language hint, passage-biased context (BUG-076 / bd-1150 / bd-2709)
+  → FluencyService.calculateFluencyMetrics(...)                                    shared/services/reading/fluency.service.js:40
+      cleanTranscriptForAlignment → collapseSpelledWords → tokenize (Arabic-block punctuation stripped, bd-1935)
+      alignWords = Levenshtein alignment → omissions / substitutions / insertions (:366)
+      timeElapsed from word_timestamps (:463); self-corrections (:502)
+      WCPM for connected text, LCPM for letter grids (:139-153); accuracy = correct / passage words
+  → PronunciationService.assessPronunciation                                        shared/services/reading/pronunciation.service.js:55
+      English: Azure Pronunciation Assessment, Phoneme granularity, NBestPhonemes=5, prosody+miscue (:107-181)
+      Urdu / other: GPT-4o-audio word-level fallback (Azure has no ur locale)
+  → ComprehensionService (story questions, LLM-graded)                             comprehension.service.js
+  → aser-level.service PASS_THRESHOLD = 80 % accuracy → level
+  → reading_assessments row  (+ report.service PDF, voice-feedback mp3)
+</code></pre>
+<p><code>reading_assessments</code> already holds what an EGRA row needs: <code>passage_type</code>, <code>passage_text</code>, <code>audio_url</code>, <code>audio_duration_seconds</code>, <code>num_speakers_detected</code>, <code>transcript_text</code>, <code>word_timestamps JSONB</code>, <code>words_read</code>, <code>words_correct</code>, <code>wcpm</code>, <code>accuracy_percentage</code>, <code>time_elapsed_seconds</code>, <code>pronunciation_data JSONB</code>, <code>errors JSONB</code> (omission/substitution/insertion/repetition with position), <code>self_corrections_count</code>, grade benchmarks, <code>on_track</code>. Migration bd-2716 added <code>aser_session_id</code>, <code>content_source ('generated'|'aser_fixed')</code>, and the <strong>HITL pair</strong> <code>rumi_level / rumi_label / rumi_comprehended</code> vs <code>coach_level / coach_user_id / coach_reviewed_at / rumi_coach_delta</code>; bd-2735 added <code>aser_scored_by ('rumi'|'enumerator')</code>; bd-2720 added <code>aser_ladder_node</code>.</p>
+<p><code>numeracy_assessments</code> (migration 063) already has the same two-column discipline for math: <code>auto_grade_result / auto_grade_confidence / auto_grade_extracted_answer</code> vs <code>human_confirmed_result / human_confirmed_by / human_confirmed_at</code>, <code>discrepancy_flag</code>, <code>recognition_audio_url</code>, <code>computation_photo_url</code>, cost columns.</p>
+<p><code>aser_sessions</code> (bd-2716, bd-2732) = <code>user_id (coach), student_id, student_name, grade_level 1–5, school_id, region, status, completed_at</code>. <code>aser_results_flat</code> (bd-2746) is the analyst view: one row per session with the final level per subject = <code>COALESCE(coach_level, rumi_level)</code>.</p>
+<h2 id="the-aser-ladder-sharedservicesaseraser-ladderjs">The ASER ladder (<code>shared/services/aser/aser-ladder.js</code>)</h2>
+<p>Per subject a directed graph of nodes with pass/fail targets, fixed content (<code>aser-content-bank.js</code>), <code>PASS_THRESHOLD = 80</code>:
+- Local literacy (Urdu): <code>LOCLIT_LETTERS → LOCLIT_WORDS → LOCLIT_SENTENCES → LOCLIT_STORY</code> (story has three outcomes: struggled / fluent-no-comprehension / fluent-comprehended). Kiswahili variant starts at Sentences.
+- English literacy: <code>ENGLIT_CAPITAL → ENGLIT_SMALL → ENGLIT_WORDS → ENGLIT_SENTENCES</code>.
+- Numeracy: <code>NUM_DIGIT_1_9 → 10_99 → 100_999 → NUM_SUB_2D → NUM_SUB_3D → NUM_DIVISION → NUM_FRACTIONS</code> (bd-2743), numbers by audio, computation by photo (<code>NumeracyVisionService</code>), batteries of 3 problems (<code>pickBattery</code>).
+- <code>isOnTarget(subject, grade, level, comprehended)</code> gives the grade-target verdict.</p>
+<h2 id="the-coach-loop-sharedhandlersaser-flowhandlerjs-redis-key-aserstatephone">The coach loop (<code>shared/handlers/aser-flow.handler.js</code>, Redis key <code>aser:state:{phone}</code>)</h2>
+<pre><code>awaiting_region (auto-filled from users.region, bd-2737) → awaiting_school (free text, or the coach region-flow / AEO roster picker, bd-2734/2739)
+→ awaiting_grade (picker) → awaiting_name → awaiting_subject_choice (LIST: each subject × Auto|Manual, bd-2735)
+→ awaiting_reading_audio | awaiting_numeracy_audio | awaiting_numeracy_photo | awaiting_story_comprehension_audio
+→ awaiting_coach_review  (Auto path: Rumi's level shown, &quot;Correct it&quot; re-enters live administration, bd-2761; coach_level validated against the subject ceiling, bd-2747)
+   | awaiting_manual_outcome (Manual path: coach taps pass/fail; audio still captured; background eval-only re-score fills rumi_* for comparison, bd-2735)
+→ loop to next subject → final report (bd-2750)
+</code></pre>
+<p>The coach region-flow samples <strong>3–5 students round-robin across a school's <code>student_lists</code></strong> (<code>aser-student-sampling.service.js</code>, default 5) and requires a real class list (bd-2764/2766). Roles allowed: aeo, training_manager, coach, cluster_coordinator (bd-2749/2762).</p>
+<h2 id="why-the-field-team-rejected-it-on-2026-09-11-rawalpindi-tms-and-what-is-already-fixed-on-main">Why the field team rejected it on 2026-09-11 (Rawalpindi TMs) — and what is already fixed on main</h2>
+<table>
+<thead>
+<tr>
+<th>Complaint</th>
+<th>On main today</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"type the school name every time"</td>
+<td>region auto-filled (bd-2737); school picker exists only where an AEO roster or the region-flow class list exists (bd-2734/2739) — free text elsewhere</td>
+</tr>
+<tr>
+<td>"one question per message, 10–15 min per child"</td>
+<td>still one prompt → one voice note per ladder rung; the ladder is adaptive (stops on first fail) but each rung is a WhatsApp round trip</td>
+</tr>
+<tr>
+<td>"AI unreliable on Pakistani accents; give us a human toggle"</td>
+<td>Manual mode per subject (bd-2735) + "Correct it" override (bd-2747/2761) — <strong>shipped</strong></td>
+</tr>
+<tr>
+<td>"no internet in schools; upload later"</td>
+<td>not addressed — every rung is online</td>
+</tr>
+<tr>
+<td>"photo of written work is a hassle"</td>
+<td>numeracy computation still needs a photo</td>
+</tr>
+<tr>
+<td>"ASER is separate from observation in NIETE"</td>
+<td>tool is standalone; no observe hook</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-this-means-for-the-egra-product">What this means for the EGRA product</h2>
+<ul>
+<li><strong>Schema: zero new tables are needed for v1.</strong> <code>aser_sessions</code> + <code>reading_assessments</code> + <code>numeracy_assessments</code> already carry session, per-child identity, audio URL, transcript, word timestamps, per-word errors, the AI-vs-coach pair, and who-scored. An EGRA subtask = one <code>reading_assessments</code> row with a new <code>passage_type</code> value (<code>letter_grid</code>, <code>nonword_grid</code>, <code>word_grid</code>, <code>orf</code>, <code>listening_comp</code>) and <code>content_source='egra_fixed'</code>; math subtasks = <code>numeracy_assessments</code> rows. Per-item coach corrections fit <code>errors JSONB</code> / <code>pronunciation_data JSONB</code> with a <code>coach_verdict</code> field, or one new JSONB column <code>coach_item_edits</code> (Rule 15: defend it).</li>
+<li><strong>Scoring: the alignment engine exists</strong> (<code>FluencyService.alignWords</code> + <code>calculateTimeElapsed</code> from Soniox word timestamps). What is missing is (a) a 60-second window cut from timestamps with the toolkit formula <code>score / (60 − time_remaining) × 60</code>, (b) stop-rule logic, (c) per-item confidence for Urdu letters/nonwords (needs the forced-aligner/GOP layer from research/02), (d) a per-item HITL form instead of a per-subject level override.</li>
+<li><strong>Loop: the v3 sequential-reading day-session</strong> (<code>sequential-reading.service.js</code>, pick / auto-pick / attendance / next-or-end, bd-2350 fix) and the ASER sampler (<code>aser-student-sampling.service.js</code>) are the "5 children" loop already built; the EGRA flow reuses them.</li>
+<li><strong>The one-rung-per-message shape is the thing to kill.</strong> The Probe-1/2 evidence (<code>../probes/</code>) shows a single continuous recording per block can be segmented by STT timestamps and labelled by the LLM, so the coach records once per block, not once per item.</li>
+<li><strong>Where it runs:</strong> for NIETE (the "after /observe" ask) the feature lands in <code>Orenda-Project/NIETE-Rumi</code>, which has the observe stack but <strong>not</strong> the ASER tool or the sequential-reading loop — those must be ported (see research/04 §8 and the "code ported but dependency wasn't" warning). For Rawalpindi/PK it lands in the main bot where the ASER tool already lives.</li>
+</ul><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

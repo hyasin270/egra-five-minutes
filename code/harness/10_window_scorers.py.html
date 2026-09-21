@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/10_window_scorers.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/10_window_scorers.py</h1><p class=lede>Harness round 2, step 10: score the 60-second reading windows with the models we recommended but had not tested.</p><p class="meta">Raw file: <a href="../../src/harness/10_window_scorers.py">harness/10_window_scorers.py</a></p><pre><code>&quot;&quot;&quot;Harness round 2, step 10: score the 60-second reading windows with the models we recommended but had not tested.
+Two arms, same prompt, same reference text, same children:
+  - AUDIO arm: the 60-s clip itself goes to an audio-capable LLM via OpenRouter (Gemini 2.5/3.x, gpt-audio, mimo, voxtral, ...)
+  - TEXT arm:  the STT transcript of the same window goes to a text LLM (gpt-5-mini, claude-sonnet-5, ...) — does an LLM
+               judge per-word verdicts better than plain Levenshtein alignment does?
+Each call returns JSON: per reference word {correct|wrong|skipped} + words_correct. Compared with the enumerator&#x27;s count and
+per-word flags; the human floor and the Levenshtein baseline sit beside every number.
+Run: uv run --with requests --with pandas python harness/10_window_scorers.py &lt;arm:audio|text&gt; &lt;model&gt; [n_children]
+Outputs: harness/windows/&lt;arm&gt;__&lt;model&gt;__&lt;file&gt;__&lt;sub&gt;.json and harness/window_scores.csv (appended)
+&quot;&quot;&quot;
+import os, sys, json, glob, re, base64, subprocess, requests, time, random
+import pandas as pd
+sys.path.insert(0, &#x27;harness&#x27;)
+import importlib.util
+spec = importlib.util.spec_from_file_location(&#x27;rs&#x27;, &#x27;harness/06_reading_score.py&#x27;); rs = importlib.util.module_from_spec(spec); spec.loader.exec_module(rs)
+
+ROOT = &quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+KEY = [l.split(&#x27;=&#x27;, 1)[1].strip() for l in open(os.path.join(ROOT, &#x27;.env&#x27;)) if l.startswith(&#x27;NIETE_STAGING_OPENROUTER_API_KEY=&#x27;)][-1]
+ARM, MODEL = sys.argv[1], sys.argv[2]
+N = int(sys.argv[3]) if len(sys.argv) &gt; 3 else 40
+SEG_MODEL = &#x27;google_gemini-2.5-pro&#x27;
+SUBS = {&#x27;orf_urd&#x27;: (&#x27;Urdu&#x27;, &#x27;orf&#x27;), &#x27;orf_eng&#x27;: (&#x27;English&#x27;, &#x27;orf&#x27;), &#x27;idwrd_urd&#x27;: (&#x27;Urdu&#x27;, &#x27;idwrd&#x27;)}
+os.makedirs(&#x27;harness/windows&#x27;, exist_ok=True)
+random.seed(7)
+
+PROMPT = &quot;&quot;&quot;A child in a Pakistani government school (grade 1-5) is reading aloud from a printed {lang} text for 60 seconds. The exact printed text, word by word, is:
+{ref}
+Judge every word of the printed text in order. For each word say whether the child read it CORRECTLY (an acceptable pronunciation of that word), read it WRONG (said a different word or a mispronunciation that changes the word), or SKIPPED it (never attempted, including everything after the child stopped). Self-corrections count as correct. Do not invent words the child did not say. Return ONLY JSON:
+{{&quot;words&quot;:[{{&quot;i&quot;:1,&quot;w&quot;:&quot;&lt;word&gt;&quot;,&quot;v&quot;:&quot;correct|wrong|skipped&quot;}}, ...], &quot;words_correct&quot;: &lt;int&gt;, &quot;words_attempted&quot;: &lt;int&gt;, &quot;notes&quot;:&quot;&lt;one line&gt;&quot;}}&quot;&quot;&quot;
+
+
+def window(f, s):
+    &quot;&quot;&quot;60-s clip from the child&#x27;s first word (whisper for English, Soniox for Urdu), like 06 does.&quot;&quot;&quot;
+    trp = &#x27;harness/whisper_en/&#x27; + f if s[&#x27;sub&#x27;].endswith(&#x27;_eng&#x27;) else &#x27;harness/soniox/&#x27; + f
+    if not os.path.exists(trp):
+        return None, None
+    tr = json.load(open(trp))
+    wt = rs.words_with_time(rs.child_tokens(tr, s[&#x27;start_s&#x27;], s[&#x27;end_s&#x27;]))
+    if not wt:
+        return None, None
+    t0 = wt[0][1]
+    return t0, [w for w, t in wt if t - t0 &lt;= 60.5]
+
+
+def call(messages, max_tokens=6000):
+    for attempt in range(3):
+        try:
+            r = requests.post(&#x27;https://openrouter.ai/api/v1/chat/completions&#x27;, headers={&#x27;Authorization&#x27;: f&#x27;Bearer {KEY}&#x27;},
+                              json={&#x27;model&#x27;: MODEL, &#x27;messages&#x27;: messages, &#x27;max_tokens&#x27;: max_tokens, **({} if &#x27;voxtral&#x27; in MODEL else {&#x27;temperature&#x27;: 0})}, timeout=300)
+            j = r.json()
+            if &#x27;choices&#x27; not in j:
+                raise RuntimeError(str(j)[:200])
+            c = j[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;] or &#x27;&#x27;
+            m = re.search(r&#x27;\{.*\}&#x27;, c, re.S)
+            return json.loads(m.group(0)), j.get(&#x27;usage&#x27;, {}).get(&#x27;cost&#x27;), None
+        except Exception as ex:
+            err = str(ex)[:160]; time.sleep(2 + 3 * attempt)
+    return None, None, err
+
+
+if __name__ == &#x27;__main__&#x27;:
+    refs = {s: json.load(open(f&#x27;harness/reference/{s}.json&#x27;))[&#x27;ref&#x27;] for s in SUBS}
+    files = sorted(glob.glob(f&#x27;harness/segments_llm/{SEG_MODEL}__*.json&#x27;))
+    random.shuffle(files); files = files[:N]
+    rows = []; spent = 0.0
+    for p in files:
+        r = json.load(open(p)); f = r[&#x27;file&#x27;]; gtp = &#x27;harness/gt/&#x27; + f
+        if not os.path.exists(gtp):
+            continue
+        gt = json.load(open(gtp)); sc = gt[&#x27;scores&#x27;]; src = &#x27;audio/&#x27; + f.replace(&#x27;.json&#x27;, &#x27;&#x27;)
+        for s in r[&#x27;segments&#x27;]:
+            sub = s[&#x27;sub&#x27;]
+            if sub not in SUBS or (s.get(&#x27;confidence&#x27;) or 0) &lt; 0.7:
+                continue
+            lang, pre = SUBS[sub]; ref = refs[sub]
+            t0, hyp = window(f, s)
+            if t0 is None:
+                continue
+            out = f&quot;harness/windows/{ARM}__{MODEL.replace(&#x27;/&#x27;, &#x27;_&#x27;)}__{f}__{sub}.json&quot;
+            if os.path.exists(out):
+                res = json.load(open(out))
+            elif os.environ.get(&#x27;CACHE_ONLY&#x27;):
+                continue
+            else:
+                prompt = PROMPT.format(lang=lang, ref=&#x27; &#x27;.join(f&#x27;{i + 1}:{w}&#x27; for i, w in enumerate(ref)))
+                if ARM == &#x27;audio&#x27;:
+                    mp3 = &#x27;harness/windows/_tmp.mp3&#x27;
+                    subprocess.run([&#x27;ffmpeg&#x27;, &#x27;-y&#x27;, &#x27;-loglevel&#x27;, &#x27;error&#x27;, &#x27;-ss&#x27;, f&#x27;{max(0, t0 - 0.5):.2f}&#x27;, &#x27;-to&#x27;, f&#x27;{t0 + 61:.2f}&#x27;, &#x27;-i&#x27;, src, &#x27;-ar&#x27;, &#x27;16000&#x27;, &#x27;-ac&#x27;, &#x27;1&#x27;, &#x27;-b:a&#x27;, &#x27;48k&#x27;, mp3], check=True)
+                    b64 = base64.b64encode(open(mp3, &#x27;rb&#x27;).read()).decode()
+                    msgs = [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: [{&#x27;type&#x27;: &#x27;text&#x27;, &#x27;text&#x27;: prompt}, {&#x27;type&#x27;: &#x27;input_audio&#x27;, &#x27;input_audio&#x27;: {&#x27;data&#x27;: b64, &#x27;format&#x27;: &#x27;mp3&#x27;}}]}]
+                else:
+                    msgs = [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: prompt + &#x27;\n\nSPEECH-TO-TEXT TRANSCRIPT of what the child said in those 60 seconds (may contain recognition errors):\n&#x27; + &#x27; &#x27;.join(hyp)}]
+                j, cost, err = call(msgs)
+                res = {&#x27;file&#x27;: f, &#x27;sub&#x27;: sub, &#x27;arm&#x27;: ARM, &#x27;model&#x27;: MODEL, &#x27;cost&#x27;: cost, &#x27;error&#x27;: err, &#x27;result&#x27;: j}
+                json.dump(res, open(out, &#x27;w&#x27;), ensure_ascii=False)
+            spent += res.get(&#x27;cost&#x27;) or 0
+            j = res.get(&#x27;result&#x27;)
+            if not j:
+                rows.append(dict(arm=ARM, model=MODEL, file=f[:20], sub=sub, error=(res.get(&#x27;error&#x27;) or &#x27;no-json&#x27;)[:80])); continue
+            verd = [w.get(&#x27;v&#x27;) for w in j.get(&#x27;words&#x27;, [])]
+            flags = gt[&#x27;items&#x27;].get(sub) or []
+            att = len([v for v in verd if v != &#x27;skipped&#x27;]); att = max((i + 1 for i, v in enumerate(verd) if v != &#x27;skipped&#x27;), default=0)
+            m_corr = sum(1 for v in verd[:att] if v == &#x27;correct&#x27;)
+            lang_k = &#x27;urd&#x27; if sub.endswith(&#x27;urd&#x27;) else &#x27;eng&#x27;
+            e_corr = sc.get(f&#x27;{pre}_60s_correct_{lang_k}&#x27;) or sc.get(f&#x27;{pre}_reading_correct_{lang_k}&#x27;)
+            e_corr_att = sc.get(f&#x27;{pre}_60s_attempted_{lang_k}&#x27;) or sc.get(f&#x27;{pre}_reading_attempted_{lang_k}&#x27;)
+            reach = min(att, int(float(e_corr_att)) if e_corr_att not in (None, &#x27;&#x27;) else att, len(flags))
+            pairs = [(int(verd[i] != &#x27;correct&#x27;), int(flags[i])) for i in range(reach) if flags[i] is not None]
+            tp = sum(1 for m, e in pairs if m and e); fp = sum(1 for m, e in pairs if m and not e); fn = sum(1 for m, e in pairs if e and not m)
+            # Levenshtein baseline on the same window
+            st, _ = rs.align(ref, hyp); att_b = rs.last_attempted(st); b_corr = sum(1 for x in st[:att_b] if x == &#x27;correct&#x27;)
+            rows.append(dict(arm=ARM, model=MODEL, file=f[:20], sub=sub, machine_correct=m_corr, machine_attempted=att, enum_correct=e_corr, baseline_correct=b_corr,
+                             n_pairs=len(pairs), tp=tp, fp=fp, fn=fn, cost=res.get(&#x27;cost&#x27;)))
+        print(f[:20], f&#x27;spent ${spent:.2f}&#x27;, flush=True)
+    df = pd.DataFrame(rows)
+    csvp = &#x27;harness/window_scores.csv&#x27;
+    if os.path.exists(csvp) and os.path.getsize(csvp) &gt; 10:
+        old = pd.read_csv(csvp); old = old[~((old.arm == ARM) &amp; (old.model == MODEL))]; df = pd.concat([old, df])
+    df.to_csv(csvp, index=False)
+    d = df[(df.arm == ARM) &amp; (df.model == MODEL)].dropna(subset=[&#x27;machine_correct&#x27;, &#x27;enum_correct&#x27;]).copy()
+    print(f&#x27;\nSUMMARY {ARM} {MODEL}: windows={len(d)} spent=${spent:.2f}&#x27;)
+    for sub, g in d.groupby(&#x27;sub&#x27;):
+        g = g.assign(enum_correct=pd.to_numeric(g.enum_correct)); diff = g.machine_correct - g.enum_correct; bd_ = g.baseline_correct - g.enum_correct
+        prec = g.tp.sum() / max(1, g.tp.sum() + g.fp.sum()); rec = g.tp.sum() / max(1, g.tp.sum() + g.fn.sum())
+        print(f&quot;  {sub:10s} n={len(g):3d} count r={g.machine_correct.corr(g.enum_correct):.2f} MAE={diff.abs().mean():.1f} bias={diff.mean():+.1f} within±5={100 * (diff.abs() &lt;= 5).mean():.0f}% | per-word precision={prec:.2f} recall={rec:.2f} | Levenshtein baseline on same windows: r={g.baseline_correct.corr(g.enum_correct):.2f} MAE={bd_.abs().mean():.1f}&quot;)
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

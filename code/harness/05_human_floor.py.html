@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/05_human_floor.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/05_human_floor.py</h1><p class=lede>Harness step 5: the human floor. For every subtask, how often did the QA reviewer (second human, re-listening</p><p class="meta">Raw file: <a href="../../src/harness/05_human_floor.py">harness/05_human_floor.py</a></p><pre><code>&quot;&quot;&quot;Harness step 5: the human floor. For every subtask, how often did the QA reviewer (second human, re-listening
+to the recording) agree with the enumerator&#x27;s score? Uses the 1,462 QA rows; verdict per score field is
+correct / incorrect / unknown. Also per-field agreement and the flagged rate.
+Run: uv run --with pandas python harness/05_human_floor.py&quot;&quot;&quot;
+import pandas as pd, json, collections
+qa=pd.read_csv(&#x27;audio/_coach_reviews.csv&#x27;)
+qa=qa[qa.instrument.fillna(&#x27;&#x27;)!=&#x27;aser&#x27;]  # EGRA/EGMA instrument reviews (labelled + unlabelled pre-June rows)
+sub=collections.defaultdict(collections.Counter); field=collections.defaultdict(collections.Counter); proto=collections.Counter()
+for v in qa.verdicts_json.dropna():
+    try: j=json.loads(v)
+    except: continue
+    for s,items in j.items():
+        if not isinstance(items,dict): continue
+        if s.startswith(&#x27;aser&#x27;): continue
+        for k,val in items.items():
+            if k==&#x27;__protocol_followed&#x27;: proto[(s,str(val))]+=1; continue
+            if k.startswith(&#x27;__&#x27;): continue
+            sub[s][str(val)]+=1; field[(s,k)][str(val)]+=1
+rows=[]
+for s,c in sorted(sub.items()):
+    n=sum(c.values()); rows.append(dict(subtask=s,n_verdicts=n,agree=c[&#x27;correct&#x27;],disagree=c[&#x27;incorrect&#x27;],unknown=c[&#x27;unknown&#x27;],agree_pct=round(100*c[&#x27;correct&#x27;]/n,1),disagree_pct=round(100*c[&#x27;incorrect&#x27;]/n,1),unknown_pct=round(100*c[&#x27;unknown&#x27;]/n,1),protocol_ok_pct=round(100*proto[(s,&#x27;True&#x27;)]/max(1,proto[(s,&#x27;True&#x27;)]+proto[(s,&#x27;False&#x27;)]),1)))
+df=pd.DataFrame(rows); print(df.to_string(index=False)); df.to_csv(&#x27;harness/human_floor.csv&#x27;,index=False)
+print(&#x27;\nreviews used&#x27;,len(qa),&#x27;flagged&#x27;,qa.flagged.astype(str).value_counts().to_dict(),&#x27;compliance median&#x27;,pd.to_numeric(qa.overall_compliance_pct,errors=&#x27;coerce&#x27;).median())
+print(&#x27;\nOVERALL reading timed fields (letters/words/orf correct+attempted): agree %.1f%% disagree %.1f%% unknown %.1f%%&#x27;%tuple(100*x/sum(sum(field[k].values()) for k in field if any(t in k[1] for t in (&#x27;lid_&#x27;,&#x27;idwrd_&#x27;,&#x27;orf_&#x27;,&#x27;pw_&#x27;))) for x in (sum(field[k][&#x27;correct&#x27;] for k in field if any(t in k[1] for t in (&#x27;lid_&#x27;,&#x27;idwrd_&#x27;,&#x27;orf_&#x27;,&#x27;pw_&#x27;))),sum(field[k][&#x27;incorrect&#x27;] for k in field if any(t in k[1] for t in (&#x27;lid_&#x27;,&#x27;idwrd_&#x27;,&#x27;orf_&#x27;,&#x27;pw_&#x27;))),sum(field[k][&#x27;unknown&#x27;] for k in field if any(t in k[1] for t in (&#x27;lid_&#x27;,&#x27;idwrd_&#x27;,&#x27;orf_&#x27;,&#x27;pw_&#x27;))))))
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

@@ -1,0 +1,155 @@
+{
+  "version": "7.0",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "URDU": ["ENGLISH"],
+    "ENGLISH": ["MATHS"],
+    "MATHS": ["SUCCESS"]
+  },
+  "screens": [
+    {
+      "id": "URDU",
+      "title": "اردو کی جانچ — 1 از 3",
+      "terminal": false,
+      "data": {
+        "child": {"type": "string", "__example__": "عائشہ · جماعت 3"},
+        "summary": {"type": "string", "__example__": "کمپیوٹر کا اندازہ: 60 سیکنڈ میں 34 میں سے 31 الفاظ درست۔ اپنی ریکارڈنگ اوپر چیٹ میں دوبارہ سن سکتے ہیں۔"},
+        "wc": {"type": "string", "__example__": "31"},
+        "wa": {"type": "string", "__example__": "34"},
+        "flagged": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}},
+                    "__example__": [{"id": "w4", "title": "والد"}, {"id": "w8", "title": "جہلم"}, {"id": "w11", "title": "گیا"}]},
+        "flagged_ids": {"type": "array", "items": {"type": "string"}, "__example__": ["w4", "w8", "w11"]},
+        "verdicts": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}},
+                     "__example__": [{"id": "correct", "title": "درست"}, {"id": "wrong", "title": "غلط"}, {"id": "none", "title": "جواب نہیں دیا"}]},
+        "q1": {"type": "string", "__example__": "correct"},
+        "q1_text": {"type": "string", "__example__": "سوال 1 · بلال کس کے ساتھ گیا؟ — بچے کا جواب: «اپنے والد کے ساتھ»"},
+        "q2": {"type": "string", "__example__": "wrong"},
+        "q2_text": {"type": "string", "__example__": "سوال 2 · وہاں کیا بہہ رہا تھا؟ — بچے کا جواب: «پتھر»"},
+        "q3": {"type": "string", "__example__": "none"},
+        "q3_text": {"type": "string", "__example__": "سوال 3 · بلال خوش کیوں تھا؟ — بچے کا جواب: (کوئی جواب نہیں سنا)"},
+        "counts": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}},
+                   "__example__": [{"id": "0", "title": "0"}, {"id": "1", "title": "1"}, {"id": "2", "title": "2"}, {"id": "3", "title": "3"}, {"id": "4", "title": "4"}, {"id": "5", "title": "5"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_urdu",
+            "init-values": {"wc": "${data.wc}", "wa": "${data.wa}", "flagged": "${data.flagged_ids}", "q1": "${data.q1}", "q2": "${data.q2}", "q3": "${data.q3}"},
+            "children": [
+              {"type": "TextHeading", "text": "${data.child}"},
+              {"type": "TextBody", "text": "${data.summary}"},
+              {"type": "TextInput", "name": "wc", "label": "درست الفاظ (60 سیکنڈ)", "input-type": "number", "required": true, "helper-text": "کمپیوٹر کا اندازہ پہلے سے بھرا ہے؛ ضرورت ہو تو بدلیں"},
+              {"type": "TextInput", "name": "wa", "label": "کوشش کیے گئے الفاظ", "input-type": "number", "required": true},
+              {"type": "ChipsSelector", "name": "flagged", "label": "کمپیوٹر نے یہ الفاظ غلط قرار دیے — جو درست پڑھا گیا ہو اس پر سے نشان ہٹائیں", "data-source": "${data.flagged}", "max-selected-items": 20, "required": false},
+              {"type": "TextSubheading", "text": "کہانی کے سوالات"},
+              {"type": "TextBody", "text": "${data.q1_text}"},
+              {"type": "RadioButtonsGroup", "name": "q1", "label": "سوال 1", "data-source": "${data.verdicts}", "required": true},
+              {"type": "TextBody", "text": "${data.q2_text}"},
+              {"type": "RadioButtonsGroup", "name": "q2", "label": "سوال 2", "data-source": "${data.verdicts}", "required": true},
+              {"type": "TextBody", "text": "${data.q3_text}"},
+              {"type": "RadioButtonsGroup", "name": "q3", "label": "سوال 3", "data-source": "${data.verdicts}", "required": true},
+              {"type": "TextSubheading", "text": "پہلی آواز (5 الفاظ)"},
+              {"type": "TextBody", "text": "کمپیوٹر یہاں نشان نہیں لگاتا؛ آپ نے جو سنا وہ لکھیں۔"},
+              {"type": "Dropdown", "name": "sounds", "label": "درست جوابات", "data-source": "${data.counts}", "required": true},
+              {"type": "Footer", "label": "اردو محفوظ کریں — اگلا: انگریزی",
+               "on-click-action": {"name": "data_exchange", "payload": {"_screen": "URDU", "wc": "${form.wc}", "wa": "${form.wa}", "flagged": "${form.flagged}", "q1": "${form.q1}", "q2": "${form.q2}", "q3": "${form.q3}", "sounds": "${form.sounds}"}}}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ENGLISH",
+      "title": "انگریزی کی جانچ — 2 از 3",
+      "terminal": false,
+      "data": {
+        "child": {"type": "string", "__example__": "عائشہ · جماعت 3 · English"},
+        "summary": {"type": "string", "__example__": "کمپیوٹر کا اندازہ: 60 سیکنڈ میں 21 میں سے 17 الفاظ درست۔"},
+        "wc": {"type": "string", "__example__": "17"},
+        "wa": {"type": "string", "__example__": "21"},
+        "flagged": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "w3", "title": "early"}, {"id": "w9", "title": "planting"}]},
+        "flagged_ids": {"type": "array", "items": {"type": "string"}, "__example__": ["w3", "w9"]},
+        "verdicts": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "correct", "title": "درست"}, {"id": "wrong", "title": "غلط"}, {"id": "none", "title": "جواب نہیں دیا"}]},
+        "q1": {"type": "string", "__example__": "correct"}, "q1_text": {"type": "string", "__example__": "Q1 · Where did Imran go? — child: «school»"},
+        "q2": {"type": "string", "__example__": "wrong"}, "q2_text": {"type": "string", "__example__": "Q2 · What did the class plant? — child: «flower»"},
+        "counts": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "0", "title": "0"}, {"id": "1", "title": "1"}, {"id": "2", "title": "2"}, {"id": "3", "title": "3"}, {"id": "4", "title": "4"}, {"id": "5", "title": "5"}, {"id": "6", "title": "6"}, {"id": "7", "title": "7"}, {"id": "8", "title": "8"}]},
+        "nw": {"type": "string", "__example__": "5"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_english",
+            "init-values": {"wc": "${data.wc}", "wa": "${data.wa}", "flagged": "${data.flagged_ids}", "q1": "${data.q1}", "q2": "${data.q2}", "nonwords": "${data.nw}"},
+            "children": [
+              {"type": "TextHeading", "text": "${data.child}"},
+              {"type": "TextBody", "text": "${data.summary}"},
+              {"type": "TextInput", "name": "wc", "label": "Words correct (60 s)", "input-type": "number", "required": true},
+              {"type": "TextInput", "name": "wa", "label": "Words attempted", "input-type": "number", "required": true},
+              {"type": "ChipsSelector", "name": "flagged", "label": "Marked wrong by the computer — untick any the child actually read correctly", "data-source": "${data.flagged}", "max-selected-items": 20, "required": false},
+              {"type": "TextBody", "text": "${data.q1_text}"},
+              {"type": "RadioButtonsGroup", "name": "q1", "label": "Question 1", "data-source": "${data.verdicts}", "required": true},
+              {"type": "TextBody", "text": "${data.q2_text}"},
+              {"type": "RadioButtonsGroup", "name": "q2", "label": "Question 2", "data-source": "${data.verdicts}", "required": true},
+              {"type": "Dropdown", "name": "nonwords", "label": "Made-up words right", "data-source": "${data.counts}", "required": true},
+              {"type": "Footer", "label": "Save English — next: maths",
+               "on-click-action": {"name": "data_exchange", "payload": {"_screen": "ENGLISH", "wc": "${form.wc}", "wa": "${form.wa}", "flagged": "${form.flagged}", "q1": "${form.q1}", "q2": "${form.q2}", "nonwords": "${form.nonwords}"}}}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MATHS",
+      "title": "حساب کی جانچ — 3 از 3",
+      "terminal": false,
+      "data": {
+        "child": {"type": "string", "__example__": "عائشہ · جماعت 3 · حساب"},
+        "summary": {"type": "string", "__example__": "کمپیوٹر کا اندازہ: 8 میں سے 6 نمبر درست پڑھے؛ 60 سیکنڈ میں 9 سوال درست۔"},
+        "nid": {"type": "string", "__example__": "6"},
+        "sums": {"type": "string", "__example__": "9"},
+        "wp": {"type": "string", "__example__": "1"},
+        "counts": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "0", "title": "0"}, {"id": "1", "title": "1"}, {"id": "2", "title": "2"}, {"id": "3", "title": "3"}, {"id": "4", "title": "4"}, {"id": "5", "title": "5"}, {"id": "6", "title": "6"}, {"id": "7", "title": "7"}, {"id": "8", "title": "8"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form_maths",
+            "init-values": {"nid": "${data.nid}", "sums": "${data.sums}", "wp": "${data.wp}"},
+            "children": [
+              {"type": "TextHeading", "text": "${data.child}"},
+              {"type": "TextBody", "text": "${data.summary}"},
+              {"type": "Dropdown", "name": "nid", "label": "نمبر درست پڑھے (8 میں سے)", "data-source": "${data.counts}", "required": true},
+              {"type": "TextInput", "name": "sums", "label": "درست سوال (60 سیکنڈ)", "input-type": "number", "required": true},
+              {"type": "Dropdown", "name": "wp", "label": "زبانی سوال درست (2 میں سے)", "data-source": "${data.counts}", "required": true},
+              {"type": "TextSubheading", "text": "لکھے ہوئے سوالات کی تصویر"},
+              {"type": "TextBody", "text": "بچے کے لکھے ہوئے 4 سوال اور 1 زبانی سوال کی ایک تصویر لیں۔ کمپیوٹر جواب پڑھے گا؛ آپ بعد میں جانچ سکیں گے۔"},
+              {"type": "PhotoPicker", "name": "sheet", "label": "تصویر لیں", "description": "ایک صاف تصویر، پورا صفحہ نظر آئے", "photo-source": "camera_gallery", "min-uploaded-photos": 0, "max-uploaded-photos": 1, "max-file-size-kb": 3000},
+              {"type": "Footer", "label": "جمع کریں — اگلا بچہ",
+               "on-click-action": {"name": "data_exchange", "payload": {"_screen": "MATHS", "nid": "${form.nid}", "sums": "${form.sums}", "wp": "${form.wp}", "sheet": "${form.sheet}"}}}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "شکریہ",
+      "terminal": true,
+      "success": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "جانچ محفوظ ہو گئی"},
+          {"type": "TextBody", "text": "آپ کی تصدیق شدہ نمبر ریکارڈ ہو گئے ہیں۔ اگلے بچے کا نام اور کارڈ چیٹ میں آ رہا ہے۔"},
+          {"type": "Footer", "label": "بند کریں", "on-click-action": {"name": "complete", "payload": {"_screen": "SUCCESS"}}}
+        ]
+      }
+    }
+  ]
+}

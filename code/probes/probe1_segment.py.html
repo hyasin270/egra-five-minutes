@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>probes/probe1_segment.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>probes/probe1_segment.py</h1><p class=lede>Probe 1: can an audio LLM segment an enumerator EGRA session into subtasks and extract the child&#x27;s responses?</p><p class="meta">Raw file: <a href="../../src/probes/probe1_segment.py">probes/probe1_segment.py</a></p><pre><code>&quot;&quot;&quot;Probe 1: can an audio LLM segment an enumerator EGRA session into subtasks and extract the child&#x27;s responses?
+Sends the whole 17-min recording (8kHz source, upsampled) to Gemini via OpenRouter. Run: uv run --with requests python probe1_segment.py &lt;model&gt;&quot;&quot;&quot;
+import os, sys, base64, json, requests, time
+ROOT=&quot;/Users/haroonyasin/Documents/Projects/April 2026/Rumi 10 April 2026&quot;
+key=[l.split(&#x27;=&#x27;,1)[1].strip() for l in open(os.path.join(ROOT,&#x27;.env&#x27;)) if l.startswith(&#x27;NIETE_STAGING_OPENROUTER_API_KEY=&#x27;)][-1]
+model=sys.argv[1] if len(sys.argv)&gt;1 else &#x27;google/gemini-2.5-pro&#x27;
+b64=base64.b64encode(open(&#x27;probe1_full.mp3&#x27;,&#x27;rb&#x27;).read()).decode()
+PROMPT=&quot;&quot;&quot;This is a ~17-minute recording of a trained enumerator in Rawalpindi, Pakistan administering an EGRA/EGMA battery to one Grade-3 child (age 10). The battery, in order, is usually:
+URDU: listening comprehension (story read aloud twice, 6 questions) → letter identification (100 letters, 60s timed) → familiar word reading (50 words, 60s) → oral passage reading (60s) → reading comprehension (6 questions).
+ENGLISH: listening comprehension → letter identification (60s) → pseudoword decoding (60s) → familiar word reading (60s) → passage reading (60s) → reading comprehension.
+MATH: number identification → number comparison → timed addition/subtraction grids (60s each) → computation → word problems → patterns.
+Tasks:
+1. Segment the recording: for every subtask you can detect, give start and end time (mm:ss), language, and how you recognised it (instruction phrases you heard, in the original language).
+2. For the Urdu letter identification and Urdu familiar-word subtasks, transcribe exactly what the child said, item by item, in Urdu script, and mark each item you believe the enumerator counted as correct/incorrect, with your own confidence 0-1.
+3. For every math item you can hear, give the question as asked and the child&#x27;s answer.
+4. List every protocol deviation you notice (enumerator prompting, correcting, re-reading, background noise, class interruptions), with timestamps.
+5. State the audio-quality limits you hit (this is 8 kHz audio-audit quality).
+Return JSON with keys: segments[], urdu_letters[], urdu_words[], math_items[], deviations[], quality_notes, overall_confidence.&quot;&quot;&quot;
+t=time.time()
+r=requests.post(&#x27;https://openrouter.ai/api/v1/chat/completions&#x27;,headers={&#x27;Authorization&#x27;:f&#x27;Bearer {key}&#x27;,&#x27;Content-Type&#x27;:&#x27;application/json&#x27;},
+ json={&#x27;model&#x27;:model,&#x27;messages&#x27;:[{&#x27;role&#x27;:&#x27;user&#x27;,&#x27;content&#x27;:[{&#x27;type&#x27;:&#x27;text&#x27;,&#x27;text&#x27;:PROMPT},{&#x27;type&#x27;:&#x27;input_audio&#x27;,&#x27;input_audio&#x27;:{&#x27;data&#x27;:b64,&#x27;format&#x27;:&#x27;mp3&#x27;}}]}],&#x27;max_tokens&#x27;:16000},timeout=900)
+el=time.time()-t
+j=r.json(); print(&#x27;status&#x27;,r.status_code,&#x27;elapsed %.0fs&#x27;%el)
+if &#x27;error&#x27; in j: print(j[&#x27;error&#x27;]); sys.exit(1)
+txt=j[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]; print(&#x27;usage&#x27;,j.get(&#x27;usage&#x27;))
+open(f&#x27;probe1_{model.replace(&quot;/&quot;,&quot;_&quot;)}.md&#x27;,&#x27;w&#x27;).write(f&quot;# Probe 1 — {model} — elapsed {el:.0f}s — usage {j.get(&#x27;usage&#x27;)}\n\n{txt}&quot;)
+print(txt[:6000])
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
