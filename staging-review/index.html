@@ -1,0 +1,379 @@
+<!doctype html><html lang="en"><head><title>EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap">
+<header>
+  <div class="eyebrow">Code and product review · 27 September 2026</div>
+  <h1>EGRA Test Build Review</h1>
+  <p class="sub">Sabeena's EGRA/EGMA test flow on the main Rumi bot's staging server, read against the plan we wrote for a five-minute, coach-run, AI-checked child assessment. What is done, what is not, what falls short, and what was done well.</p>
+  <div class="meta"><span>Bot: main Rumi bot (hyasin270/whatsapp-ai-bot)</span><span>Branch: staging, 8 commits, 16–18 Sep</span><span>Not on production · not in the NIETE bot</span><span>Measured against: <a href="https://hyasin270.github.io/egra-five-minutes/">EGRA in Five Minutes</a></span></div>
+  <nav class="toc">
+    <a href="#answer">The answer</a><a href="#fixnow">Fix first</a><a href="#goals">Goals vs build</a><a href="#well">Done well</a><a href="#done">Done / not done</a><a href="#time">Time per child</a><a href="#arch">Architecture</a><a href="#ux">Coach experience</a><a href="#design">Design</a><a href="#random">Randomization</a><a href="#next">What to do next</a><a href="#evidence">Evidence</a>
+  </nav>
+</header>
+
+<section id="answer">
+  <h2>The answer in one minute</h2>
+  <div class="prose">
+    <p><strong>Which bot.</strong> It is the main Rumi bot, not the NIETE bot. All eight commits are on the <code>staging</code> branch only, behind a switch that is on for staging and limited to Islamabad test accounts. Nothing has reached production.</p>
+    <p><strong>What it is.</strong> A careful, well-documented first build that puts almost the whole May 2026 enumerator test into WhatsApp chat. The coach taps Correct or Incorrect for every item, one message at a time. No AI is used anywhere, and a database rule stops an AI score from ever being stored.</p>
+    <p><strong>How it compares with the plan.</strong> It builds a different product. The plan is a five-minute test: the coach records one voice note per block while the child reads from a printed card, Rumi pre-fills a checking form, and the coach corrects it. This build takes about 22 minutes per child, which is today's enumerator time, and the one-message-per-item pattern is the one the field team rejected on 11 September.</p>
+    <p><strong>Does it work today.</strong> Not end to end. The test pictures never reach the coach, and the one subtest with audio would lose the coach's marks when it saves. No real child has been assessed yet: across 9 staging sessions, one subtest result was ever saved.</p>
+    <p><strong>What to keep.</strong> The item bank, the code-drawn stimulus pictures, the random draw from the real roster, the switch-and-region gate, and the chat-loop fix are all good foundations for the plan's version.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile hot"><div class="n">~22<small>min</small></div><div class="l">per child, estimated from the code. The target is 5.</div></div>
+    <div class="tile hot"><div class="n">64<small>taps</small></div><div class="l">item-by-item marking taps per child, plus 11 typed answers</div></div>
+    <div class="tile"><div class="n">1<small>row</small></div><div class="l">subtest result ever saved, from 9 staging sessions by 3 testers</div></div>
+    <div class="tile hot"><div class="n">0 / 7</div><div class="l">stimulus pictures that can be delivered today</div></div>
+  </div>
+</section>
+
+<section id="fixnow">
+  <h2>Fix these first</h2>
+  <p class="prose">These are small fixes, and each one matters before a real child is tested. The first touches the database production shares, so it needs a go.</p>
+  <div class="callout">
+    <ol>
+      <li><strong>The results table is open to the public key.</strong> Row-level security is off, and the public <code>anon</code> and <code>authenticated</code> roles can read, insert and delete rows. The table lives in the database that production shares, and it already holds one child's name. Switching on row-level security fixes it; the bot uses the service key, so nothing breaks. <span class="pill coach">needs a go: production database</span></li>
+      <li><strong>No stimulus picture can be delivered.</strong> All seven picture links point at the private storage address, which refuses the download (HTTP 400). The three real attempts, on 19, 21 and 24 September, all failed. The code only falls back to text when no link exists, not when the send fails, so the coach gets a bare "Ready? Start" button with no letters, no story and no timing rules.</li>
+      <li><strong>The listening subtest would lose the coach's marks.</strong> The save always includes the voice-note fields, but those columns were never added to the live table. The database rejects the whole row, and the coach still sees "Assessment complete". It has not happened yet only because no tester got past the voice-note step.</li>
+      <li><strong>The letter score subtracts errors twice.</strong> The code computes (correct − incorrect) per minute, where "correct" already excludes errors. A child with 34 of 40 right scores 28, and a stopped child can score below zero. A test expects the negative number.</li>
+      <li><strong>Any Islamabad teacher can list every Islamabad class.</strong> Access is checked by region only, and 53 of the 56 Islamabad users are teachers. Any of them can type <code>/egra</code>, see every class and receive a random child's full name.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="goals">
+  <h2>The goals, and what was built</h2>
+  <p class="prose">The goals come from the 15 September call and the plan. "Contradicts" means the build does the opposite, or rules the plan's version out.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Goal</th><th>Verdict</th><th>What the build does</th></tr></thead>
+    <tbody>
+      <tr><td>Five minutes per child</td><td><span class="pill coach">Contradicts</span></td><td>About 22 minutes per child, the same as today's enumerator.</td></tr>
+      <tr><td>Five children in 30 minutes per coach per day</td><td><span class="pill coach">Contradicts</span></td><td>About 110 minutes for five children.</td></tr>
+      <tr><td>The coach records; Rumi pre-fills; the coach checks and corrects</td><td><span class="pill coach">Contradicts</span></td><td>The coach marks every item live. A database rule pins the AI-score field to "not attempted", so AI marks cannot be stored.</td></tr>
+      <tr><td>Keep the AI's answer, the coach's answer and the audio side by side</td><td><span class="pill">Not built</span></td><td>Only the coach's answer is kept. Audio is captured for one subtest, and that save currently fails.</td></tr>
+      <tr><td>The five-minute test (Urdu story + questions, first sounds, made-up words, English story, maths: numbers aloud, quick sums, photo of written sums)</td><td><span class="pill coach">Contradicts</span></td><td>Close to the reverse. It keeps what the plan drops (listening comprehension, 100-letter grids, 50-word list, patterns) and leaves out what the plan keeps. Only the two stories and their questions overlap.</td></tr>
+      <tr><td>The child reads from a printed card; the phone only records</td><td><span class="pill coach">Contradicts</span></td><td>The child reads from the coach's phone, and the picture is the enumerator's numbered sheet.</td></tr>
+      <tr><td>A checking form in WhatsApp, pre-filled, in Urdu</td><td><span class="pill">Not built</span></td><td>The only Flow shows two read-only English instruction screens and collects nothing but "confirmed".</td></tr>
+      <tr><td>An algorithm picks the children; the coach does not choose</td><td><span class="pill gold">Partly</span></td><td>The child is random within a class, but the coach picks the class, the same child can be drawn twice, and cancelling lets the coach draw again. The draw is not recorded.</td></tr>
+      <tr><td>Results linked to the child, school and grade, so repeat tests show growth</td><td><span class="pill">Not built</span></td><td>The code knows the child's database ID but never saves it. No school or grade is saved.</td></tr>
+      <tr><td>Reuse the existing assessment tables (no new tables)</td><td><span class="pill coach">Contradicts</span></td><td>A new table. The live database already has <code>aser_sessions</code> and <code>reading_assessments</code> with AI and coach columns, audio and word timings.</td></tr>
+      <tr><td>Islamabad first, off by default until the time target is met</td><td><span class="pill ok">Built</span></td><td>Switch plus region gate; inert for everyone else, with tests.</td></tr>
+      <tr><td>Urdu, then English, then maths; based on EGRA, not ASER</td><td><span class="pill ok">Built</span></td><td>Uses the real fielded EGRA/EGMA content in that order.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout quiet prose">Several of these choices came from product-lead directions quoted in the commit messages: the roster draw ("school, teacher and randomize students"), the listening-comprehension Flow and voice-note pilot, and the passage picture. The gap from the plan is partly a gap in direction, not only in execution. The build was written in the same week the plan was.</div>
+</section>
+
+<section id="well">
+  <h2>What was done well</h2>
+  <div class="grid3">
+    <div class="card"><h3>Safe to run dark</h3><p>Off by default, limited to Islamabad accounts, inert for everyone else, with tests proving it. TESTING.md lists its own gaps honestly, including the class-choice bias.</p></div>
+    <div class="card"><h3>Real test content</h3><p>The fielded EGRA/EGMA item bank was recovered with answer keys, built by script and checked by tests. It is the most reusable piece of the branch.</p></div>
+    <div class="card"><h3>Pictures drawn by code, not AI</h3><p>Stimulus images are rendered from the exact item text, in a correctly embedded Nastaliq font, right to left, and checked back against the item bank. Using AI image generation for test items would have been wrong; this was the right call.</p></div>
+    <div class="card"><h3>A real random draw</h3><p>The coach no longer types a name. The child is drawn on the server, uniformly, from the real roster. That is a genuine step toward "the coach does not choose".</p></div>
+    <div class="card"><h3>Audio handled with discipline</h3><p>The voice note goes to our own private storage straight away, not left as a WhatsApp media ID that expires. Correctly, no audio is assumed inside the Flow.</p></div>
+    <div class="card"><h3>Careful routing, good debugging</h3><p>Flow completions are matched to the right session; the voice claim only fires in the right step. The chat-loop fix was traced in the logs to its real cause, with a failing test written first.</p></div>
+  </div>
+</section>
+
+<section id="done">
+  <h2>Done and not done</h2>
+  <div class="cols">
+    <div>
+      <h3>Done</h3>
+      <ul>
+        <li>The <code>/egra</code> command and the switch-and-region gate</li>
+        <li>14 subtests from the May instrument, in the real order</li>
+        <li>Class list from the real roster, random child per class</li>
+        <li>Coach marking: timed grids by Start, Stop and typed wrong items; questions by Correct/Incorrect buttons</li>
+        <li>Scoring code for rates per minute</li>
+        <li>Seven stimulus pictures rendered and uploaded</li>
+        <li>A listening-comprehension Flow, published on the staging WhatsApp account</li>
+        <li>Voice-note capture for listening comprehension, saved to private storage</li>
+        <li>A results table, applied to the live database</li>
+        <li>A fix to stop general chat inventing a reading test</li>
+        <li>132 tests, all passing</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Not done</h3>
+      <ul>
+        <li>Any AI marking, pre-fill, transcript or confidence</li>
+        <li>The per-child checking form</li>
+        <li>The plan's five-minute battery, and its stop and fall-back rules</li>
+        <li>A 60-second countdown or stop alert</li>
+        <li>An answer key on the coach's screen</li>
+        <li>Urdu coach text, or use of the string catalog</li>
+        <li>Pictures for three maths items that refer to pictures</li>
+        <li>Alternates for absent children, and a record of the draw</li>
+        <li>Saving the child's ID, school and grade</li>
+        <li>Any result for the coach beyond a text list, or for the teacher</li>
+        <li>A test with a real child</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="time">
+  <h2>Time per child</h2>
+  <div class="prose"><p>The estimate walks the code message by message for one child: 113 bot messages and 96 coach actions (83 taps, 11 typed answers, 2 voice notes). The time with the child comes from the May enumerator medians for the same 14 subtests (13.8 minutes). WhatsApp round trips, typing wrong-item lists and re-asking questions for the voice note add the rest.</p></div>
+  <figure>
+    <svg viewBox="0 0 720 190" role="img" aria-label="Minutes per child: target 5, today's enumerator 21.1, this build about 22 with a range of 18 to 25">
+      <g font-size="13" fill="currentColor">
+        <text x="0" y="38">Target</text>
+        <text x="0" y="92">Today's enumerator</text>
+        <text x="0" y="146">This build (estimate)</text>
+      </g>
+      <g>
+        <line x1="170" y1="16" x2="170" y2="166" stroke="currentColor" stroke-opacity=".25"/>
+        <rect x="170" y="22" width="93" height="24" fill="#1a7f3f"/>
+        <rect x="170" y="76" width="393" height="24" fill="#8a96b0"/>
+        <rect x="170" y="130" width="410" height="24" fill="#F06E42"/>
+        <line x1="505" y1="142" x2="636" y2="142" stroke="currentColor" stroke-width="2"/>
+        <line x1="505" y1="134" x2="505" y2="150" stroke="currentColor" stroke-width="2"/>
+        <line x1="636" y1="134" x2="636" y2="150" stroke="currentColor" stroke-width="2"/>
+      </g>
+      <g font-size="13" font-weight="700" fill="currentColor">
+        <text x="272" y="39">5 min</text>
+        <text x="572" y="93">21.1 min</text>
+        <text x="646" y="147">~22 min</text>
+      </g>
+      <text x="170" y="184" font-size="11.5" fill="currentColor" fill-opacity=".65">Scale: 0 to about 28 minutes. Whisker shows the 18 to 25 minute range.</text>
+    </svg>
+    <figcaption>Five children would take about 110 minutes against a 30-minute target. Trimming subtests alone will not close the gap, because the one-message-per-item design adds minutes of its own.</figcaption>
+  </figure>
+</section>
+
+<section id="arch">
+  <h2>Architecture and code</h2>
+  <div class="prose">
+    <p>The code is organised sensibly: small single-purpose services, a gate, a state machine in one handler, and switches that keep it inert. The problems are in the edges: what happens when a send or save fails, what the tests fake, and a few formulas.</p>
+    <ul>
+      <li><strong>Failures are silent.</strong> A failed picture send and a failed save are both ignored. The coach is told everything worked, and the lost data cannot be recovered from the logs.</li>
+      <li><strong>The tests cannot see the real failures.</strong> WhatsApp sends and database saves are faked to always succeed, and picture links are only checked for their shape. The voice-routing test searches the source text, and the Flow-response test covers a function nothing in production calls. All 132 tests pass while the build cannot complete a child.</li>
+      <li><strong>Scoring does not follow the instrument.</strong> Beyond the letter formula: the English story counts full stops and commas as words (+13% for a child who finishes); there is no 60-second cap; the Discontinue button marks the first ten items wrong on every grid, including the stories, which have no such rule; comprehension has no "not asked" option and is asked even when the child read nothing.</li>
+      <li><strong>Answers can land on the wrong question.</strong> Correct/Incorrect buttons do not say which item they belong to, so a double tap or a tap on an older message is recorded against the current item.</li>
+      <li><strong>Coaches can get stuck.</strong> <code>/cancel</code> becomes the child's name at the name prompt and "not a number" at the typed prompts. Other commands are swallowed for up to an hour. The voice note cannot be skipped.</li>
+      <li><strong>Children's audio and names can leak into general chat.</strong> A voice note sent outside the exact voice-note step goes through the normal pipeline: transcription, the conversations table, and the chat model.</li>
+      <li><strong>A shared prompt was changed for every region.</strong> The chat-loop fix edits the general-chat prompt all regions use. It is a good fix for Pakistan, but it points Palestine teachers to a <code>/reading test</code> that is disabled there, and Tanzania teachers to the English test.</li>
+      <li><strong>Data hygiene.</strong> One real tester phone number is committed in the test file. The roster query pulls every Islamabad child's name just to count them.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="ux">
+  <h2>Coach experience</h2>
+  <div class="prose">
+    <ul>
+      <li><strong>Everything the coach reads is in English</strong>, hard-coded, including the Flow. Islamabad coaches work in Urdu, and our checking-form draft and the observation form are Urdu.</li>
+      <li><strong>Two instructions would invalidate the reading subtests.</strong> "You will read out each item to the child" and "or read it out per the item type" would have the coach read letters and words aloud for the child.</li>
+      <li><strong>No answer key is shown.</strong> Every item has one in the item bank, but no code sends it, so each coach decides what counts as right.</li>
+      <li><strong>The listening steps are in the wrong order.</strong> The child answers inside the Flow, and only afterwards is the coach asked to record "the child's response". The recording either repeats the questions or holds nothing useful.</li>
+      <li><strong>No sense of progress.</strong> The coach sees "Item 3/8" but never "subtest 6 of 14" or how much of the session is left, and gets no "child 2 of 5".</li>
+      <li><strong>The end result is a text list</strong> of raw per-subtest scores, only if all 14 subtests are finished. There is no level, no benchmark, nothing for the teacher and no class view.</li>
+    </ul>
+  </div>
+  <div class="cols3">
+    <figure><img src="img/chat_1_start.png" alt="Coach chat at the start of a session"><figcaption>The start: the coach picks a class and a child is drawn. All text in English.</figcaption></figure>
+    <figure><img src="img/flow_ask_questions_eng.png" alt="The listening comprehension Flow's question screen"><figcaption>The Flow's second screen: questions shown verbatim, including item-bank typos, before any recording.</figcaption></figure>
+    <figure><img src="img/chat_3_grid_as_delivered.png" alt="What the coach receives when the grid picture fails"><figcaption>What arrives today when a grid starts: no picture, no rules, just "Ready? Start". The dashed note marks where the picture should have been.</figcaption></figure>
+  </div>
+</section>
+
+<section id="design">
+  <h2>Design of the child's card</h2>
+  <div class="prose">
+    <p>The pictures are well made as images: clean, correct Unicode, correct Nastaliq joining and right-to-left order. The problem is what they are designed as. They are the enumerator's score sheet, shown to the child on the coach's phone.</p>
+    <ul>
+      <li><strong>Every item carries a printed number.</strong> A real EGRA child card has none; numbers belong on the assessor's sheet.</li>
+      <li><strong>The stories are cut into numbered word boxes</strong>, so the child is not reading connected text, and the result is not an oral reading fluency measure. Punctuation gets its own box.</li>
+      <li><strong>The print is small on a phone.</strong> English story words are about 2 mm tall with the phone turned sideways, and 1.1 mm upright. On a printed A4 card each of the ten columns gets about 27 mm; on the phone it gets about 6 mm.</li>
+      <li><strong>One phone cannot be the child's card and the coach's score sheet.</strong> The coach has to hold the phone up, keep time with no clock, remember which of up to 100 items were wrong, then take the phone back to tap Stop and type the numbers. The plan's printed card avoids all of this.</li>
+    </ul>
+  </div>
+  <figure><img src="img/crops/orf_eng_rows1-2.png" alt="First two rows of the English story grid, showing numbered boxes and full stops in their own boxes" style="width:100%;border:1px solid var(--line)"><figcaption>The first two rows of the English story as the child sees it. Items 7 and 14 are full stops, and each counts as a correctly read word.</figcaption></figure>
+  <div class="cols3">
+    <figure><img src="img/viewer_orf_eng_portrait.png" alt="The English story grid at true size on a phone held upright"><figcaption>The same story at true size on a 6.1-inch phone held upright.</figcaption></figure>
+    <figure><img src="img/crops/letter_urd_row2.png" alt="One row of the Urdu letter grid" style="border-radius:4px"><figcaption>A row of the Urdu letter grid: correct Nastaliq and order, but with item numbers the child should not see.</figcaption></figure>
+    <figure><img src="img/flow_read_passage_urd.png" alt="The listening comprehension Flow's passage screen in Urdu"><figcaption>The Flow's passage screen. It fits Meta's limits and correctly assumes no audio inside the Flow.</figcaption></figure>
+  </div>
+</section>
+
+<section id="random">
+  <h2>Randomization</h2>
+  <div class="prose">
+    <p><strong>What the call decided.</strong> The impact team's algorithm names the children from the class register; the coach never chooses. Each pick comes with named alternates for absent children (the Usser study took odd roll numbers and replaced an absent child with the next even number). Five children per visit.</p>
+    <p><strong>What was built.</strong></p>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Question</th><th>As built</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Who chooses the class?</td><td>The coach, from a list of every Islamabad class, capped at 9 rows in no set order</td><td>A coach can always pick the strongest class. The author flagged this herself.</td></tr>
+      <tr><td>How is the child chosen?</td><td>One child per tap, uniformly at random, on the server</td><td>Good: the coach cannot type a name in the normal path.</td></tr>
+      <tr><td>Can a child be drawn twice?</td><td>Yes. Each child is a separate draw</td><td>Five draws from a class of 9 repeat a child 74% of the time; 62% for a class of 12.</td></tr>
+      <tr><td>Can the coach redraw?</td><td>Yes. <code>/cancel</code> then <code>/egra</code> gives a fresh draw, and it happened twice on 18 Sep</td><td>A coach can keep drawing until they like the child. Nothing records it.</td></tr>
+      <tr><td>Absent children?</td><td>No alternates and no reason codes; "Type a name instead" skips the draw</td><td>Absent children are usually weaker. Quiet replacement pushes results up by an unknown amount.</td></tr>
+      <tr><td>Is the draw recorded?</td><td>No. The child's ID stays in session memory and is never saved</td><td>Nobody can check afterwards who was drawn against who was tested.</td></tr>
+      <tr><td>Repeat testing across visits?</td><td>No memory of who was tested before</td><td>Growth over time needs the same child linked across tests.</td></tr>
+      <tr><td>How big is the pool?</td><td>7 classes, 41 children (class sizes 1 to 12), no grade 3 class</td><td>No class can reach the call's 15-per-class benchmark. The Islamabad sections named on the call are not in this database yet.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The right way to do it</h3>
+  <ol class="steps prose">
+    <li><div><strong>Draw once per measurement cycle, on the server, before anyone sees a name.</strong> A cycle is one quarter, since the call recommends EGRA every three months. Snapshot every active child in the target grades at each school.</div></li>
+    <li><div><strong>Shuffle each class once, with a secret seed</strong> made from a key, the class and the cycle. Save every child's rank. The secret stops anyone predicting the order; saving it lets us re-run the shuffle for an audit.</div></li>
+    <li><div><strong>At each visit, send the next five in rank order</strong>, with roll numbers, plus the next two or three as named alternates, in one WhatsApp list.</div></li>
+    <li><div><strong>Absence is a reason, not a redraw.</strong> The coach taps absent, refused, left school or similar; the next alternate moves up. An absent child goes back in the queue and is tried again at the next visit before being marked absent for good.</div></li>
+    <li><div><strong>No redraws and no typed names</strong> in the coach's path. Reopening shows the same list. A manual entry, if kept at all, is for supervisors, needs a reason, and is left out of outcome figures.</div></li>
+    <li><div><strong>Record each child's chance of selection</strong> (class size at the draw), so regional figures can be weighted. Small classes are tested in full.</div></li>
+    <li><div><strong>Make "5 new" versus "3 new + 2 repeat" a setting</strong>, so the draw does not change when that decision is made. Repeat children come from the top of the previous cycle's random order, so they are random too.</div></li>
+    <li><div><strong>Reuse what exists.</strong> <code>student-selection.service.js</code>, already on staging, orders never-tested children first, picks several at once, checks attendance and labels roll numbers. It needs a seeded shuffle instead of <code>Math.random</code>, a saved order, and alternates with reason codes.</div></li>
+  </ol>
+  <div class="callout push prose"><strong>What the numbers can detect.</strong> About six visits per school per quarter at five children each gives 30 tests, or 15 in each of two classes. That is the right amount per class, but a 0.2 standard-deviation change becomes visible only across about 100 classes with new children, or about 20 classes if the same children are retested. A month-to-month change needs whole-class testing. These figures rest on assumed clustering and retest correlation; treat them as orders of magnitude.</div>
+</section>
+
+<section id="next">
+  <h2>What to do next, in order</h2>
+  <ol class="steps prose">
+    <li><div><strong>Make staging safe and honest (days, not weeks).</strong> Switch on row-level security (needs a go). Send pictures through a signed link or from memory, check the send result and fall back to text. Add the audio columns or stop sending them. Fix the letter formula and the punctuation count. Limit the class list to the coach's own schools. Make <code>/cancel</code> work everywhere. Update TESTING.md, which still says the Flow and table are not live.</div></li>
+    <li><div><strong>Settle the five-minute test and the Urdu instrument choices before building more</strong> (plan decisions D1 and D3). The plan leaves D3, the Urdu choices, to Sabeena and Sameer, and says the marker cannot be built until they are fixed.</div></li>
+    <li><div><strong>Cut the battery to the plan's blocks</strong>, reusing her item bank and answer keys. Print child cards without numbers, with stories as connected text.</div></li>
+    <li><div><strong>Swap item-by-item marking for record-then-check.</strong> One voice note per block, then one checking Flow per child with the answer keys shown, reusing the plan's draft Flow and the NIETE observation pattern. This helps even before any AI: 64 messages and 11 typed answers become three form screens. Then add AI pre-fill as the evaluation recommends.</div></li>
+    <li><div><strong>Store results where the plan says</strong>, in the existing assessment tables with the child, school and grade, and the AI's and coach's answers as separate fields.</div></li>
+    <li><div><strong>Replace the draw</strong> with the seeded, recorded, per-cycle list above.</div></li>
+    <li><div><strong>Move coach text to Urdu</strong> through the string catalog.</div></li>
+    <li><div><strong>Run the stopwatch pilot with real children</strong>: two or three coaches, 25 children, before any wider release.</div></li>
+  </ol>
+</section>
+
+<section id="evidence">
+  <h2>Evidence</h2>
+  <div class="prose">
+    <p>Four reviewers worked in parallel on a frozen copy of the 42 changed files at staging head <code>554c6a8d</code>. Every headline claim on this page was then checked again against the code, the live database (read-only, counts only), the staging logs or Meta.</p>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3><a href="live.html">Live state on staging</a></h3><p class="k">Deploy, switches, Flow status, table, rows and usage, with how each was checked.</p></div>
+    <div class="card"><h3><a href="architecture.html">Architecture and correctness</a></h3><p class="k">Blockers, serious and minor findings with file and line, test run, what is unverified.</p></div>
+    <div class="card"><h3><a href="plan_ux.html">Plan conformance and coach experience</a></h3><p class="k">33-row conformance table, the message-by-message time estimate, the battery, and the strategic read.</p></div>
+    <div class="card"><h3><a href="randomization_data.html">Randomization and data</a></h3><p class="k">The draw against the call, the full proposed design with fields, the power arithmetic, and the data model.</p></div>
+    <div class="card"><h3><a href="design.html">Design</a></h3><p class="k">Stimulus images measured at phone size, the Flow rendered, and every coach-facing string checked.</p></div>
+    <div class="card"><h3>Commits reviewed</h3><p class="k">783116cc · d31fd846 · 6757dcf6 · b1a2513e · 5fd2da1e · 3c024544 · 1901c5a3 · e81dbc03, all 16–18 Sep, staging only. No later commit touches these files.</p></div>
+  </div>
+  <p class="prose" style="font-size:13px;color:var(--muted);margin-top:28px">Children's names, phone numbers and database IDs are left out of this page. Full-size stimulus images and the code snapshot are kept in the team's project folder.</p>
+</section>
+</div>
+</body></html>

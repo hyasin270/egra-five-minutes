@@ -1,0 +1,388 @@
+<!doctype html><html lang="en"><head><title>Architecture and correctness · EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap"><div class="crumbs"><a href="index.html">← EGRA Test Build Review</a> · Architecture and correctness</div><div class="md"><h1>EGRA/EGMA ICT test build: architecture, correctness, robustness, privacy, tests</h1>
+<p><strong>Reviewer dimension:</strong> architecture · correctness · robustness · security/privacy · test quality
+<strong>Code reviewed:</strong> <code>origin/staging</code> @ <code>554c6a8d</code> (snapshot in <code>../src/</code> is byte-identical to staging for all 41 touched files; verified with <code>cmp</code>), commits 783116cc → e81dbc03 by Sabeena.
+<strong>Live evidence used:</strong> Axiom <code>digital-coach-logs</code> (service <code>digital-coach-staging</code>, 13–27 Sep), read-only <code>analyst</code> queries on the shared Supabase DB, anonymous + presigned HEAD probes of the R2 objects, and a jest run in a throwaway worktree (since removed).
+<strong>Bead:</strong> bd-ak1go</p>
+<h2>Verdict</h2>
+<p>The shape is sound. It is a flag-gated, coach-marked (Track A only) state machine split into small, single-purpose services, with deterministic stimulus rendering and careful "never hijack" claim guards. The flag-off path is truly inert. But the build does not work end to end on staging today, and it is not safe to promote.</p>
+<ul>
+<li><strong>Stimulus images never arrive.</strong> Every stimulus and passage image points at the private R2 S3 host with no presigning, so WhatsApp gets a 400. Staging logged 3 of 3 failures. The plain-text fallback never fires because the send result is ignored.</li>
+<li><strong>Listening-comprehension results will be lost.</strong> The pilot path is live on staging (the Flow ID is set), but the voicenote migration is not applied. The first voice note a coach sends will make the database reject that subtest's whole insert, and the coach is not told.</li>
+<li><strong>Letter-ID scoring is wrong.</strong> The formula subtracts errors twice and can report negative letters per minute.</li>
+<li><strong>The table is open.</strong> The live table has RLS off while <code>anon</code>/<code>authenticated</code> hold SELECT/INSERT/DELETE. Every sibling assessment table has RLS on.</li>
+<li><strong>Any ICT teacher can see everyone's rosters.</strong> The access gate checks region only, so any of the 53 ICT-region <em>teachers</em> can list every ICT teacher's classes and pull children's names.</li>
+</ul>
+<p>Tests are plentiful (132 pass). They cannot catch any of the above: WhatsApp and Supabase are mocked to always succeed, image URLs are checked only for shape, and the voice routing test greps source text.</p>
+<hr />
+<h2>Coordinator question: what happens to data on staging today, and why the table holds only one row</h2>
+<p><strong>What <code>recordSubtestAttempt</code> does today when a listening-comprehension voice note has been captured</strong></p>
+<ol>
+<li><code>handleEgraEgmaIctTestVoiceNote</code> always sets <code>whatsappMediaId</code> and <code>recordedAt</code>, even when the R2 upload failed, and sets <code>url</code> when the upload succeeded. It stores these as <code>state.pendingVoiceNote</code> (<code>shared/handlers/egra-egma-ict-test.handler.js:786-791</code>).</li>
+<li>After the 6th item is marked, <code>recordQaAnswer</code> passes <code>audioUrl</code>, <code>audioWhatsappMediaId</code> and <code>audioRecordedAt</code> (<code>:446-448</code>).</li>
+<li><code>results.service.js:57-59</code> spreads each of those into the insert payload whenever it is non-null. So a listening row that has a voice note <strong>always</strong> carries at least <code>audio_whatsapp_media_id</code> and <code>audio_recorded_at</code>.</li>
+<li>None of the <code>audio_*</code> columns exist in the live table. Postgres rejects the statement: an <code>EXPLAIN INSERT … (audio_whatsapp_media_id)</code> run under the read-only role returned <code>ERROR: column "audio_whatsapp_media_id" of relation "egra_egma_ict_test_attempts" does not exist</code>. The whole row is refused, not just the audio columns.</li>
+<li><code>results.service.js:64-69</code> logs <code>logToFile(..., 'error')</code> plus a <code>persist_failed</code> event containing <strong>only</strong> <code>error.message</code> and <code>subtestKey</code>. It does not log the scores, the item verdicts or the <code>sessionId</code>. The module doc's claim that it "logs the full result" (<code>results.service.js:15</code>) is false.</li>
+<li>The handler ignores the return value (<code>handler.js:434-451</code>), moves on to the next subtest, and later sends "✅ Assessment complete" with the scores from Redis. Then it clears the session (<code>handler.js:338-348</code>). <strong>The coach is never told.</strong></li>
+</ol>
+<p><strong>What is lost per full administration:</strong> both listening-comprehension rows, <code>listening_comprehension_urd</code> (subtest 1) and <code>listening_comprehension_eng</code> (subtest 6). Each loses the coach's 6 item verdicts, the correct and incorrect counts, the audio link and the media id. Once the session is cleared these exist nowhere: not in the DB and not in the logs.</p>
+<p>The audio file itself is orphaned in R2 at <code>egra-egma-ict-test/voicenotes/&lt;session_id&gt;/&lt;subtest&gt;.ogg</code>. It can be found only through the separate <code>voice_note_captured</code> event, which does carry <code>sessionId</code>.</p>
+<p><strong>The other 12 subtests are written correctly.</strong> Their payloads carry no <code>audio_*</code> keys, which is exactly what the conditional spread was designed for. The design protects every row except the one the pilot exists to collect.</p>
+<p><strong>TESTING.md is wrong about this.</strong> It says the pilot "is fully inert" until <em>both</em> the Flow is registered <em>and</em> the migration is applied (<code>TESTING.md:239-242</code>). The code gates only on <code>EGRA_EGMA_LISTENING_FLOW_ID</code> (<code>handler.js:311</code>). It never checks the migration.</p>
+<p><strong>Why only one row exists (reconstructed from Axiom):</strong></p>
+<p>A row is written only when a subtest <em>completes</em>. No session-start row exists.</p>
+<table>
+<thead>
+<tr>
+<th>Session start (UTC)</th>
+<th>What happened</th>
+<th>Row?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>17 Sep 08:08, 09:58</td>
+<td><code>/egraegmatest</code> not handled by EGRA (gate failed)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>18 Sep 04:13</td>
+<td>started, no class ever picked</td>
+<td>no</td>
+</tr>
+<tr>
+<td><strong>18 Sep 06:28</strong></td>
+<td>roster pick → <code>listening_comprehension_urd</code> on the <strong>old plain-text path</strong> (the Flow commit 5fd2da1e landed 06:51) → <code>subtest_recorded</code> at 06:30:35 → next grid never scored</td>
+<td><strong>1 row</strong> (3/3/0, <code>student_id</code> NULL)</td>
+</tr>
+<tr>
+<td>18 Sep 06:37–10:47 (7×)</td>
+<td><code>/egra</code> from a NULL-region tester → general chat (the bd-eg7st loop)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>18 Sep 12:31, 12:32, 12:36</td>
+<td>Flow sent; submission logged <code>⚠️ Received unknown/unrecognized flow submission</code> (12:32:06, bd-2711, before the fix deployed) → tester typed <code>/cancel</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td>18 Sep 13:55, 19 Sep 04:48, 21 Sep 18:56, 24 Sep 07:06</td>
+<td>Flow completed → <code>sendImageFromUrl</code> <strong>failed</strong> (passage image) → voice-note prompt sent → <strong>no voice note ever sent</strong>, session abandoned</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>There are zero <code>voice_note_captured</code> and zero <code>persist_failed</code> events in the window. So the audio-insert failure has <strong>not happened yet</strong>. It is guaranteed on the first session that gets past the voice note. The one row is not the result of loss. It exists because only one session ever completed a subtest.</p>
+<hr />
+<h2>Blocker</h2>
+<h3>B1. Stimulus grids and the listening passage never reach the coach (private R2 URL, not presigned)</h3>
+<p><strong>Consequence.</strong> For letter ID (eng/urd), familiar words (urd) and ORF (eng/urd), the coach receives only "Ready? ▶️ Start". There is no letter grid, no passage, and no instructions, because the caption rides on the failed image. The coach has nothing to show the child. In the voice-note step, the passage that bd-2712 was meant to keep on screen never appears.</p>
+<p><strong>Evidence.</strong>
+- All 7 URLs use the S3-API host: <code>shared/config/egra-egma-grid-images.json:3-7</code> and <code>egra-egma-passage-images.json:3-4</code>, for example <code>"https://58a6fb2a86d61397895d6b97b73a3ebe.r2.cloudflarestorage.com/digital-coach-audio/egra-egma-ict-test/stimulus-images/letter_id_eng.png"</code>.
+- <code>sendImageFromUrl</code> does an unauthenticated <code>axios.get(imageUrl, …)</code> (<code>shared/services/whatsapp.service.js:1122</code>). An anonymous GET of those URLs returns <code>HTTP 400 &lt;Error&gt;&lt;Code&gt;InvalidArgument&lt;/Code&gt;&lt;Message&gt;Authorization&lt;/Message&gt;</code>, which I reproduced for both a grid and a passage URL.
+- Live staging: <code>❌ Error in sendImageFromUrl</code> fired on 19, 21 and 24 Sep, <strong>3 of 3 attempts</strong>. The 24 Sep row shows <code>remoteHost: 58a6…r2.cloudflarestorage.com</code>, <code>statusCode: 400</code>, and the body decodes to the same R2 <code>InvalidArgument/Authorization</code> XML.
+- The return value is dropped, so the "never a hard-stop" text fallback (which only triggers when the URL is <em>null</em>) cannot rescue it:
+  - <code>handler.js:163</code> <code>await WhatsAppService.sendImageFromUrl(from, imageUrl, caption);</code>
+  - <code>handler.js:276</code> (passage), same pattern.
+- A presigned HEAD shows all 7 objects exist (119–220 KB PNGs). The fix is to presign, or better to upload once and cache WhatsApp media IDs, exactly as PROJ-42 already does: <code>proj42-session.service.js:370</code> <code>getPresignedUrl(buildR2PublicUrl(q.image_r2_key), 3600)</code>. Also branch on <code>false</code> so the plain-text fallback actually runs.
+- No grid image send has happened on staging yet (no session reached a grid after b1a2513e). The grid failure is proven by reproducing the same code path against the same URL shape.</p>
+<h3>B2. Listening-comprehension results are silently dropped on staging today</h3>
+<p><strong>Consequence.</strong> Covered in full above: both listening rows are lost per session, the scores are unrecoverable, and the coach is told the assessment is complete.</p>
+<p><strong>Evidence.</strong>
+- <code>results.service.js:58</code> <code>...(row.audioWhatsappMediaId != null ? { audio_whatsapp_media_id: row.audioWhatsappMediaId } : {}),</code>
+- <code>handler.js:447</code> <code>audioWhatsappMediaId: pendingVoiceNote ? pendingVoiceNote.whatsappMediaId : undefined,</code>
+- Live DB (read-only): the table has 22 columns and no <code>audio_*</code>.
+- Fix: apply <code>pending_egra_egma_ict_test_voicenote.sql</code>, or gate the pilot on the columns existing. Separately, see S11 for surfacing any failed persist.</p>
+<h3>B3. Letter-ID score subtracts errors twice and can go negative</h3>
+<p><strong>Consequence.</strong> Letter-ID fluency is under-reported by twice the error count. A child who read 40 letters with 6 wrong in 60 s gets <strong>28</strong> instead of the standard <strong>34</strong> clpm. A child who is discontinued (0/10) is recorded and shown a <strong>negative</strong> rate: the test enshrines −27.3/min. This contradicts the team's own research spec, <code>research/01_EGRA_EGMA_structure.md</code> §1.3: <code>Subtask_per_minute = Subtask_score / (Time given − time_remain) × 60</code>, where the score is items correct, and "the child scores zero" on auto-stop. <code>correct</code> is already <code>attempted − incorrect</code>.</p>
+<p><strong>Evidence.</strong>
+- <code>shared/services/egra-egma-ict-test/rate-scorer.js:54</code> <code>const correct = attempted - incorrect;</code>
+- <code>:56-57</code> <code>? (correct - incorrect) / elapsedMinutes // RTI CLPM formula</code>
+- <code>__tests__/rate-scorer.test.js:46</code> <code>'handles a 0/10 first-row discontinue without crashing, producing a valid (possibly negative) rate'</code>
+- <code>:19</code> <code>expect(result.ratePerMinute).toBeCloseTo(28.0, 5);</code>
+- The cited source <code>egra_reading_flow_redesign_plan.md §8/§10</code> (<code>rate-scorer.js:8</code>) does not exist anywhere in the project tree.</p>
+<h3>B4. The live results table has RLS disabled while <code>anon</code>/<code>authenticated</code> can read, insert and delete</h3>
+<p><strong>Consequence.</strong> The first migration <em>has</em> been applied to the shared prod/staging DB. The table stores children's names (<code>student_identifier</code>) and scores. Its only protection is the secrecy of the Supabase anon key. Every sibling table enforces RLS. This is the class of issue Supabase's security advisor flags as critical.</p>
+<p><strong>Evidence.</strong>
+- Read-only query: <code>pg_class.relrowsecurity = f</code> for <code>egra_egma_ict_test_attempts</code>.
+- <code>has_table_privilege('anon', …, 'SELECT'|'INSERT'|'DELETE')</code> returns <code>t|t|t</code>, and the same for <code>authenticated</code>.
+- <code>relrowsecurity = t</code> for <code>numeracy_assessments</code>, <code>reading_assessments</code>, <code>students</code>, <code>student_lists</code> and <code>exam_check_sessions</code>.
+- The migration has no <code>ENABLE ROW LEVEL SECURITY</code> anywhere (<code>database/migrations/pending_egra_egma_ict_test_attempts.sql:26-95</code>).
+- The live row count is 1, and that row contains a child's name.</p>
+<hr />
+<h2>Serious</h2>
+<h3>S1. Any ICT-region user (53 of 56 are teachers) can open every ICT teacher's class list and receive a random child's full name</h3>
+<p><strong>Consequence.</strong> The gate is only "flag on AND region ∈ {ict, islamabad, federal}". With the flag on, a teacher typing <code>/egra</code> sees a list of <em>other</em> teachers' names, schools and classes. Tapping one returns a named child from that teacher's roster. This is a cross-teacher disclosure of child PII, and nothing restricts it to coaches.</p>
+<p><strong>Evidence.</strong>
+- <code>access-gate.js:45-47</code> <code>return isFlagEnabled() &amp;&amp; isIctRegionUser(user);</code> has no <code>users.role</code> check. Other features do check role, for example NEO on <code>role='aeo'</code>.
+- <code>roster.service.js:53-62</code> selects <code>id, name, school_name, phone_number, region, student_lists (…, students ( id, student_name, roll_number, is_active ))</code> for <code>.in('region', Array.from(ICT_REGION_TAGS))</code>, with no <code>user_id</code> scoping.
+- Live DB: the ICT-region roles are <code>teacher 53, coach 1, school_leader 1, cluster_coordinator 1</code>. Seven classes and 41 active children are reachable today.</p>
+<h3>S2. The coach can get trapped; <code>/cancel</code> and every other command is swallowed</h3>
+<p><strong>Consequence.</strong> Three phases ignore <code>/cancel</code>:
+- In <code>awaiting_student_name</code>, <code>/cancel</code> (or <code>/egra</code>, <code>/menu</code>) becomes the child's name and the assessment starts under that name.
+- In <code>awaiting_wrong_items</code> and <code>awaiting_stopping_point</code>, <code>/cancel</code> gets "'/cancel' is not a number".</p>
+<p>In every other phase, all slash commands except <code>/cancel|/stop|/quit</code> get "Please use the buttons above". So <code>/menu</code>, <code>/status</code>, <code>/reading test</code> and <code>/egra</code> are all dead for the life of the session, which is a 1 h sliding TTL. The hook runs before <code>/menu</code> (<code>text-message.handler.js:2143</code>). This breaks the repo's own convention: the numeracy and Support-Assistant guards deliberately let slash commands fall through (<code>text-message.handler.js:370-391</code>, "slash commands fall through so the user can always escape").</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:506-507</code> <code>case 'awaiting_student_name': { state.studentIdentifier = text.trim() || 'Unnamed student';</code>
+- <code>:513-517</code>: the parse failure only re-prompts.
+- <code>:539-546</code>: the <code>/cancel</code> regex lives only in <code>default</code>.
+- <code>text-message.handler.js:827</code>: the EGRA hook sits ahead of <code>/menu</code>, <code>/status</code> and <code>/reading test</code>.</p>
+<h3>S3. The voice note is effectively mandatory, and the reminder copy is wrong</h3>
+<p><strong>Consequence.</strong> Once the Flow is submitted, the only ways forward are to send <em>some</em> voice note or <code>/cancel</code> the whole assessment. That is contrary to "a failed voice-note capture must never block the actual assessment" (<code>handler.js:752-754</code>). Typed text in <code>awaiting_voice_note</code> or <code>awaiting_listening_flow</code> gets "Please use the buttons above", but no buttons exist in those phases. In all 4 real Flow-path sessions, the tester stopped exactly here.</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:545</code> <code>'Please use the buttons above to continue the assessment, or type /cancel to stop.'</code>
+- No <code>skip</code> path exists for <code>awaiting_voice_note</code> anywhere in <code>handler.js</code>.</p>
+<h3>S4. Children's voices and names leak into the general AI pipeline whenever the EGRA claim misses</h3>
+<p><strong>Consequence.</strong> The voice guard claims audio only in <code>awaiting_voice_note</code>. Any other child recording falls through to the normal voice route, where it is uploaded under <code>audio/&lt;phone&gt;/…</code>, transcribed by Soniox, stored in <code>conversations</code>, and answered by GPT. That covers:
+- a recording sent before tapping "Ready to record" (<code>awaiting_listening_flow</code>),
+- a retake after the first was captured (<code>item_qa_in_progress</code>),
+- anything after TTL expiry or a Redis blip (S12).</p>
+<p>This contradicts TESTING.md's "No SpeechAce, no Soniox … nothing". Typed names follow the same path. The bd-eg7st commit documents a child's name ("Sameer") going to GPT-5.4-mini when the gate failed. Every typed manual-path name is also written to Axiom.</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:766</code> <code>if (!state || state.phase !== 'awaiting_voice_note') return null;</code>
+- <code>voice-message.handler.js:884</code> "Step 1: Download audio", <code>:955</code> "Upload audio to R2", <code>:977</code> "Transcribe using language-aware ASR routing", <code>:1133</code> <code>voiceInboundConv = await storeConversation(</code>
+- <code>text-message.handler.js:260</code> <code>logToFile(`Processing TEXT message: ${messageBody}`);</code>
+- <code>tests/bd-eg7st-…test.js:163</code> replays <code>'Sameer'</code> into <code>getResponseWithFormatChunked</code>.
+- No consent or retention step exists for recording children anywhere in the flow.</p>
+<h3>S5. Item buttons carry no item index, so stale or double taps are recorded against the wrong question</h3>
+<p><strong>Consequence.</strong> All three marking buttons have fixed ids. A coach who scrolls up and taps ✅ on question 2's message while on question 4 records a verdict for <strong>question 4</strong>. Webhooks are deduped per message id only, with no per-user serialization, so two quick taps race on the read-modify-write session blob. One verdict is lost, or a duplicate prompt is sent.</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:207-209</code> <code>Correct: { id: \</code>${BUTTON_PREFIX}qa_correct` …<code>(same id for every item)
+-</code>:404<code></code>const item = qa.items[state.currentItemIndex];<code>-</code>whatsapp-bot.js<code>webhook:</code>SessionService.isProcessed(message.id)<code>is the only guard (</code>whatsapp-bot.js:438`). No per-user lock exists in the file.</p>
+<h3>S6. English ORF scores punctuation marks as words</h3>
+<p><strong>Consequence.</strong> The English passage has 60 words but 68 "items". The 8 full stops and commas are numbered cells that the child "reads correctly", which inflates cwpm and attempted counts by up to 13%. The Urdu passage is unaffected: its punctuation is attached to the words.</p>
+<p><strong>Evidence.</strong>
+- <code>item-bank.service.js:50</code> <code>items: ITEMS.egra.oral_reading_fluency.eng.tokens, item_count: ITEMS.egra.oral_reading_fluency.eng.token_count</code>
+- Item bank: <code>token_count 68</code>, <code>word_count_excl_punctuation 60</code>, and the tokens include <code>'.'</code> ×7 and <code>','</code> ×1 (for example <code>['Imran','woke','up','early','for','school','.', …]</code>).</p>
+<h3>S7. Timing and discontinue rules don't follow the instrument</h3>
+<p><strong>Consequence.</strong> There is no 60 s cap and no "time remaining". The rate uses server Start→Stop time, so a late Stop tap (75 s) deflates the score by 20%. At the same time the caption tells the coach to "please self-time this".</p>
+<p>The Discontinue button always records items 1–10 as wrong, for every grid. The rules it should follow are:
+- <strong>ORF:</strong> the item bank has no discontinue rule for ORF at all.
+- <strong>Familiar words:</strong> the instrument rule is "0-1 correct on the first row", so a child who got 1 right is recorded as 0.
+- <strong>Research spec:</strong> the first 5 items for word grids.</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:582-583</code> <code>state.pendingElapsedSeconds = Math.max(1, Math.round(elapsedMs / 1000));</code> (no upper bound)
+- <code>:354</code> <code>const elapsedSeconds = state.pendingElapsedSeconds || 1;</code>
+- <code>:596</code> <code>wrongItemNumbers: Array.from({ length: firstRow }, (_, i) =&gt; i + 1)</code>
+- <code>:149</code> <code>please self-time this</code>
+- Item bank: <code>familiar_word_reading.urd.discontinue_rule = "If the child scores 0-1 correct on the first row (items 1-10)…"</code></p>
+<h3>S8. Reading comprehension ignores how far the child read, and has no "not asked / no response" option</h3>
+<p><strong>Consequence.</strong> After a discontinued or partial ORF, every comprehension question still has to be marked, and the only choices are Correct and Incorrect. Unasked questions become Incorrect. The research spec requires "Incorrect vs no-response must be distinguished at item level".</p>
+<p><strong>Evidence.</strong>
+- <code>item-bank.service.js:65,69</code> set <code>gatedOnGrid: 'orf_eng'|'orf_urd'</code>, but <code>gatedOnGrid</code> is never read anywhere in <code>handler.js</code> (grep: zero hits outside <code>item-bank.service.js</code>).
+- Item bank <code>reading_comprehension.*.response_options = ['Correct', 'Incorrect']</code>.</p>
+<h3>S9. The roster pick is not persisted, so results can't be tied to a child record, and the existing selection service was not reused</h3>
+<p><strong>Consequence.</strong> The chosen student's id lives only in Redis ("kept for potential future use"). The DB gets the name only, and names are not unique. The live row from a roster-picked session has <code>student_id = NULL</code>, although the column exists with an FK.</p>
+<p>Random pick with replacement means the same child can be drawn repeatedly, and absent children can be drawn. The repo already has <code>shared/services/reading/student-selection.service.js</code> (bd-2203/2206): a coverage "staleness ladder", a present-today filter, an injectable RNG, and the <code>reading_assessments.student_id</code> FK pattern. The migration comment still says "This build does not integrate with the students/student_lists roster at all".</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:669</code> <code>state.studentId = student.id; // additive — kept for potential future use</code>
+- <code>recordSubtestAttempt</code> payloads (<code>:375-392</code>, <code>:434-449</code>) have no <code>studentId</code>.
+- <code>roster.service.js:123</code> <code>const idx = Math.floor(Math.random() * data.length);</code>
+- <code>pending_egra_egma_ict_test_attempts.sql:40-44</code></p>
+<h3>S10. The bd-eg7st fix changed the system prompt for every region and language, and its redirect is wrong in some of them</h3>
+<p><strong>Consequence.</strong> The new rule sits in <code>_getBoundarySection</code>, which is concatenated into every general-chat prompt (17 call sites: en, ur, ar, es, sw, bal/sd/ps/pa-PK, ta-LK). So every PK/TZ/YE/KE/PS general-chat reply changes. The redirect is wrong in places:
+- <strong>Palestine:</strong> it sends teachers to <code>/reading test</code>, which is hard-disabled there ("Reading assessments aren't available here").
+- <strong>Tanzania:</strong> it sends Kiswahili teachers to the English-clamped test instead of <code>/reading test kiswahili</code>.
+- <strong>ICT EGRA users:</strong> it sends them to Rumi's auto-scored reading test, the thing the EGRA build exists to avoid.</p>
+<p>"If a teacher mentions a student's name … do NOT start collecting details" is broad enough to redirect ordinary "how do I help Ali read?" questions. The actual trigger, <code>/egra</code> from an ineligible user reaching the LLM, is left in place.</p>
+<p>The regression test only asserts that the string is present. The "end-to-end" test mocks OpenAI to return the desired answer, so no model behaviour was evaluated.</p>
+<p><strong>Evidence.</strong>
+- <code>openai.service.js:563</code> <code>## READING ASSESSMENT — NEVER RUN IT IN CHAT (CRITICAL — applies to ALL languages):</code>
+- Call sites <code>:621, 649, 670, 689, 707, 725, 746, 762, 779, 796, 820, 844, 867, 891, 910, 931, 949</code>
+- <code>text-message.handler.js:1038</code> PS gate <code>"Reading assessments aren't available here."</code>
+- <code>:1063</code> <code>clampLanguage(…, ['en', 'ur', 'ar'])</code>
+- <code>tests/bd-eg7st-…test.js:160-166</code> <code>createMock.mockResolvedValueOnce(mockCompletion("… just type /reading test."))</code></p>
+<h3>S11. Any persist failure is invisible to the coach and unrecoverable</h3>
+<p><strong>Consequence.</strong> The problem goes beyond B2. The grid path tells the coach "Recorded: 18/20 correct…" whether or not the insert succeeded, and the summary always says "✅ Assessment complete". The failure log omits the scores and the <code>sessionId</code>. Nobody, whether coach, operator or data team, can reconstruct a dropped row.</p>
+<p><strong>Evidence.</strong>
+- <code>handler.js:375-397</code>: <code>await ResultsService.recordSubtestAttempt({...});</code> (result unused) then <code>`Recorded: ${scored.correct}/${scored.attempted} correct`</code>
+- <code>results.service.js:65-68</code> logs <code>{ error: error.message, subtestKey: row.subtestKey }</code> only.</p>
+<h3>S12. Redis blips cause the session to vanish and come back (and split-brain across replicas)</h3>
+<p><strong>Consequence.</strong> The Redis client uses <code>enableOfflineQueue: false</code>, so during a blip every command fails at once. <code>getState</code> then falls back to a per-process Map that is empty for this coach. Buttons reply "No active assessment session", and typed answers such as "3,7" drop through to general chat. Writes during the blip go to memory only. When Redis recovers, the old state reappears.</p>
+<p>With more than one web replica, the memory fallback is per replica. I could not see the replica count from the repo (see Unverified).</p>
+<p><strong>Evidence.</strong>
+- <code>session-state.service.js:28-36</code> falls back to <code>memoryStore.get(phone) || null</code> on any Redis error.
+- <code>railway-redis.service.js:63</code> <code>enableOfflineQueue: false</code></p>
+<hr />
+<h2>Minor</h2>
+<ul>
+<li><strong>M1. The Flow branch in <code>flow-response.handler.js</code> is dead code, and its dedicated test only tests that dead code.</strong> <code>handleFlowResponse</code> has no production caller (repo-wide grep finds only its definition and export). The real routing is <code>whatsapp-bot.js</code> → <code>detectFlowType</code>. That is how 5fd2da1e shipped "fully built and tested" but unreachable (bd-2711, per its own commit).</li>
+<li>Evidence: <code>flow-response.handler.js:204</code> <code>if (flowId === EGRA_EGMA_LISTENING_FLOW_ID &amp;&amp; EGRA_EGMA_LISTENING_FLOW_ID) {</code></li>
+<li>Evidence: <code>shared/handlers/__tests__/egra-egma-listening-flow-response.test.js</code> mocks the EGRA handler plus 12 first-party modules.</li>
+<li><strong>M2. A stale or expired Flow submission gets no reply.</strong> The coach taps "Ready to record" and nothing happens.</li>
+<li>Evidence: <code>whatsapp-bot.js:2081</code> <code>if (!ok) logToFile('⚠️ EGRA/EGMA Listening Comprehension flow completion not handled', { from });</code></li>
+<li><strong>M3. The tests can't see the real failure modes.</strong></li>
+<li><code>sendImageFromUrl</code> is mocked to <code>true</code> (<code>handler.test.js:15</code>), and URLs are only shape-checked (<code>:437</code> <code>toMatch(/^https:\/\//)</code>, <code>grid-image-urls.test.js:14</code>). B1 is invisible.</li>
+<li>The attempts-table insert mock always returns <code>{ error: null }</code> (<code>handler.test.js:44</code>). B2 is invisible.</li>
+<li>The voice-routing test is a source-text grep (<code>tests/handlers/voice-message-egra-egma-claim-guard.test.js:33</code> <code>src = fs.readFileSync(HANDLER_PATH, 'utf8')</code>). Root CLAUDE.md Rule 6 names exactly this anti-pattern.</li>
+<li>The Flow-completion test mocks the first-party <code>session-state.service</code> and never runs the <code>whatsapp-bot.js</code> branch, which is where the bug was.</li>
+<li>Only the in-memory store is exercised, never Redis.</li>
+<li>The rate-scorer test locks in the wrong formula (B3).</li>
+<li><strong>M4. Test runs are not hermetic.</strong> 16 suites and 132 tests pass, but only with Supabase env vars present. Without them, <code>tests/bd-eg7st-…</code> and <code>tests/egra-egma-listening-flow-completion-routing.test.js</code> fail at import (<code>Missing Supabase environment variables</code>, because <code>openai.service</code> → <code>bot-helpers</code> → <code>config/supabase</code> throws at load). With dummy values, 16/16 suites and 132/132 tests pass.</li>
+<li><strong>M5. Real PII is committed in tests and docs.</strong></li>
+<li><code>tests/bd-eg7st-…test.js:59</code> hardcodes a real tester's Supabase user id together with phone <code>[number redacted]</code> (<code>:71</code>).</li>
+<li><code>tests/egra-egma-listening-flow-completion-routing.test.js:7</code> includes the phone plus a name/class.</li>
+<li><code>TESTING.md:8</code> contains a personal absolute path <code>/Users/sabeenaabbasi/…</code>.</li>
+<li><strong>M6. Several documents contradict the deployed state.</strong></li>
+<li>The migration header says "NOT YET APPLIED" (<code>…attempts.sql:1</code>), but it is applied.</li>
+<li><code>TESTING.md:4</code> says "Nothing in this branch has been merged, pushed, or deployed", but it is on staging.</li>
+<li>The voicenote column comment says "R2 public URL" (<code>…voicenote.sql:38</code>), but the bucket is private. An anonymous GET returns 400, which is good for privacy, but the comment is wrong.</li>
+<li><strong>M7. The roster query is heavy and truncates silently.</strong></li>
+<li>Every <code>/egra</code> loads every ICT teacher's full student list. It also keeps each teacher's <code>phone_number</code>, which is unused, in Redis <code>pendingClasses</code> for up to 1 h (<code>roster.service.js:56,81</code>).</li>
+<li>Only the first 9 classes are shown, in unordered DB order (<code>handler.js:37,121</code>). Today there are 7; the 10th class onward will silently be unreachable.</li>
+<li><strong>M8. Pilot and region names are baked into permanent identifiers.</strong> They appear in the module path <code>egra-egma-ict-test/</code>, the table <code>egra_egma_ict_test_attempts</code>, the Redis key and the <code>egraict_</code> prefix. Hardcoded R2 account-host URLs sit in committed JSON config. <code>EGRA_EGMA_LISTENING_FLOW_ID</code> was added to the inventory test but not to the boot validator's <code>EXPECTED_FLOW_ID_ENV_VARS</code> (<code>shared/services/flow-id-validator.service.js:23-50</code>), so a wrong or unpublished id is not caught at boot.</li>
+<li><strong>M9. Copy and audio format are hardcoded.</strong></li>
+<li>All coach copy is hardcoded English, not in the ux-strings catalog (acknowledged in <code>TESTING.md:216</code>; Rule 20).</li>
+<li>Voice notes are always saved as <code>.ogg</code> with <code>audio/ogg</code>, whatever the incoming mime type (<code>handler.js:778-779</code>).</li>
+<li><strong>M10. The migration has smaller issues.</strong></li>
+<li><code>coach_user_id</code> has no <code>ON DELETE</code> rule; <code>numeracy_assessments</code> uses <code>CASCADE</code>.</li>
+<li>The <code>CHECK (rumi_auto_score_status = 'not_attempted_this_build')</code> means a future Track B <em>does</em> need a migration, despite the comment at <code>:74-75</code>.</li>
+<li>No session or start row exists, so abandonment (8 of 9 staging sessions) is measurable only in Axiom.</li>
+<li><strong>M11. <code>/egra</code> handling has gaps.</strong></li>
+<li>Typed mid-session, <code>/egra</code> never restarts; it hits the phase handler.</li>
+<li>For ineligible users, <code>/egra</code> still goes to the LLM (the bd-eg7st trigger). A deterministic "not available for your account" reply would close that at the source.</li>
+<li><strong>M12. <code>handleEgraEgmaListeningFlowComplete</code> has no access-gate check.</strong> If the flag is turned off mid-session, the Flow completion still advances the session to <code>awaiting_voice_note</code>, but the (gated) voice handler no longer claims the recording, so it goes to the general pipeline (S4).</li>
+<li>Evidence: <code>handler.js:713-735</code>.</li>
+</ul>
+<hr />
+<h2>Done well</h2>
+<ul>
+<li><strong>The flag-off path is genuinely inert and cheap.</strong> Every entry point checks the gate before touching Redis (<code>handler.js:459</code>, <code>559</code>, <code>629</code>, <code>762</code>). The flag is read fresh per call (<code>access-gate.js:25-27</code>), and tests cover text, button, list and voice with the flag off.</li>
+<li><strong>The build cannot show an unvalidated AI score.</strong> It is coach-marked only (Track A), with no vendor calls in the EGRA path. <code>rumi_auto_score_status</code> is pinned by a CHECK constraint, verified live.</li>
+<li><strong>The stimuli are rendered deterministically, not AI-generated.</strong> They use the exact item-bank Unicode, an embedded Nastaliq font (no network), and a bidi fix for "1." in RTL grids. A round-trip test (<code>buildGridHtml</code> ↔ <code>extractItemsFromHtml</code> vs the item bank) proves the pixels come from the right text. All 7 objects exist in R2. Only the delivery is broken.</li>
+<li><strong>Voice notes are stored privately.</strong> The bucket is private (anonymous GET → 400), and the key <code>egra-egma-ict-test/voicenotes/&lt;session_id&gt;/&lt;subtest&gt;.ogg</code> contains no phone number or name.</li>
+<li><strong>The Flow-completion handling is defensive.</strong></li>
+<li>Completion is matched on both phase and <code>session_id</code>, so a stale card cannot drive the session (<code>handler.js:715-726</code>).</li>
+<li>The <code>detectFlowType</code> rule is narrow, sits before the greedy <code>session_id</code> fallbacks, and has false-positive tests (<code>flow-type-detector.js:112</code>).</li>
+<li>The voice claim guard returns <code>null</code> unless the session is in the exact phase, so numeracy and coaching routing are unaffected otherwise.</li>
+<li><strong>Bad input degrades gracefully.</strong></li>
+<li>The input parser never throws and re-prompts on bad input.</li>
+<li>The stopping point is bounded to the grid size.</li>
+<li>The scorer rejects a zero elapsed time instead of producing Infinity.</li>
+<li>The Redis key has a TTL (the bd-1263 rule).</li>
+<li><strong>Some of the design choices are right.</strong> The conditional spread of the audio fields was the right instinct: it keeps the other 12 subtests writing when the second migration is missing. Existing infrastructure is reused (the Supabase client, the R2 <code>uploadBuffer</code>, <code>htmlToImage</code>, <code>sendFlow</code> navigateData). The unreliable subtests (nonword, English familiar word) are excluded, with reasons recorded in the item bank.</li>
+<li><strong>The commit messages are unusually good.</strong> The bd-2711 and bd-eg7st root causes were traced from Axiom and the live DB rather than guessed. Small services (11 modules, each with one job) keep the 829-line handler readable.</li>
+</ul>
+<hr />
+<h2>Unverified</h2>
+<ul>
+<li><strong>Whether the Supabase anon key is exposed anywhere.</strong> Neither local portal (<code>03_Rumi Portal</code>, <code>04_Observability Portal</code>) references it. This decides whether B4 is exploitable today or latent until the key leaks.</li>
+<li><strong>Staging and prod web-service replica counts.</strong> They are not set in <code>railway.json</code>. This decides whether the in-memory fallback (S12) is also a cross-replica split-brain.</li>
+<li><strong>The effect of the prompt edit (S10) on model output.</strong> No eval was run, so the over-redirect risk is based on the rule's wording, not on observed replies.</li>
+<li><strong>The exact PostgREST error text for the audio-column insert.</strong> The rejection is proven at the Postgres level via <code>EXPLAIN</code> under the read-only role. No write was attempted against the shared prod DB.</li>
+<li><strong>Whether grid images ever reached a real coach.</strong> No staging session reached a grid after b1a2513e deployed. The grid failure is proven by reproducing the identical URL shape and code path, not by a live log line.</li>
+</ul></div></div></body></html>

@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>harness/_notion_flow_section.py · EGRA in Five Minutes</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><style>
+:root{--navy:#001F3F;--coral:#F06E42;--gold:#F5B301;--bg:#F9FAFB;--surface:#fff;--ink:#1D2025;--ink2:#4B5568;--muted:#6B7590;--line:#D9DEE8;--soft:#E9EDF4;--tint:#EEF2F9}
+@media (prefers-color-scheme:dark){:root{--navy:#8FB0FF;--bg:#0B1226;--surface:#111A36;--ink:#E6EAF4;--ink2:#B9C2D6;--muted:#8A95B0;--line:#2A365C;--soft:#1C2747;--tint:#16214A}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:0 20px 80px}
+.wrap{max-width:960px;margin:0 auto}a{color:var(--navy)}
+nav.top{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.top a{text-decoration:none;color:var(--ink2)}nav.top a.brand{font-weight:700;color:var(--navy)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--navy);margin:16px 0 6px}h2{font-size:22px;margin-top:44px;padding-top:14px;border-top:3px solid var(--coral);display:inline-block;color:var(--navy)}
+h3{font-size:17px;margin-top:26px;color:var(--navy)}h4{margin-top:20px}
+.lede{color:var(--ink2);font-size:17px;max-width:64ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--soft)}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+pre{background:var(--surface);border:1px solid var(--line);padding:14px;overflow-x:auto;font-size:12.5px;line-height:1.45}pre code{background:none;padding:0}
+blockquote{border-left:3px solid var(--coral);margin:16px 0;padding:6px 16px;color:var(--ink2)}
+ul,ol{padding-left:22px}li{margin:5px 0}
+.meta{font-size:13px;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+</style></head><body><div class="wrap"><nav class="top"><a class="brand" href="../../index.html">EGRA in Five Minutes</a><a href="../../index.html#experiment">Experiment</a><a href="../../harness/results.html">Harness results</a><a href="../../files.html">All files</a><a href="../../sources.html">Sources</a><a href="https://github.com/hyasin270/egra-five-minutes">Repository</a></nav><h1>harness/_notion_flow_section.py</h1><p class=lede>One-off: swap the &#x27;The checking screen&#x27; section on PROJ-068 for the accurate WhatsApp Flow design.</p><p class="meta">Raw file: <a href="../../src/harness/_notion_flow_section.py">harness/_notion_flow_section.py</a></p><pre><code>&quot;&quot;&quot;One-off: swap the &#x27;The checking screen&#x27; section on PROJ-068 for the accurate WhatsApp Flow design.
+
+Deletes every block between the &#x27;The checking screen&#x27; heading_2 and the next heading_2, then inserts
+the new text + three uploaded PNGs right after the heading (children PATCH with `after`).
+&quot;&quot;&quot;
+import os, re, time, requests
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;, &#x27;..&#x27;, &#x27;..&#x27;, &#x27;..&#x27;, &#x27;..&#x27;))
+env = {}
+for line in open(os.path.join(ROOT, &#x27;.env&#x27;)):
+    if &#x27;=&#x27; in line and not line.startswith(&#x27;#&#x27;):
+        k, v = line.rstrip(&#x27;\n&#x27;).split(&#x27;=&#x27;, 1); env[k.strip()] = v.strip().strip(&#x27;&quot;&#x27;).strip(&quot;&#x27;&quot;)
+TOK = os.environ.get(&#x27;NOTION_TOKEN&#x27;) or env.get(&#x27;NOTION_TOKEN&#x27;)
+if not TOK:
+    cred = open(os.path.join(ROOT, &#x27;01_Digital Coach Docs&#x27;, &#x27;03_ACCESS_CREDENTIALS.md&#x27;)).read()
+    TOK = re.search(r&#x27;Integration Token: `(ntn_[A-Za-z0-9]+)`&#x27;, cred).group(1)
+H = {&#x27;Authorization&#x27;: f&#x27;Bearer {TOK}&#x27;, &#x27;Notion-Version&#x27;: &#x27;2022-06-28&#x27;, &#x27;Content-Type&#x27;: &#x27;application/json&#x27;}
+CARD = &#x27;3ddd4a97-15e9-8109-b6ae-f54db42e9de9&#x27;
+MOCK = os.path.join(os.path.dirname(__file__), &#x27;mockups&#x27;)
+SITE = &#x27;https://hyasin270.github.io/egra-five-minutes/&#x27;
+
+def rt(text, bold=False, italic=False, link=None):
+    o = {&#x27;type&#x27;: &#x27;text&#x27;, &#x27;text&#x27;: {&#x27;content&#x27;: text}, &#x27;annotations&#x27;: {&#x27;bold&#x27;: bold, &#x27;italic&#x27;: italic}}
+    if link: o[&#x27;text&#x27;][&#x27;link&#x27;] = {&#x27;url&#x27;: link}
+    return o
+
+def para(*runs): return {&#x27;object&#x27;: &#x27;block&#x27;, &#x27;type&#x27;: &#x27;paragraph&#x27;, &#x27;paragraph&#x27;: {&#x27;rich_text&#x27;: list(runs), &#x27;color&#x27;: &#x27;default&#x27;}}
+def bullet(*runs): return {&#x27;object&#x27;: &#x27;block&#x27;, &#x27;type&#x27;: &#x27;bulleted_list_item&#x27;, &#x27;bulleted_list_item&#x27;: {&#x27;rich_text&#x27;: list(runs), &#x27;color&#x27;: &#x27;default&#x27;}}
+
+def children(bid):
+    out, cur = [], None
+    while True:
+        r = requests.get(f&#x27;https://api.notion.com/v1/blocks/{bid}/children&#x27;, headers=H, params={&#x27;page_size&#x27;: 100, **({&#x27;start_cursor&#x27;: cur} if cur else {})}).json()
+        out += r.get(&#x27;results&#x27;, [])
+        if not r.get(&#x27;has_more&#x27;): return out
+        cur = r[&#x27;next_cursor&#x27;]
+
+def plain(b):
+    t = b.get(b[&#x27;type&#x27;], {}).get(&#x27;rich_text&#x27;, [])
+    return &#x27;&#x27;.join(x.get(&#x27;plain_text&#x27;, &#x27;&#x27;) for x in t)
+
+def upload(path):
+    name = os.path.basename(path)
+    r = requests.post(&#x27;https://api.notion.com/v1/file_uploads&#x27;, headers=H, json={&#x27;filename&#x27;: name, &#x27;content_type&#x27;: &#x27;image/png&#x27;}).json()
+    fid = r[&#x27;id&#x27;]
+    with open(path, &#x27;rb&#x27;) as f:
+        r2 = requests.post(f&#x27;https://api.notion.com/v1/file_uploads/{fid}/send&#x27;, headers={&#x27;Authorization&#x27;: H[&#x27;Authorization&#x27;], &#x27;Notion-Version&#x27;: H[&#x27;Notion-Version&#x27;]}, files={&#x27;file&#x27;: (name, f, &#x27;image/png&#x27;)})
+    assert r2.status_code == 200, r2.text
+    return fid
+
+def image(fid, caption):
+    return {&#x27;object&#x27;: &#x27;block&#x27;, &#x27;type&#x27;: &#x27;image&#x27;, &#x27;image&#x27;: {&#x27;type&#x27;: &#x27;file_upload&#x27;, &#x27;file_upload&#x27;: {&#x27;id&#x27;: fid}, &#x27;caption&#x27;: [rt(caption, italic=True)]}}
+
+blocks = children(CARD)
+idx = next(i for i, b in enumerate(blocks) if b[&#x27;type&#x27;] == &#x27;heading_2&#x27; and &#x27;checking screen&#x27; in plain(b).lower())
+head = blocks[idx]
+j = idx + 1
+old = []
+while j &lt; len(blocks) and blocks[j][&#x27;type&#x27;] not in (&#x27;heading_2&#x27;, &#x27;heading_1&#x27;):
+    old.append(blocks[j]); j += 1
+print(&#x27;heading&#x27;, head[&#x27;id&#x27;], &#x27;old blocks&#x27;, len(old), [b[&#x27;type&#x27;] for b in old])
+for b in old:
+    requests.delete(f&quot;https://api.notion.com/v1/blocks/{b[&#x27;id&#x27;]}&quot;, headers=H); time.sleep(0.25)
+
+ids = {n: upload(os.path.join(MOCK, n)) for n in (&#x27;chat_cta.png&#x27;, &#x27;flow_urdu.png&#x27;, &#x27;flow_maths.png&#x27;)}
+new = [
+  para(rt(&#x27;This is the same mechanism the lesson-observation form uses in Islamabad today. After a coach sends a lesson recording, Rumi listens, fills in the observation form and sends a message with a button that says &#x27;), rt(&#x27;فارم کھولیں&#x27;, bold=True), rt(&#x27; (&quot;open the form&quot;). Tapping it opens a WhatsApp Flow: a set of screens WhatsApp itself draws, where every score is already filled in; the coach changes what they disagree with, taps Next through the screens, and submits. We reuse that exactly, with one form per child instead of per lesson.&#x27;)),
+  para(rt(&#x27;A WhatsApp Flow is not a web page, so the design has to fit what Meta allows. What it can do: fields pre-filled from our server; number boxes; a row of tappable chips (at most 20); radio buttons; dropdowns; a photo picker that opens the camera; one button per screen; up to 50 elements per screen. What it cannot do: &#x27;), rt(&#x27;play audio&#x27;, bold=True), rt(&#x27;. There is no sound inside a Flow at all. So the coach does not re-listen inside the form; the recording is their own voice note, already in the chat, and they play it there. Each screen\&#x27;s button sends its values to Rumi as soon as it is tapped, so closing the form to listen and opening it again loses nothing.&#x27;)),
+  para(rt(&#x27;That rules out the per-word tap-to-mark passage an app could offer (a 60-word story would need 60 elements and there is no tap-on-text component). What fits: the counts as pre-filled numbers; the words the computer marked wrong as chips that start ticked (the coach unticks any the child actually read right); one radio-button question per comprehension item showing the question and what the child said; a dropdown for the things the computer does not mark, such as first sounds and letters. Where the computer is not confident enough, the field arrives empty rather than pre-filled.&#x27;)),
+  image(ids[&#x27;chat_cta.png&#x27;], &#x27;1 · The chat. Rumi sends the card, the coach records one voice note for the whole five minutes, Rumi replies within two minutes with its counts and the open-the-form button. The same message shape the observation form uses today.&#x27;),
+  image(ids[&#x27;flow_urdu.png&#x27;], &#x27;2 · Screen 1 of 3, Urdu. Pre-filled number boxes; the three words the computer heard wrong as ticked chips (untick = counts as right); each story question with the child\&#x27;s answer and three radio buttons; the green button saves the screen and moves to English.&#x27;),
+  image(ids[&#x27;flow_maths.png&#x27;], &#x27;3 · Screen 3 of 3, maths. Dropdowns for number reading and word problems, a number box for the timed sums, and the photo picker that opens the camera for the child\&#x27;s written answers. Submit ends the child and Rumi sends the next card.&#x27;),
+  para(rt(&#x27;The full draft of the form in the exact JSON format Meta accepts is on the project page: &#x27;), rt(&#x27;egra-review-flow.json&#x27;, link=SITE + &#x27;harness/flow/egra-review-flow.json&#x27;), rt(&#x27;. It uses only components that exist in Flow version 7.0 and every label is within Meta\&#x27;s length limits. The pictures above are rendered from that file\&#x27;s example data, not drawn separately.&#x27;)),
+  para(rt(&#x27;Storage is unchanged from the observation form: the computer\&#x27;s answer is saved once and never changed (version 1); the form opens pre-filled from it; the coach\&#x27;s submission is saved as version 2 with a note of what changed, item by item, because we need to know exactly where the computer was wrong to improve it. Only the coach who did the assessment can submit it.&#x27;)),
+]
+r = requests.patch(f&#x27;https://api.notion.com/v1/blocks/{CARD}/children&#x27;, headers=H, json={&#x27;children&#x27;: new, &#x27;after&#x27;: head[&#x27;id&#x27;]})
+print(r.status_code, r.text[:200] if r.status_code != 200 else &#x27;inserted&#x27;, len(new))
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-27 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

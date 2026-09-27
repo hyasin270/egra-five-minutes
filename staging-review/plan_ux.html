@@ -1,0 +1,905 @@
+<!doctype html><html lang="en"><head><title>Plan conformance and coach experience · EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap"><div class="crumbs"><a href="index.html">← EGRA Test Build Review</a> · Plan conformance and coach experience</div><div class="md"><h1>EGRA/EGMA staging build: plan conformance and coach experience</h1>
+<p><strong>Review lens:</strong> product lead with EGRA/EGMA background, checking the build against our plan and against the coach's day.
+<strong>Reviewed:</strong> 27 Sep 2026 · bead bd-ak1go · read-only.
+<strong>What was built:</strong> the frozen snapshot in <code>../src/</code> (8 commits, 783116cc → e81dbc03). File references below are relative to <code>../src/</code>.
+<strong>The plan it should serve:</strong> <code>../../PLAN.html</code> (sections named by their ids, e.g. <code>#battery</code>), <code>../../meetings/2026-09-15_alignment-call.md</code>, <code>../../harness/HARNESS_RESULTS.md</code> §8, <code>../../research/04_niete_observe_hitl.md</code>, <code>../../harness/flow/egra-review-flow.json</code>, <code>../../BASELINE.md</code>.
+<strong>Live evidence, also read-only:</strong> the shared Supabase schema and rows, queried through the analyst role, and the staging bot's logs in Axiom (<code>digital-coach-logs</code>, service <code>digital-coach-staging</code>, 17 to 24 Sep). The exact queries are in the appendix.</p>
+<hr />
+<h2>The short version</h2>
+<ol>
+<li><strong>This build puts the May 2026 enumerator test on WhatsApp almost in full. It does not build the plan's five-minute test.</strong> It keeps 14 of the 17 May subtests. Those 14 took an enumerator about 14 minutes of a 21-minute session. On WhatsApp my estimate is <strong>about 22 minutes per child (range 18 to 25) and about 1 hour 50 minutes for five children</strong>. The target is 5 minutes and 30 minutes, so the build runs 3 to 4 times over and saves no time against today's enumerator.</li>
+<li><strong>The subtests are close to the reverse of the plan's list.</strong> The build keeps what the plan drops: listening comprehension, the 100-letter grids, the 50-word list and patterns. It leaves out what the plan keeps: made-up words, first sounds, reading numbers aloud, one-minute quick sums, and the photo of written sums. The Urdu and English stories and their comprehension questions are the only overlap.</li>
+<li><strong>The coach marks every item, one WhatsApp message per item.</strong> That is 64 Correct/Incorrect taps plus 10 typed answers per child. On 11 Sep the field team rejected exactly this one-question-per-message design, and <code>PLAN.html#today</code> says the plan removes it. The AI does nothing. The new table even has a database rule (a check constraint) that stops it from ever storing an AI score.</li>
+<li><strong>Audio is recorded for the listening-comprehension questions only</strong>, the one subtest the plan drops, and only after the child has already answered. The timed reading minutes, which the evaluation showed the AI can count to within 5 words, are never recorded.</li>
+<li><strong>Things are broken on staging right now, and TESTING.md does not say so.</strong> Every stimulus picture sits on a private storage address that returns an error. All 3 live attempts to send the passage picture failed (19, 21 and 24 Sep). The letter, word and story grids use the same address, so the coach would get a "Ready? ▶️ Start" button with nothing to show the child.
+   - The listening-comprehension Flow <em>is</em> registered on staging.
+   - The database columns that would hold the voice note were never added. So if a coach finishes that subtest with a voice note, saving the row fails and the coach's own marks are lost.</li>
+<li><strong>No child has been tested yet.</strong> Across 9 staging sessions:
+   - 1 subtest was ever saved.
+   - 0 voice notes were captured.
+   - 0 sessions finished.
+   - The Flow was "completed" 10 to 15 seconds after the child was picked. That is a tester tapping through; a real passage read twice would take far longer.</li>
+<li><strong>Children are only partly random.</strong> The coach picks the class, and each tap draws one child with replacement. Across five draws from a class of 9 there is a 74% chance of drawing someone twice. Cancelling and re-drawing is a way to choose the child. The child's database ID is never saved, so repeat tests of the same child cannot be linked, and linking them over time is the whole point of testing often.</li>
+<li><strong>Some pieces are worth keeping:</strong>
+   - the switch-plus-region gate
+   - the real item bank with answer keys
+   - stimulus pictures drawn by code, not by AI, with a correct Nastaliq font
+   - picking the child at random on the server from the real roster
+   - uploading audio to our own storage straight away
+   - the careful routing and "never hijack" checks
+   - the chat-loop fix (bd-eg7st)</li>
+</ol>
+<p>These are good parts to build the plan's version from.</p>
+<hr />
+<h2>0. What actually ran on staging (live evidence)</h2>
+<p>TESTING.md was last updated 19 Sep. The live system has moved on since then.</p>
+<table>
+<thead>
+<tr>
+<th>Claim in TESTING.md</th>
+<th>What is live</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The database migration has NOT been applied anywhere" (<code>TESTING.md:221-227</code>)</td>
+<td><code>egra_egma_ict_test_attempts</code> exists on the shared database with the base migration's 23 columns and 1 row</td>
+<td><code>information_schema.columns</code> query, 27 Sep</td>
+</tr>
+<tr>
+<td>"Meta Flow registration: NOT done" and "no coach sees any different behaviour today" (<code>TESTING.md:153-161</code>, <code>:239-244</code>)</td>
+<td>The Flow is registered and the Flow ID is set on staging. Axiom logs <code>listening_flow_completed</code> on 18 Sep 13:55, 19 Sep 04:49, 21 Sep 18:57 and 24 Sep 07:06</td>
+<td>Axiom, service <code>digital-coach-staging</code></td>
+</tr>
+<tr>
+<td>The voice-note migration is an optional extra step (<code>TESTING.md:144-151</code>)</td>
+<td>Not applied: the live table has no <code>audio_url</code>, <code>audio_whatsapp_media_id</code> or <code>audio_recorded_at</code>. The handler always fills the media ID and timestamp (<code>handler.js:786-791</code>), and <code>results.service.js:57-59</code> sends them. So the save for any Flow-path listening subtest fails and the coach's six marks are lost without the coach being told</td>
+<td>Code plus live schema</td>
+</tr>
+<tr>
+<td>Pictures are "working end-to-end" (<code>TESTING.md:246-276</code>)</td>
+<td>3 of 3 live passage-picture sends failed with <code>❌ Error in sendImageFromUrl</code>, "Request failed with status code 400", and an XML error body. The pictures sit on <code>…r2.cloudflarestorage.com</code>, the private storage address, which answers <code>400 InvalidArgument: Authorization</code> to any unauthenticated fetch (checked with curl on 27 Sep). <code>whatsapp.service.js</code> on staging already records this failure in its bd-1736 comment ("R2 rejected with 400 (InvalidArgument: Authorization) — the object isn't publicly readable")</td>
+<td>Axiom, 19/21/24 Sep · <code>shared/config/egra-egma-grid-images.json</code>, <code>shared/config/egra-egma-passage-images.json</code></td>
+</tr>
+<tr>
+<td>A missing picture falls back to text</td>
+<td>Only when <em>no address is configured</em> (<code>handler.js:153-176</code>). When the send fails, <code>sendImageFromUrl</code> returns <code>false</code> and the handler ignores it (<code>handler.js:163</code>, <code>:276</code>). The coach gets nothing. The lost caption also carried the subtest name, the "60s cap — please self-time" line and the stop rule</td>
+<td>Code</td>
+</tr>
+<tr>
+<td>Usage</td>
+<td>9 sessions started (17 to 24 Sep). 1 subtest saved (Urdu listening comprehension, 18 Sep; the database row runs 06:28:30 to 06:30:33 with <code>student_id</code> null). 0 voice notes. 0 sessions finished. That one session got past the first subtest at 06:30 UTC, before the picture commit (b1a2513e, 06:47 UTC). No session has reached a grid since, so there is no log line for the grid pictures, but they use the same private address</td>
+<td>Axiom plus the live row</td>
+</tr>
+</tbody>
+</table>
+<p>Note: the staging service's log rows carry <code>env: "production"</code>. I identified staging by service name.</p>
+<hr />
+<h2>1. Conformance table</h2>
+<p><strong>Legend:</strong> Built · Partly · Not built · Contradicts (the build does the opposite, or rules the plan's version out).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Plan element (source)</th>
+<th>Verdict</th>
+<th>In plain words</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>5 minutes per child (<code>#idea</code>, call item 2)</td>
+<td><strong>Contradicts</strong></td>
+<td>About 22 minutes per child (section 2), the same as today's enumerator</td>
+<td>§2 arithmetic</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5 children in 30 minutes per coach per day (call item 2)</td>
+<td><strong>Contradicts</strong></td>
+<td>About 110 minutes for five children</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>The computer marks, the coach checks and corrects (<code>#idea</code>, <code>#form</code>, HITL)</td>
+<td><strong>Contradicts</strong></td>
+<td>100% coach-marked. The table's check constraint pins the AI-score field to <code>'not_attempted_this_build'</code>, so an AI score cannot be stored without changing the schema</td>
+<td><code>database/migrations/pending_egra_egma_ict_test_attempts.sql:76-77</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Keep the AI's answer, the coach's answer and the recording side by side (<code>#journey</code> "Saved twice", <code>#form</code>)</td>
+<td><strong>Not built</strong></td>
+<td>Only the coach's answer is stored. The recording exists for 2 of 14 subtests, and those saves currently fail</td>
+<td><code>results.service.js:33-60</code>; §0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Humans mark only letters and first sounds; AI does counts, comprehension, spoken maths, photo and the coach audit (HARNESS §8)</td>
+<td><strong>Contradicts</strong></td>
+<td>Humans mark everything, including the reading counts, where AI came within 5 words for 74 to 97% of children</td>
+<td><code>handler.js:458-617</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Islamabad first (call item 2)</td>
+<td><strong>Built</strong></td>
+<td>Gated to <code>users.region</code> ict, islamabad or federal</td>
+<td><code>access-gate.js:22,45-47</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>All three subjects, Urdu first, comprehension stays (call item 3)</td>
+<td><strong>Built</strong></td>
+<td>Urdu, then English, then maths, with comprehension in both languages</td>
+<td><code>item-bank.service.js:19-34</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Based on EGRA, not ASER or TIP (call item 5)</td>
+<td><strong>Built</strong></td>
+<td>Uses the real fielded EGRA/EGMA content</td>
+<td><code>shared/data/egra-egma-real-items.json:1-5</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>An algorithm picks the children, not the coach (call item 4, <code>#call</code>)</td>
+<td><strong>Partly</strong></td>
+<td>The child is random within a class, but the coach picks the class from every ICT class (at most 9 shown). The draw is with replacement, and cancel-and-redraw lets the coach choose. The coach flagged the class choice as a bias (<code>TESTING.md:233-238</code>)</td>
+<td><code>handler.js:121,648-686</code>; <code>roster.service.js:51-62,106-124</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Children pre-selected and sent before or at the visit (<code>#journey</code> "The offer")</td>
+<td><strong>Not built</strong></td>
+<td>The child's name appears only after the coach taps a class, so the coach cannot fetch the next child while the current one works</td>
+<td><code>handler.js:668-685</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Offered after the lesson recording (<code>#journey</code>; roadmap step 4, NIETE)</td>
+<td><strong>Not built (acceptable for now)</strong></td>
+<td>Started by typing <code>/egra</code>. The roadmap puts the after-lesson offer at step 4 in the NIETE bot, so a command is fine for step 2</td>
+<td><code>handler.js:64-68</code>; <code>PLAN.html#roadmap</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Built in the main bot on staging first (roadmap step 2)</td>
+<td><strong>Built</strong></td>
+<td>Yes. <code>research/04</code> §8 recommended NIETE-Rumi, but the canonical plan says main bot first</td>
+<td><code>PLAN.html#roadmap</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Not released until under 30 minutes (call item 2)</td>
+<td><strong>Built (gate)</strong></td>
+<td>Off by default, and inert for everyone else</td>
+<td><code>access-gate.js:25-27</code></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Printed child card; the phone only records (<code>#journey</code>)</td>
+<td><strong>Contradicts</strong></td>
+<td>The child reads a picture on the coach's phone. That picture is the enumerator's version, with an item number in every cell</td>
+<td><code>grid-image.service.js:63-68</code>; <code>handler.js:162</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td>One voice note per block, covering the whole block (<code>#journey</code>, <code>#pipeline</code>)</td>
+<td><strong>Contradicts</strong></td>
+<td>One voice note, only for listening comprehension, recorded <em>after</em> the child has answered</td>
+<td><code>handler.js:269-287</code>; Flow JSON <code>:113,:125</code></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Works with poor signal: notes queue offline (<code>#journey</code>, roadmap step 2)</td>
+<td><strong>Not built</strong></td>
+<td>Every tap needs a live round trip to the bot before the next item appears</td>
+<td><code>handler.js:223-230,401-415</code></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Per-child checking Flow: pre-filled counts, chips, a radio per question, dropdowns, photo, in Urdu (<code>#form</code>, <code>egra-review-flow.json</code>)</td>
+<td><strong>Not built</strong></td>
+<td>Her Flow is 2 read-only English instruction screens that collect nothing but <code>confirmed: "true"</code></td>
+<td><code>docs/flows/egra-egma-listening-comprehension-flow.json:42-141</code></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Audio saved to our storage straight away, with school, session, child and block in the file name (<code>#pipeline</code>, <code>research/04</code> §3)</td>
+<td><strong>Partly</strong></td>
+<td>Saved straight away (good), but the file name holds only session and subtest, and the database row cannot hold the link yet</td>
+<td><code>handler.js:778-779</code>; §0</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Speech-to-text, window finder, AI word marks, comprehension grader, coach audit, confidence (<code>#pipeline</code>, <code>#models</code>)</td>
+<td><strong>Not built</strong></td>
+<td>None of it is built</td>
+<td>TESTING.md:207-215</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Urdu story, 60 s, then 3 questions, with a fallback to 10 letters and 10 words (<code>#battery</code>)</td>
+<td><strong>Partly</strong></td>
+<td>Urdu story present, but shown as a numbered word grid; 6 questions; the 100-letter and 50-word grids are the default for every child, not a fallback</td>
+<td><code>item-bank.service.js:19-34,50-51</code></td>
+</tr>
+<tr>
+<td>21</td>
+<td>Urdu first sounds (5) and made-up words (5) (<code>#battery</code>)</td>
+<td><strong>Not built</strong></td>
+<td>Neither exists</td>
+<td>item bank</td>
+</tr>
+<tr>
+<td>22</td>
+<td>English story, 60 s, then 2 questions, plus 8 made-up words (<code>#battery</code>)</td>
+<td><strong>Partly</strong></td>
+<td>Story present, but as a grid that counts punctuation as words; 6 questions; made-up words excluded</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Maths: read 8 numbers aloud, one-minute quick sums spoken, written sums photographed (<code>#battery</code>, <code>#maths</code>, D2)</td>
+<td><strong>Not built</strong></td>
+<td>Instead: 40 untimed coach-marked items (compare/next number, place value, computation, word problems, patterns). No timed maths and no photo</td>
+<td><code>item-bank.service.js:79-83</code></td>
+</tr>
+<tr>
+<td>24</td>
+<td>Drop listening comprehension, the 100-letter grids for readers, and the 50-word lists (<code>#battery</code>)</td>
+<td><strong>Contradicts</strong></td>
+<td>All kept. Listening comprehension is where the only Flow and the only audio went</td>
+<td><code>item-bank.service.js:19-34</code></td>
+</tr>
+<tr>
+<td>25</td>
+<td>Stop rules keep each child at their own level (<code>#battery</code>)</td>
+<td><strong>Partly</strong></td>
+<td>A Discontinue button on the grids, applied loosely (§3c). Reading comprehension is not gated on the story; maths is not laddered; the plan's branch rules are absent</td>
+<td><code>handler.js:590-601</code>; <code>egra-egma-real-items.json:473</code>; <code>TESTING.md:228-232</code></td>
+</tr>
+<tr>
+<td>26</td>
+<td>Every timed window a full 60 s, kept comparable (<code>#battery</code>)</td>
+<td><strong>Partly</strong></td>
+<td>The coach taps Start and Stop, the server measures the gap, and there is no countdown or alert</td>
+<td><code>handler.js:573-588</code>; <code>TESTING.md:201-206</code></td>
+</tr>
+<tr>
+<td>27</td>
+<td>Zero new tables; reuse <code>aser_sessions</code>, <code>reading_assessments</code>, <code>numeracy_assessments</code> (<code>#data</code>)</td>
+<td><strong>Contradicts</strong></td>
+<td>New table. The migration says <code>aser_sessions</code> is "NOT YET SHIPPED" after checking migration files only. The <strong>live</strong> database has <code>aser_sessions</code> (with <code>student_id</code>, <code>school_id</code>, <code>grade_level</code>), and <code>reading_assessments</code> already has <code>rumi_level</code>, <code>coach_level</code>, <code>aser_session_id</code>, <code>audio_url</code>, <code>word_timestamps</code> and <code>student_id</code></td>
+<td><code>pending_egra_egma_ict_test_attempts.sql:11-19</code>; live schema, 27 Sep</td>
+</tr>
+<tr>
+<td>28</td>
+<td>Link each result to the child, school and grade, so growth curves and class views work (<code>#yield</code> "The bigger point")</td>
+<td><strong>Not built</strong></td>
+<td>The handler knows the child's database ID (<code>handler.js:669</code>), but the save never writes it (<code>results.service.js:34-60</code>). The column exists and is documented "always NULL in this build". No school, class or grade is saved</td>
+<td><code>pending_…attempts.sql:43-44</code></td>
+</tr>
+<tr>
+<td>29</td>
+<td>Coach copy in Urdu through the string catalog (<code>#form</code> draft is Urdu; root Rule 20)</td>
+<td><strong>Contradicts</strong></td>
+<td>All coach copy is hard-coded English</td>
+<td><code>TESTING.md:216-220</code>; <code>handler.js</code> throughout</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Instrument choices fixed with Sabeena and Sameer before the marker is built (D3, roadmap step 1)</td>
+<td><strong>Not built</strong></td>
+<td>D3 is still open; the build uses the May instrument as-is</td>
+<td><code>PLAN.html#decisions</code></td>
+</tr>
+<tr>
+<td>31</td>
+<td>Use recordings to check the tester (call item 8)</td>
+<td><strong>Not built</strong></td>
+<td>Not built</td>
+<td>—</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Field team, 11 Sep: all of a child's questions in one form, not one per message (<code>meetings/2026-09-11_ASER-roll-out.md:40</code>)</td>
+<td><strong>Contradicts</strong></td>
+<td>64 one-item messages per child</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>33</td>
+<td>Field team, 11 Sep: the teacher or coach has the final say (human toggle)</td>
+<td><strong>Built</strong></td>
+<td>The coach's mark is the only mark</td>
+<td><code>handler.js:340-342</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Time on task: one child, message by message</h2>
+<p>The walk-through below uses staging as it is configured today (Flow switched on), and follows the code, not TESTING.md.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Bot sends</th>
+<th>Coach does</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start</td>
+<td>intro message; class list</td>
+<td>types <code>/egra</code>; opens the list, taps a class, sends (about 3 taps)</td>
+<td><code>handler.js:477-492,120-134</code></td>
+</tr>
+<tr>
+<td>Child picked</td>
+<td>"Selected <em>name</em> (class) — starting the assessment."</td>
+<td>goes to find this child; the name only arrives now</td>
+<td><code>handler.js:678-681</code></td>
+</tr>
+<tr>
+<td>Urdu listening comprehension</td>
+<td>Flow card</td>
+<td>taps Start; reads the passage twice; taps Next; asks the 6 questions; taps "Ready to record" (3 taps)</td>
+<td>Flow JSON screens. The child answers inside the Flow, with no recording</td>
+</tr>
+<tr>
+<td></td>
+<td>passage picture (fails live); "record a voice note of the child's actual spoken response"</td>
+<td>records and sends a voice note (the child has already answered, so either the questions are asked again or the recording holds nothing useful)</td>
+<td><code>handler.js:269-287</code>. The questions are not re-sent, so the coach has to recall them</td>
+</tr>
+<tr>
+<td></td>
+<td>"Voice note received…", then item 1 of 6</td>
+<td>6 × taps Correct or Incorrect, each followed by the next item</td>
+<td><code>handler.js:795-801,223-230</code>. No answer key is shown</td>
+</tr>
+<tr>
+<td>Urdu letters (100)</td>
+<td>picture plus caption (fails live); "Ready? ▶️ Start"</td>
+<td>taps Start</td>
+<td><code>handler.js:147-182</code></td>
+</tr>
+<tr>
+<td></td>
+<td>"Timer running…" with Stop / Discontinue</td>
+<td>child reads for up to 60 s from the coach's phone; coach keeps time with no clock; taps Stop</td>
+<td><code>handler.js:184-192,573-588</code></td>
+</tr>
+<tr>
+<td></td>
+<td>"Which item numbers did the child get WRONG?"</td>
+<td>types e.g. <code>3,7,15,22</code> (from memory, or a paper sheet the build does not provide)</td>
+<td><code>handler.js:194-199</code></td>
+</tr>
+<tr>
+<td></td>
+<td>"What was the LAST item number the child reached?"</td>
+<td>types e.g. <code>47</code></td>
+<td><code>handler.js:201-203</code></td>
+</tr>
+<tr>
+<td></td>
+<td>"Recorded: 43/47 correct, 41.3 items/min."</td>
+<td>—</td>
+<td><code>handler.js:394-397</code></td>
+</tr>
+<tr>
+<td>Urdu words (50), Urdu story, English letters, English story</td>
+<td>same 6-message pattern each</td>
+<td>2 taps and 2 typed answers each</td>
+<td>5 grids in all</td>
+</tr>
+<tr>
+<td>Urdu reading comprehension, English reading comprehension</td>
+<td>intro, then 6 items each</td>
+<td>6 taps each</td>
+<td>Asked even when the child read nothing of the story</td>
+</tr>
+<tr>
+<td>English listening comprehension</td>
+<td>same as the Urdu one</td>
+<td>9 taps plus 1 voice note</td>
+<td></td>
+</tr>
+<tr>
+<td>5 maths subtests</td>
+<td>intro, then 8 items each</td>
+<td>8 taps each (40)</td>
+<td>The child sees nothing unless the coach shows the phone</td>
+</tr>
+<tr>
+<td>End</td>
+<td>per-subtest summary</td>
+<td>types <code>/egra</code> to start the next child</td>
+<td><code>handler.js:328-349</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Counts per child:</strong>
+- <strong>Bot messages:</strong> 113 designed. 106 arrive today, because all 7 picture sends fail (2 passage pictures and 5 grids).
+- <strong>Coach actions:</strong> 96 in all:
+  - 83 taps: 3 at start, 9 + 9 in the two listening subtests, 10 on the grids, 12 in reading comprehension, 40 in maths
+  - 11 typed answers: <code>/egra</code> plus 2 per grid
+  - 2 voice notes
+- <strong>Per-item marking taps:</strong> 64 (6+6+6+6 comprehension, plus 40 maths).
+- For comparison, the plan's journey is about 3 voice notes, 1 photo and one 3-screen form per child, so roughly 10 coach actions.</p>
+<p><strong>Minutes per child: arithmetic and assumptions.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Minutes</th>
+<th>How it was reached</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. Time with the child for the same 14 subtests, as an enumerator does them on a tablet</td>
+<td>13.8</td>
+<td>Sum of the May medians in <code>baseline_subtask_timings.csv</code>: 78+68+50+67+32+80+68+76+36+52+69+34+67+51 = 828 s. These 14 are 82% of the full 17-subtest time (1,008 s)</td>
+</tr>
+<tr>
+<td>B. Per-child setup: <code>/egra</code>, class list, the draw, fetching the child just named</td>
+<td>1 to 2</td>
+<td>The plan itself allows about 1 minute of moving children, with the list known in advance; here the name arrives only after the draw</td>
+</tr>
+<tr>
+<td>C. Waiting for the bot after each action (a tablet has no wait)</td>
+<td>1.6 to 4.8</td>
+<td>96 actions × 1 to 3 s per round trip. This is an assumption: Axiom batches its timestamps in 5-second steps, so it cannot measure this precisely</td>
+</tr>
+<tr>
+<td>D. Typing the wrong-item lists and last items for 5 grids</td>
+<td>1.3 to 2.5</td>
+<td>10 typed answers × 8 to 15 s. On the tablet the enumerator taps wrong items during the minute</td>
+</tr>
+<tr>
+<td>E. Re-asking for the listening voice notes (Flow path)</td>
+<td>0 to 1.5</td>
+<td>2 × about 45 s: about 35 s to re-ask 6 questions (compare the May reading-comprehension medians of 32 to 36 s) plus record, send and upload</td>
+</tr>
+<tr>
+<td><strong>Total per child</strong></td>
+<td><strong>17.7 to 24.6 (about 22)</strong></td>
+<td>13.8 + 1.5 + 3.2 + 2 + 1.5 at the midpoints</td>
+</tr>
+<tr>
+<td><strong>Five children</strong></td>
+<td><strong>89 to 123 (about 110)</strong></td>
+<td>× 5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-checks:</strong>
+- The August WhatsApp ASER tool took 10 to 15 minutes per child, according to the field team on 11 Sep (<code>meetings/2026-09-11_ASER-roll-out.md:38</code>). The plan puts paper ASER at about 10 minutes. So one message per question costs about 1.0 to 1.5 times the paper time. Applying that to A: 13.8 × 1.0 to 1.5, plus 1 to 2 minutes of setup, gives 15 to 23 minutes. That range is consistent with the table.
+- One real staging run on 18 Sep (plain path, a tester tapping, no child) went from the child being picked at 06:28:50 to the Urdu listening subtest being saved at 06:30:35: 1 minute 45 seconds. The May enumerator median for that subtest <em>with a real child</em> is 78 s.</p>
+<p><strong>Against the targets:</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Per child</th>
+<th>Five children</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target (call, 15 Sep)</td>
+<td>5 min</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td>Today's enumerator (<code>BASELINE.md:40</code>)</td>
+<td>21.1 min (median, whole form)</td>
+<td>about 105 min</td>
+</tr>
+<tr>
+<td>This build (estimate)</td>
+<td>about 22 min (18 to 25)</td>
+<td>about 110 min</td>
+</tr>
+</tbody>
+</table>
+<p>The build lands at about today's enumerator time, 3 to 4 times over the target.</p>
+<p><strong>Left out of the estimate (each would make it slower):</strong>
+- There is no answer key on screen, so the coach works out every answer live.
+- 3 maths items refer to pictures that do not exist.
+- The voice-note step has no skip.
+- With today's broken pictures, the 5 timed subtests cannot be given at all.</p>
+<hr />
+<h2>3. The battery</h2>
+<h3>3a. What is in it</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Plan's five-minute test (<code>#battery</code>)</th>
+<th>This build</th>
+<th>Full EGRA/EGMA (May 2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listening comprehension</td>
+<td>dropped</td>
+<td><strong>Urdu + English, 6 questions each; the only subtests with a Flow and audio</strong></td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Letter naming, 100-letter grid</td>
+<td>fallback only: 10 letters, 20 s</td>
+<td><strong>every child, Urdu + English</strong></td>
+<td>yes</td>
+</tr>
+<tr>
+<td>First sounds</td>
+<td>Urdu, 5 items</td>
+<td>none</td>
+<td>Sindh variant</td>
+</tr>
+<tr>
+<td>Made-up words</td>
+<td>Urdu 5, English 8</td>
+<td><strong>excluded</strong></td>
+<td>English, 50</td>
+</tr>
+<tr>
+<td>Familiar words</td>
+<td>fallback: 10 words, 30 s</td>
+<td><strong>Urdu 50-word grid, every child</strong></td>
+<td>Urdu + English, 50</td>
+</tr>
+<tr>
+<td>Story, 60 s</td>
+<td>Urdu + English</td>
+<td>Urdu + English, shown as a numbered word grid</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Story questions</td>
+<td>Urdu 3, English 2, only if a line was read</td>
+<td>6 each, always asked</td>
+<td>6 each, gated on the story</td>
+</tr>
+<tr>
+<td>Reading numbers aloud</td>
+<td>8 items, stop after 4 wrong in a row</td>
+<td>none. "Identify" here means <em>which is bigger</em> and <em>what comes next</em></td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Quick sums, timed 1 minute</td>
+<td>spoken, timed</td>
+<td><strong>excluded</strong></td>
+<td>yes (<code>blfl</code>)</td>
+</tr>
+<tr>
+<td>Computation</td>
+<td>4 written sums, photographed</td>
+<td>8 untimed, coach-marked</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Word problems</td>
+<td>spoken, 1 written</td>
+<td>8 spoken, coach-marked</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Place value / quantity</td>
+<td>—</td>
+<td>8, of which 3 need pictures that do not exist</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Patterns</td>
+<td>"photo or drop"</td>
+<td>8</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>The build's reason for dropping made-up words is SpeechAce's poor automatic scoring (<code>egra-egma-real-items.json:6-20</code>). That reason does not apply here, because nothing is scored automatically, and TESTING.md says so at <code>:172-178</code>. It also runs against our own evaluation: English made-up words by transcript plus alignment came within 5 for 91% of children, marked "counts ready" (<code>PLAN.html#experiment</code>).</p>
+<h3>3b. Are the timed subtests really timed?</h3>
+<ul>
+<li><strong>Who runs the clock:</strong> the coach taps ▶️ Start and ⏹ Stop in the chat. The server measures the time between the two taps arriving (<code>handler.js:573-588</code>), so WhatsApp's own delay on each tap is included.</li>
+<li><strong>The 60-second limit is not enforced.</strong> There is no countdown and no stop alert (<code>TESTING.md:201-206</code>). The only instruction ("please self-time this") rode on the picture caption, which fails today.</li>
+<li><strong>One phone cannot do both jobs.</strong> The same phone shows the child the letters and holds the Start and Stop buttons. Once Start is tapped, the "Timer running" message pushes the picture up the chat. The coach then has to:</li>
+<li>scroll back and hand over or hold up the phone,</li>
+<li>keep time without a clock,</li>
+<li>remember which of up to 100 items were wrong,</li>
+<li>take the phone back to tap Stop and type the item numbers.</li>
+</ul>
+<p>Real EGRA avoids this with a printed card for the child. The plan does the same.</p>
+<h3>3c. Stop rules</h3>
+<ul>
+<li><strong>Discontinue marks all of the first row wrong</strong> (<code>handler.js:590-601</code>). The Urdu word list's own rule is "0 to 1 correct" (<code>egra-egma-real-items.json</code>, <code>familiar_word_reading.urd.discontinue_rule</code>), so a child who read 1 word is recorded as 0.</li>
+<li>The button also appears on both stories, which have no stop rule in the item bank.</li>
+<li><strong>Reading comprehension is never gated on the story.</strong> <code>gatedOnGrid</code> is defined in <code>item-bank.service.js:65,69</code> and used nowhere. The data note says so at <code>egra-egma-real-items.json:473</code>.</li>
+</ul>
+<p>In May, only 1,382 of 2,233 children (62%) have a timing for the Urdu story, and 952 (43%) for the English one (<code>baseline_subtask_timings.csv</code>). The May form gated these with <code>no_orf</code> and <code>continue_rc</code> (<code>BASELINE.md:36</code>). Here, every child is asked all 12 comprehension questions, including children who read nothing of the story.
+- <strong>Maths laddering and the "continue" gates are not built</strong> (<code>TESTING.md:228-232</code>).
+- <strong>None of the plan's stop rules exist:</strong> the fall-back branch, "questions only if a line was read", and "4 wrong in a row stops maths".</p>
+<h3>3d. Language and order</h3>
+<ul>
+<li><strong>The order is right:</strong> Urdu, then English, then maths, following the real instrument and the call.</li>
+<li><strong>Within the Urdu block the build starts with listening comprehension, then the 100-letter grid.</strong> The plan would start with the story.</li>
+<li><strong>Test content is in its real language.</strong> Coach instructions are in English everywhere, including inside the Flow.</li>
+</ul>
+<h3>3e. What the child sees versus what the coach sees</h3>
+<ul>
+<li><strong>The letter, word and story grids</strong> are drawn by code from the exact item text, which is the right way to do it. But they are the <em>enumerator's</em> sheet, with "1.", "2.", … in every cell (<code>grid-image.service.js:63-68</code>), and the child is shown them.</li>
+<li><strong>The stories are chopped into numbered cells, one word per cell.</strong> Punctuation gets its own numbered cell. The English story has 8 such cells (items 7, 14, 23, 36, 41, 54, 62, 68), for example "7. ." A child reading from that is not reading connected text.</li>
+<li>Scoring counts those cells as words: a perfect English read scores 68, not 60, which is 13% too high (<code>item-bank.service.js:50</code>; tokens 68 against 60 words).</li>
+<li>The result is labelled "items/min" (<code>handler.js:396</code>), which cannot be compared with the 60-to-90 WCPM benchmark the plan relies on.</li>
+<li>The Urdu story has punctuation joined to the words, so it is not affected.</li>
+<li><strong>Listening comprehension:</strong> the Flow tells the coach not to show the screen to the child (Flow JSON <code>:51</code>), which is correct. But the passage text starts with "(FOR ENUMERATOR: READ THE FOLLOWING PASSAGE)", shown as-is.</li>
+<li><strong>Maths:</strong> items go only to the coach's phone as text. Nothing says whether to read "Choose the larger number: 3826 or 2863" aloud or show it. That choice changes the skill being tested (reading numerals against listening), and different coaches will choose differently.</li>
+<li><strong>The coach never sees an answer key.</strong> <code>correct_answer_note</code> is in the item bank for every item, but no code sends it (<code>handler.js:223-230</code> sends only <code>item.prompt</code>). So for "Why did Sara run home happily?" each coach decides for themselves what counts as right.</li>
+<li><strong>Missing maths pictures.</strong> For <code>represent_1a</code> ("How many bananas are there?"), TESTING.md says the coach is shown a description of 6 bananas (<code>:193-198</code>). The code does not send it, so the coach sees only the question.</li>
+<li><strong>Typos in coach-facing text:</strong> "On what did did Sara wake up early?" and "WHo walked with Sara" (<code>egra-egma-real-items.json:565,575</code>). The Flow's example text has the corrected wording.</li>
+</ul>
+<hr />
+<h2>4. Coach experience</h2>
+<p><strong>Copy and language.</strong>
+- Every coach-facing line is English and hard-coded: prompts, buttons, Flow screens and the end summary (<code>TESTING.md:216-220</code>).
+- There is no <code>preferred_language</code>, no string catalog, and no Urdu. Our checking-form draft and the ICT observation form are in Urdu.
+- Some wording is internal or confusing for a coach:
+  - "Discontinue rule: If the child scores 0/10 correct on the first row…" appears in the caption.
+  - The Flow says "WhatsApp will ask you to record…"; it is Rumi that asks, not WhatsApp.
+  - "items/min" is jargon.</p>
+<p><strong>Clarity.</strong>
+- There is no overall progress. The coach sees "Item 3/8" but never "subtest 6 of 14", or any sign of how much of a roughly 20-minute session is left.
+- The 5 grid subtests depend on a caption for their name and instructions. With the picture failing, the coach sees only "Ready?" and a Start button.</p>
+<p><strong>Number of taps.</strong> 83 taps, 11 typed answers and 2 voice notes per child (§2). That is about ten times the plan's journey, and it is the pattern the field team rejected on 11 Sep.</p>
+<p><strong>Recovering from mistakes.</strong>
+- <strong>There is no undo.</strong> One tap on Correct or Incorrect records the mark and moves on.
+- <strong>Buttons carry no item number</strong> (<code>handler.js:205-212</code>), and any Correct/Incorrect/Pass tap is accepted while marking is open (<code>handler.js:603-607</code>). So a double tap, or a tap on an older item's button further up the chat, is recorded against whichever item is current. With 64 item messages in the chat, this will happen.
+- <strong><code>/cancel</code> only works in button-driven steps.</strong> Typed as the child's name, it <em>becomes</em> the name (<code>handler.js:506-511</code>). While typing wrong items or the last item it gets "not a number" (<code>:513-538</code>). TESTING.md:69 promises "/cancel at any point".
+- <strong>The voice-note step has no skip.</strong> Anything typed there gets "Please use the buttons above" (<code>handler.js:539-546</code>), but that step has no buttons. The only way out is a voice note or cancelling the whole child.
+- <strong>Cancelling loses the child's progress.</strong> If the child is absent or the recording fails, the coach can only cancel the whole session, which throws away the on-screen summary, and draw again.
+- <strong>The access gate fails silently.</strong> A coach without the right region who types <code>/egra</code> falls into general chat. Commit 3c024544 (bd-eg7st) traces the 18 Sep "send me the story" loop to exactly this, and 7 <code>/egra</code> messages on staging that day started no session. The fix sends such coaches to <code>/reading</code>; it does not tell them the test is not switched on for them.
+- <strong>The session expires 1 hour after the last step saved</strong> (<code>session-state.service.js:21</code>).</p>
+<p><strong>What the coach sees at the end.</strong>
+- One plain text list per subtest, for example "• Letter Identification (Urdu): 43/47 correct (41.3/min)", plus "no AI … is used" (<code>handler.js:328-343</code>). It arrives only if all 14 subtests are finished.
+- There is no level, no benchmark and no TIP group (D6).
+- There is nothing for the teacher and no class view.
+- There is no portal page.
+- There is no "child 2 of 5" and no list of who is left today.</p>
+<p><strong>How it is started.</strong> By typing <code>/egra</code> or four other phrases (<code>handler.js:64-68</code>), not offered after the observation. That is fine for roadmap step 2.</p>
+<p>The 11 Sep field team said something relevant here: in NIETE, ASER is run <em>separately</em> from observations (<code>meetings/2026-09-11_ASER-roll-out.md:40</code>). The plan's "offer after the lesson" (<code>#journey</code>) conflicts with that feedback. This is for the plan owner to settle, not a fault in this build.</p>
+<hr />
+<h2>5. Strategic read</h2>
+<p><strong>This is a different path from the plan, not an early step along it.</strong> Phase 0 of the plan would test the risky parts:
+- one recording per block, taken while the child reads from a printed card
+- the per-child checking form
+- the storage shape that keeps the AI's answer and the coach's answer side by side
+- the 5-minute clock</p>
+<p>This build tests something else: a WhatsApp chat version of the full 21-minute enumerator battery. The differences are built in, not surface-level:</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>The plan</th>
+<th>This build</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What is tested</td>
+<td>the five-minute test (D1, D2)</td>
+<td>the May instrument (D3 not decided)</td>
+</tr>
+<tr>
+<td>How it is marked</td>
+<td>recording → AI pre-fills → coach corrects in one form</td>
+<td>coach taps each item in chat; a schema rule forbids AI scores</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>every block, while the child performs</td>
+<td>one subtest the plan drops, recorded after the answers</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>existing <code>aser_sessions</code>, <code>reading_assessments</code> and <code>numeracy_assessments</code>, which exist live with AI and coach columns</td>
+<td>new table, with no child ID, school or grade saved</td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td>pre-selected list, algorithm decides</td>
+<td>coach picks the class; each child drawn with replacement at tap time</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>Urdu form</td>
+<td>English everywhere</td>
+</tr>
+</tbody>
+</table>
+<p>The build could still be useful as a <strong>tool for putting the item bank on screen</strong>, and as a coach-only fallback while the AI is not ready. But it cannot reach 5 minutes in its current shape. Removing a few subtests will not fix that, because the one-message-per-item design adds minutes of its own.</p>
+<p><strong>What Sabeena should do next, in order:</strong></p>
+<ol>
+<li><strong>Stop staging from failing, even before any redesign.</strong>
+   - Send the pictures from memory, the way the bd-1736 fix does for coaching cards, or from a public storage address.
+   - Check the send result and fall back to text when it fails.
+   - Apply the voice-note migration, or stop sending the audio fields, so the coach's marks are not lost.
+   - Update TESTING.md: the Flow is live and the base table exists.</li>
+<li><strong>Settle D1 and D3 before any more building.</strong> Agree the five-minute test and the Urdu instrument choices with Haroon and Sameer. The plan says the marker cannot be built until D3 is fixed.</li>
+<li><strong>Cut the battery to the plan's blocks:</strong>
+   - Urdu story, 60 s, plus 3 questions, with the fall-back rungs of 10 letters and 10 words.
+   - English story plus 2 questions plus 8 made-up words.
+   - Maths: 8 numbers read aloud, one-minute quick sums, and the photo strip.</li>
+</ol>
+<p>Reuse her item bank's stories and answer keys. Print the child cards without numbers, and keep stories as connected text.
+4. <strong>Swap the one-item-per-message design for record-then-check:</strong>
+   - one voice note per block, starting on the cue phrase
+   - then <strong>one</strong> per-child Flow, reusing <code>harness/flow/egra-review-flow.json</code> and the NIETE <code>/observe</code> pattern from <code>research/04</code> §2, with the answer keys shown</p>
+<p>This works even before any AI: a blank form the coach fills from memory already turns 64 messages and 10 typed answers into 3 screens. That is the field team's first request. Then add the AI pre-fill per HARNESS §8: Gemini 3.8 Flash for counts, a Gemini 3 Flash-tier grader for comprehension, and the coach for letters and first sounds.
+5. <strong>Store it where the plan says:</strong>
+   - <code>aser_sessions</code> plus <code>reading_assessments</code> and <code>numeracy_assessments</code>, with <code>student_id</code>, school and grade filled in
+   - the AI's answer and the coach's answer as separate fields
+   - audio file names that include school, session, child and block</p>
+<p>Drop the new table, or keep it only as a scratch table.
+6. <strong>Sampling:</strong> a pre-selected list of 5 per visit, drawn without replacement and sent at the start of the visit. Add a "child absent → next on list" option that is logged. Decide D5.
+7. <strong>Urdu coach copy through the string catalog</strong> (Rule 20).
+8. <strong>Then run the step-3 stopwatch pilot</strong> (2 or 3 coaches, 25 children) with a real child in front of the coach. So far on staging nobody has got past the first subtest with the Flow switched on.</p>
+<hr />
+<h2>6. What was done well</h2>
+<ul>
+<li><strong>Safe to ship dark.</strong> A switch (off by default) plus a region gate, and inert for every other user, with tests for that (<code>access-gate.js</code>; TESTING.md:24-26). TESTING.md openly lists what is missing. It is out of date now, but it was honest when written.</li>
+<li><strong>Real content, handled carefully.</strong> The fielded EGRA/EGMA item bank was recovered from the codebook with answer keys, built by script, and checked by tests (100 of 100 letters, 50 words, a Unicode-aware word count). This is the most reusable asset in the branch.</li>
+<li><strong>Stimulus pictures drawn by code, not AI.</strong> The pictures are drawn from the exact text, checked back against the item bank, in the real Noto Nastaliq font, right-to-left, with a fix so item numbers read "1." and not ".1". Choosing not to use AI image generation for test items was right; one wrong character would spoil the item. Only the storage address needs fixing.</li>
+<li><strong>The child is not typed in by the coach.</strong> Picking one active child at random on the server from the real roster is a real step toward the call's "the coach does not choose" decision. The code does this well: the list and a fallback to typing a name both work. She raised the class-choice bias herself.</li>
+<li><strong>Coach-final marking</strong> matches the field team's "human toggle" request, and never shows an unchecked AI score as the real one.</li>
+<li><strong>Audio goes to our own storage when it arrives,</strong> not left as a WhatsApp media ID that expires in about 30 days. That is the discipline <code>research/04</code> §3 asked for.</li>
+<li><strong>Solid bot plumbing:</strong></li>
+<li>"never hijack" checks, matching session IDs on Flow completion</li>
+<li>checking the phase before claiming a voice note</li>
+<li>degrading gracefully when Redis or the database is down</li>
+<li>finding and wiring the unreachable Flow-completion route (bd-2711)</li>
+<li><strong>The bd-eg7st fix.</strong> She traced the "send me the story" loop in the logs to a gap in the general-chat prompt. She wrote a failing test first, then put the guard in the one shared function all 17 prompt variants use. That protects every user, not just EGRA testers.</li>
+<li><strong>She noticed the passage disappearing when the Flow closes</strong> (bd-2712) and tried to fix it. The re-send approach was right; only the picture hosting stopped it working.</li>
+</ul>
+<hr />
+<h2>Appendix: how the live evidence was gathered (read-only)</h2>
+<ul>
+<li><strong>Schema:</strong></li>
+<li><code>information_schema.columns</code> for <code>aser_sessions</code>, <code>reading_assessments</code>, <code>numeracy_assessments</code>, <code>egra_egma_ict_test_attempts</code>, <code>student_lists</code> and <code>students</code>, via <code>.claude/skills/database-analysis/bin/rumidb</code>.</li>
+<li><code>egra_egma_ict_test_attempts</code>: 23 columns, none of them <code>audio_*</code>; 1 row.</li>
+<li><code>aser_sessions</code>: 10 columns.</li>
+<li><code>reading_assessments</code> includes <code>rumi_level</code>, <code>coach_level</code>, <code>aser_session_id</code>, <code>audio_url</code>, <code>word_timestamps</code>, <code>student_id</code> and <code>student_identifier</code>.</li>
+<li><strong>Rows:</strong> <code>select session_id, count(*), min(started_at), max(completed_at) … from egra_egma_ict_test_attempts group by 1</code> gave 1 session, 1 subtest, 2.1 min, <code>student_id</code> null.</li>
+<li><strong>Axiom</strong> (<code>digital-coach-logs</code>, last 12 days):</li>
+<li><code>where msg contains "egra" or event contains "egra"</code> → 73 rows, all EGRA ones from <code>digital-coach-staging</code>.</li>
+<li><code>where service == "digital-coach-staging" and msg contains "Error in sendImageFromUrl"</code> → 3 rows (19, 21 and 24 Sep), each "Request failed with status code 400" with an XML error body.</li>
+<li>No <code>voice_note_captured</code>, <code>session_completed</code> or <code>persist_failed</code> events.</li>
+<li><strong>Picture address:</strong> <code>curl</code> on the configured <code>…r2.cloudflarestorage.com/digital-coach-audio/egra-egma-ict-test/stimulus-images/letter_id_urd.png</code> → <code>400</code>, <code>&lt;Error&gt;&lt;Code&gt;InvalidArgument&lt;/Code&gt;&lt;Message&gt;Authorization&lt;/Message&gt;&lt;/Error&gt;</code>.</li>
+</ul></div></div></body></html>

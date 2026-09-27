@@ -42,4 +42,4 @@ print(&#x27;age dist&#x27;,a.child_age.value_counts().sort_index().to_dict())
 print(&#x27;enumerators&#x27;,a.enumerator.nunique(),&#x27;schools&#x27;,a.school_name.nunique(),&#x27;reviewers&#x27;,a.reviewer.value_counts().to_dict())
 c=pd.to_numeric(a.overall_compliance_pct,errors=&#x27;coerce&#x27;); print(&#x27;coach compliance on these: median %.1f, flagged %s&#x27;%(c.median(),a.flagged.astype(str).value_counts().to_dict()))
 print(a.groupby(&#x27;class_grade_a&#x27;).duration_s.median().round(0).to_dict())
-</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-27 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

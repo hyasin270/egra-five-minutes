@@ -1,0 +1,536 @@
+<!doctype html><html lang="en"><head><title>Randomization and data · EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap"><div class="crumbs"><a href="index.html">← EGRA Test Build Review</a> · Randomization and data</div><div class="md"><h1>Which children get tested, and how results are stored: review of the staging EGRA/EGMA build</h1>
+<p>Reviewed 27 Sep 2026 (bead bd-ak1go). Read-only: I edited no code and checked out no branch. The code is the staging snapshot in <code>review-staging-build/src/</code>, so every <code>src/...:line</code> below points into that folder. The database queries ran on the shared Rumi Supabase as <code>analyst2</code> and return counts only. No child's name appears in this note. Where I cite the logs, IDs are hashed.</p>
+<hr />
+<h2>The short version</h2>
+<ol>
+<li><strong>The children are not chosen the way the call decided.</strong> On 15 Sep the team agreed on a pre-drawn list that the coach does not influence, with named alternates for absent children. The build does something different. The coach picks a class from a list, and the bot then draws one child from that class. Each of the five children is a separate draw, and the same child can come up again. Nothing stops a coach from cancelling and drawing again, and there are no alternates.</li>
+<li><strong>Nobody can check afterwards which child was drawn.</strong> The draw is not saved in the database. The results table has a <code>student_id</code> column, but the code never fills it. The only record of a draw is a log line, and that line does not carry the session id.</li>
+<li><strong>Redrawing takes about 15 seconds.</strong> Staging logs from 18 Sep show a tester doing it twice in five minutes: <code>/cancel</code>, then <code>/egra</code>, then the same class again. Neither attempt left anything in the database.</li>
+<li><strong>The pool it draws from is tiny.</strong> The build draws from 7 classes and 41 children. The largest class has 12 children, so no class can supply the 15 per class the call named as the benchmark. There is no grade 3 class at all. The call cited about 1,700 Islamabad grade-sections, and those are not in this table.</li>
+<li><strong>The results table cannot support the plan's AI-versus-coach calibration.</strong> A database rule permanently blocks it from holding an AI score. It has no per-item AI marks, and its audio columns were never added to the live database. Its row-level security is also switched off (see §3.6).</li>
+<li><strong>The fix mostly reuses code we already have.</strong> <code>shared/services/reading/student-selection.service.js</code> is already on staging. It picks several children at once, guarantees the whole class is reached before anyone repeats, checks today's attendance, and takes an injectable random-number generator. The EGRA build did not use it. The missing pieces are a saved, seeded draw with ordered alternates, reason codes for absent children, and a rule for new versus repeat children.</li>
+</ol>
+<hr />
+<h2>1. How the build picks a child today</h2>
+<p><strong>What the build does, step by step.</strong> The coach types <code>/egra</code>. The bot sends a WhatsApp list of classes, one row per teacher's class, across all ICT-region teachers. The coach taps a class. The bot picks one active child from that class at random and names them ("Selected <em>Name</em> (Grade 5 A) — starting the assessment"). The full test then runs for that one child. For the next child, the coach starts again from <code>/egra</code>.</p>
+<h3>What the call decided (15 Sep 2026)</h3>
+<ul>
+<li>The children are pre-selected and the coach does not choose. Haroon at 3127s: <em>"Coach نہیں select کرے گا کس بچے کا test کرنا ہے۔ یہ سارے پہلے سے pre-select ہوئے ہوں گے"</em> ("the coach won't select which child to test; they will all be pre-selected"). The coach receives names and a class and pulls those children out.</li>
+<li>The app says which child, and replacements are built in for absent children. Haroon at 818s: <em>"app بتائے گی کہ اس بچے کو کرو… with replacements factored in if the kid is absent"</em> ("the app will say: test this child…").</li>
+<li>The impact team's form looks only at the register and names roll numbers plus alternates (3562s: <em>"pick number 3، pick number 6، pick number 7، اور ان کے وہ alternates"</em>). The ASER study used odd roll numbers 1, 3, 5 … 29, which gives 15 per class. An absent child was replaced by the next even number (3626s).</li>
+<li>Five children per visit (3685–3698s). The mix was still being debated: five new children, or three new plus two repeats (818s and 1247s). By the end the chair leaned towards <em>"EGRA plus 3 to 5 testing, new students, up until 3 months"</em> (4470s), with repeats after three months (4374–4398s). PLAN.html D5 still lists this as open.</li>
+<li>The benchmark for detecting 0.2 SD was about 15 children per class or grade (1721s and 3723s). Change within a month would be nearer 0.05 SD, which needs "the entire class" (3788s) and "population size and EGRA" (4465s).</li>
+</ul>
+<h3>Point by point</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>What the build does (evidence)</th>
+<th>What the call decided</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1a</td>
+<td>What is randomised?</td>
+<td>Only the child within a class the coach has already picked. Code: <code>getRandomActiveStudent(listId)</code>, <code>src/shared/services/egra-egma-ict-test/roster.service.js:106</code>.</td>
+<td>The children and the class, drawn from the register.</td>
+<td>The coach controls half of the draw.</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>Who picks the class?</td>
+<td>The coach, from a list showing each class's teacher name, school, grade, section and size. The build's own testing notes admit it: <em>"The coach still picks WHICH CLASS to test… a coach could always pick their strongest class"</em> (<code>src/TESTING.md:233-238</code>).</td>
+<td>Not the coach (3127s, 3597s).</td>
+<td>This is the largest source of bias (see "Why this biases the numbers" below).</td>
+</tr>
+<tr>
+<td>1c</td>
+<td>Which classes are on the list?</td>
+<td>Every class of every ICT-region teacher, not only the school being visited. The query filters only on <code>region in (ict, islamabad, federal)</code> (<code>roster.service.js:53-62</code>). The list is also cut at 9 rows (<code>handler.js:37</code> <code>MAX_CLASS_ROWS = 9</code>, <code>:121</code> <code>classes.slice(0, MAX_CLASS_ROWS)</code>) with no sort order.</td>
+<td>The school being visited, from the algorithm.</td>
+<td>At Islamabad scale only 9 classes could ever appear, in whatever order the database happens to return them. Nothing links a coach to the school they are in.</td>
+</tr>
+<tr>
+<td>1d</td>
+<td>One child per tap, or a list of 5?</td>
+<td>One child per tap. Each tap is a fresh draw from the whole class, so the same child can be drawn again (<code>roster.service.js:123</code> <code>Math.floor(Math.random() * data.length)</code>). Nothing excludes children already drawn.</td>
+<td>One pre-drawn list of 5 for the visit.</td>
+<td>If five children come from one class, the chance of a repeat is 62% for a class of 12, 74% for 9, and 85% for 7. When that happens the coach has to decide what to do, which puts the choice back in their hands.</td>
+</tr>
+<tr>
+<td>1e</td>
+<td>Fixed starting point for the random pick?</td>
+<td>None. It uses <code>Math.random()</code>, which cannot be replayed.</td>
+<td>Not discussed. The register-based form is deterministic, so it can be replayed.</td>
+<td>The draw itself is fair. The problem is that nobody can re-run it later to confirm which child it picked.</td>
+</tr>
+<tr>
+<td>1f</td>
+<td>Is the draw saved?</td>
+<td><strong>No, only in the logs.</strong> The chosen child's id goes into the session memory, labelled <em>"additive — kept for potential future use"</em> (<code>handler.js:669-670</code>), which expires after 1 hour (<code>session-state.service.js:21</code>). It is never passed to the database write (<code>handler.js:375-392</code> and <code>:434-449</code> pass <code>studentIdentifier</code> only). <code>results.service.js:33-60</code> has no <code>student_id</code> in what it saves. Axiom gets <code>student_selected_from_roster {coachUserId, listId, studentId}</code> (<code>handler.js:682-684</code>), with no session id, class size, rank or seed.</td>
+<td>The algorithm names the children, so the list exists before the visit.</td>
+<td>You cannot compare who was drawn with who was tested. The one live row shows this: its name matches a roster child exactly, but <code>student_id</code> is empty (query Q3).</td>
+</tr>
+<tr>
+<td>1g</td>
+<td>Can a coach redraw?</td>
+<td><strong>Yes.</strong> <code>/cancel</code> is accepted at any step after the class list (<code>handler.js:539-543</code>). Then <code>/egra</code> and a tap on the same class gives a fresh draw. Opening the old list again does nothing (<code>handler.js:636</code>). Staging logs on 18 Sep: a <code>/cancel</code> at 12:32:26 was followed by a new session and draw at 12:32:46, and a <code>/cancel</code> at 12:36:36 by a new draw at 12:36:56. Both attempts left no database row (query A3). These were internal testers, so the logs prove the mechanism works, not that anyone meant to game it.</td>
+<td>Not possible, because the list is fixed in advance.</td>
+<td>A coach who doesn't like the drawn child can get another in about 15 seconds without leaving any trace in the results.</td>
+</tr>
+<tr>
+<td>1h</td>
+<td>Can the draw be skipped entirely?</td>
+<td>Yes. The last row of the list is "Type a name instead" (<code>handler.js:122-126</code>). A typed name is saved exactly like a drawn one. Both have an empty <code>student_id</code> and nothing records how the child was chosen.</td>
+<td>Not provided for.</td>
+<td>Hand-picked and randomly drawn children look the same in the data.</td>
+</tr>
+<tr>
+<td>1i</td>
+<td>Absent or refusing children</td>
+<td>Not handled. There are no alternates and no reason codes. The coach redraws or types a name.</td>
+<td>Named alternates, next in order (3562s, 3626s).</td>
+<td>Absent children tend to be weaker learners. If the coach quietly replaces them, the sample drifts upwards and we can't measure by how much.</td>
+</tr>
+<tr>
+<td>1j</td>
+<td>Repeat testing across visits</td>
+<td>The draw ignores history. Because the child's id is never saved, the system can't know who was tested before.</td>
+<td>First term all new, repeats after 3 months (4398s, 4470s). The 3+2 option is still open.</td>
+<td>It can do neither "5 new" nor "3 new + 2 repeat". Repeats happen by chance. Staging shows one 2-child class drawn five times, with the same child drawn in four of them.</td>
+</tr>
+<tr>
+<td>1k</td>
+<td>Children who have left</td>
+<td>Excluded, because it filters on <code>students.is_active = true</code> (<code>roster.service.js:74</code>, <code>:113</code>). <strong>But it does not filter</strong> on <code>student_lists.is_active</code> or <code>academic_year</code>. Live, 1 of the 8 ICT lists is from academic year 2025-2026 and is offered (query Q5).</td>
+<td>Implied by "register".</td>
+<td>Last year's classes can be offered.</td>
+</tr>
+<tr>
+<td>1l</td>
+<td>Small classes</td>
+<td>Offered like any other. Live active sizes in the frame are 0, 1, 1, 2, 7, 9, 9 and 12. Classes of 1 or 2 give no real randomness.</td>
+<td>15 per class for 0.2 SD (1721s, 3723s). Small-school counts were raised at 3708s.</td>
+<td>None of the offered classes can reach 15. There is also no weighting, so a child from a class of 1 counts the same as a child from a class of 40.</td>
+</tr>
+<tr>
+<td>1m</td>
+<td>Split by grade</td>
+<td>None. The grade is shown in the list, but it is not used in the draw or saved on the result row. The live frame has grades 1, 2, 4 and 5, and no grade 3.</td>
+<td>The grade question is open (grade 3 only, or 2 to 4; 1967s). Draws should be within grade.</td>
+<td>Results can't be broken down by grade without re-deriving it.</td>
+</tr>
+<tr>
+<td>1n</td>
+<td>Same-name children</td>
+<td>The roll number is fetched (<code>roster.service.js:111</code>) but not shown. The confirmation gives only name and class (<code>handler.js:678-681</code>). Across the whole database, 25 of 375 classes have at least two active children with the same name. There are none in the ICT test frame today.</td>
+<td>The form names roll numbers (3562s).</td>
+<td>The coach could pull out the wrong child.</td>
+</tr>
+</tbody>
+</table>
+<p>A small point on tests: <code>roster.service.test.js:156</code> is titled <em>"picks uniformly … (statistical check …)"</em>. It actually checks only that a random value of 0 picks the first child and 0.99 picks the last (<code>:172-175</code>). It shows the index mapping works, not that the draw is uniform.</p>
+<h3>Why this biases the numbers</h3>
+<p>Picture a coach visiting a school where Grade 5 A is strong and Grade 5 B is struggling. The build lets them tap 5 A. Then, if the drawn child is one they know is weak, or is absent, they can type <code>/cancel</code> and draw again. Neither step leaves a mark in the results. Coaches don't need to intend any of this. It is simply easier to test the class you have just observed, or the children who are in the room. Over hundreds of visits, those small nudges add up to a sample that is better than the real classroom. The average looks higher than it is, and it can look as if it is rising when really coaches are getting more comfortable with the process.</p>
+<p>The call's design removes every one of those choices. The class and the children are set before the coach arrives, absent children are replaced by the next name on a fixed list, and every change is recorded. That is also why the impact team's form "is not looking at any other data while picking besides the roster" (3562s).</p>
+<hr />
+<h2>2. The right way to do it</h2>
+<p>The goal is a draw that happens once, on our server, before the coach sees any name. It should be recorded, replayable by us, give the coach no choice, and still work over WhatsApp.</p>
+<h3>2.1 The rules</h3>
+<ol>
+<li><strong>Build the list of eligible children once per cycle.</strong> A cycle is one measurement window. The call's recommendation is EGRA every three months, so a quarter such as <code>ICT-2026-Q4</code>. The eligible children are every active child in active, current-year classes in the target grades at each school. Take a snapshot of that list when the cycle starts.</li>
+<li><strong>Shuffle each class once per cycle, on the server.</strong>
+   - Build the starting number from a secret key plus the class id plus the cycle id. The secret stops anyone predicting the order. Storing it lets us re-run the shuffle for an audit.
+   - Shuffle the class's children with that number. Each child gets a rank from 1 to N.
+   - Save every rank before any name is shown.
+   - <em>Why per cycle rather than per visit date:</em> a seed based on the visit date is also replayable, but each visit draws independently. Children then repeat within the quarter by chance, nothing guarantees the whole class is reached, and a coach can change which list they get by changing the day they visit. One order per class per cycle avoids all three problems.</li>
+<li><strong>At each visit, take the next children in rank order.</strong> The server takes the next 5 pending children at the visited school, spread across its target classes in turn. The coach receives one message listing the 5 names <strong>with roll numbers</strong>, plus the next 2 or 3 in order marked as alternates.</li>
+<li><strong>Absent children are coded, not replaced by choice.</strong> The coach taps a reason: absent, child refused, teacher declined, left school, not on register, cannot be assessed, or ran out of time. The next alternate then moves up automatically. An absent child is not dropped. They go back into the queue at their original rank and are tried again at the next visit (say up to two tries). Only then are they coded <code>absent_final</code>. Absent children are usually weaker learners, so replacing them permanently biases the results upwards. The ASER study replaced them with the next even roll number, which is fine for a single survey. A rolling programme can do better by going back for them.</li>
+<li><strong>No redraws.</strong> <code>/cancel</code> does not release anyone. Reopening shows the same list with each child's status. The only way past a child is to give a reason, and the reason is saved with a timestamp. Supervisors can then compare each coach's absence rate with that school's attendance. That comparison is weak for now: only 10 attendance sessions in the last 30 days, query Q8.</li>
+<li><strong>Manual entry is not in the coach's path.</strong> Either remove "Type a name instead", or keep it for supervisors with a required reason, save it as <code>selection_method = 'manual'</code>, and leave it out of outcome estimates.</li>
+<li><strong>Small classes are tested in full.</strong> If a class has no more children than the quota (15), everyone is tested, with weight 1.</li>
+<li><strong>Record each child's chance of being picked.</strong> Save the class size at the time of the draw on every row, so region figures can be weighted by class size / number tested in the class. Classes range from 1 to 40, so leaving this out quietly over-weights small classes.</li>
+</ol>
+<h3>2.2 "5 new" or "3 new + 2 repeat": one setting either way</h3>
+<p>Make both a region setting, <code>new_per_visit</code> and <code>panel_per_visit</code>, so the draw code doesn't change when D5 is decided.</p>
+<ul>
+<li><strong>Cycle 1 (first three months): 5 new, 0 repeat.</strong> This matches where the call ended up (4398s, 4470s) and quickly establishes a baseline for the whole class.</li>
+<li><strong>Cycle 2 onwards: the repeat children are cycle 1's tested children, taken in their cycle-1 rank order,</strong> each retested at least about three months after their first test. Because they come from the top of a random order, the repeat group is random too, not "the children the coach remembers". This also answers the concern at 1813s that retesting within weeks mostly adds practice effects and reduces the effective sample.</li>
+</ul>
+<h3>2.3 How many children? The arithmetic behind the call's numbers</h3>
+<p>Two facts from the call fix the shape of the design. A coach visits each school about <strong>6 times a quarter</strong> (4378s), and does <strong>5 children per visit</strong>. That is <strong>30 tests per school per quarter</strong>, which is 15 each in <strong>two target classes</strong> (one grade with two sections, or two grades). With three or more target classes per school, each class drops below 15.</p>
+<p>What those numbers can detect is below. I assumed the usual 80% power at a 5% significance level. The class-level clustering (ICC 0.2 to 0.3) and the correlation between a child's two scores (0.7) are my assumptions, not measured. Treat the table as orders of magnitude.</p>
+<table>
+<thead>
+<tr>
+<th>What we want to detect</th>
+<th>Design</th>
+<th>Children needed per measurement wave</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 0.2 SD change <strong>in one class</strong></td>
+<td>15 new children each wave</td>
+<td>Not detectable. The smallest detectable change is about 1.0 SD.</td>
+</tr>
+<tr>
+<td>A 0.2 SD change <strong>in one class</strong></td>
+<td>Same 15 children retested</td>
+<td>Still not detectable. The smallest detectable change is about 0.56 SD.</td>
+</tr>
+<tr>
+<td>A 0.2 SD change <strong>across a region</strong></td>
+<td>New children, 15 per class</td>
+<td>~1,500 children (~100 classes)</td>
+</tr>
+<tr>
+<td>A 0.2 SD change <strong>across a region</strong></td>
+<td>Same children retested, 15 per class</td>
+<td>~280 children (~19 classes)</td>
+</tr>
+<tr>
+<td>A 0.1 SD change across a region</td>
+<td>New children, 15 per class</td>
+<td>~6,000 children</td>
+</tr>
+<tr>
+<td>A 0.05 SD change (about one month's learning, 3788s)</td>
+<td>New children, 15 per class</td>
+<td>~24,000 children, which is effectively everyone. This is why the call said "population size".</td>
+</tr>
+</tbody>
+</table>
+<p>In plain words, 15 per class is the right amount to test in each class. But 0.2 SD only becomes visible once results are added up across roughly 100 classes, or across about 20 classes if the same children are retested. Haroon's figure at 1866s of about 1,485 children a week, with 891 of them repeats, is in the right range for a regional 0.2 SD reading. Whether a month-on-month change can be read is set by the fourth row, and that only works with whole-class testing.</p>
+<h3>2.4 What needs storing</h3>
+<p><strong>Where it could go.</strong> I checked the live schema first, as Rule 15 asks. There is no existing place for "the order of a class for this cycle".</p>
+<ul>
+<li><code>aser_sessions</code> has the right basic columns: <code>user_id</code>, <code>student_id</code> linked to <code>students</code>, <code>school_id</code> linked to <code>schools</code>, <code>grade_level</code>, <code>region</code> and <code>status</code>. It is used for the actual tests.</li>
+<li>But <code>origin/main:shared/services/aser/aser-roster.service.js:41-45</code> treats <strong>every</strong> <code>aser_sessions</code> row for a child as "already assessed", with no status filter. Adding "pending" draw rows there would make ASER's auto-pick skip drawn children that haven't been tested.</li>
+<li>The list of eligible children can't be rebuilt afterwards either. <code>students</code> keeps no history (only <code>created_at</code>/<code>updated_at</code> and an <code>is_active</code> switch), so a child who was active on draw day but inactive later disappears.</li>
+</ul>
+<p><strong>My recommendation:</strong> one small table, <code>assessment_draws</code>, with one row per drawn child per cycle. It is effectively the <code>aser_assignments</code> table the earlier coach-flow plan named (the migration comment mentions it at <code>pending_egra_egma_ict_test_attempts.sql:16</code>). The zero-new-table alternative is to put these rows in <code>aser_sessions</code> and add <code>status &lt;&gt; 'pending'</code> to that ASER consumer.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code>, <code>cycle_id</code>, <code>region</code></td>
+<td>Which window this draw belongs to.</td>
+</tr>
+<tr>
+<td><code>school_id</code> → <code>schools</code>, <code>list_id</code> → <code>student_lists</code>, <code>grade</code> (snapshot)</td>
+<td>Which school, class and grade. Note that 0 of the 6 ICT teachers with rosters have <code>users.school_id</code> set (query Q7), so the coach-to-school link has to be filled in first.</td>
+</tr>
+<tr>
+<td><code>student_id</code> → <code>students</code>, <code>roll_number</code> (snapshot)</td>
+<td>Who. Store the id and roll number, never the name.</td>
+</tr>
+<tr>
+<td><code>frame_size</code>, <code>draw_rank</code></td>
+<td>The chance of being picked, and the order.</td>
+</tr>
+<tr>
+<td><code>seed_digest</code>, <code>algo_version</code></td>
+<td>What we need to re-run the shuffle.</td>
+</tr>
+<tr>
+<td><code>sample_role</code> (<code>new</code> or <code>panel</code>), <code>attempts</code></td>
+<td>Whether this is a new child or a repeat, and how many times they were sought.</td>
+</tr>
+<tr>
+<td><code>outcome</code> (checked list of values, default <code>pending</code>), <code>outcome_at</code>, <code>outcome_note</code></td>
+<td>tested / absent / absent_final / refused_child / teacher_declined / left_school / not_on_register / cannot_assess / time_ran_out / not_reached</td>
+</tr>
+<tr>
+<td><code>assigned_coach_id</code>, <code>visit_date</code></td>
+<td>Who was supposed to test the child, and when.</td>
+</tr>
+<tr>
+<td><code>aser_session_id</code> → <code>aser_sessions</code></td>
+<td>Links to the test that actually happened.</td>
+</tr>
+<tr>
+<td>Unique keys: (<code>cycle_id</code>, <code>list_id</code>, <code>draw_rank</code>) and (<code>cycle_id</code>, <code>student_id</code>, <code>sample_role</code>)</td>
+<td>Stop duplicate draws.</td>
+</tr>
+</tbody>
+</table>
+<p>Each actual test row, whether in <code>aser_sessions</code> or the EGRA attempts table, also needs <code>draw_id</code>, <code>selection_method</code> (<code>random_draw</code> or <code>manual</code>), and a filled-in <code>student_id</code>.</p>
+<p><strong>How it feels on WhatsApp.</strong> Once the lesson recording arrives (the PLAN.html "offer" step), the coach gets one list message: "Today's children: 1. Roll 7 · Grade 3A · [name] … Alternates: Roll 12, Roll 4". A row per child opens buttons: <em>Start test / Absent / Refused / Other</em>. That fits inside WhatsApp's 10-row list limit.</p>
+<p><strong>Reuse.</strong> The ordering, attendance check and roll-number label already exist in <code>shared/services/reading/student-selection.service.js</code>, which is on staging and identical on main. It covers the never-tested-first ordering (<code>:53-70</code>), picking N children (<code>:80-85</code>), the attendance gate (<code>:157-187</code>) and the roll-number label (<code>:228-239</code>). For this purpose it needs three changes: a seeded generator instead of <code>Math.random</code>, the order saved rather than recalculated on every call, and alternates plus outcome codes.</p>
+<hr />
+<h2>3. Review of the data model (<code>egra_egma_ict_test_attempts</code>)</h2>
+<h3>3.1 What exists live</h3>
+<ul>
+<li><strong>The base table exists and is in use</strong>, even though the migration's header still says <em>"NOT YET APPLIED"</em>. It has 23 columns, 5 constraints and 3 valid indexes, and holds <strong>1 row</strong>: one <code>listening_comprehension_urd</code> result from 18 Sep (queries Q1 and Q2).</li>
+<li><strong>The voice-note migration has not been applied.</strong> <code>audio_url</code>, <code>audio_whatsapp_media_id</code> and <code>audio_recorded_at</code> do not exist (query Q1).</li>
+<li><strong>This can already lose data.</strong> The listening-comprehension Flow is live on staging: the flow id is set and the Flow is published, per <code>findings/live.md</code>. Four staging sessions have reached the voice-note step. The first time a voice note is captured, <code>results.service.js:57-59</code> will send <code>audio_url</code> for a column that doesn't exist. The database will reject that insert, so that subtest's row won't be saved.</li>
+<li><strong>The coach won't know.</strong> The handler ignores the save result (<code>handler.js:434</code> is not assigned) and says "Assessment complete" anyway. Grid subtests are the same: <code>handler.js:394-397</code> sends "Recorded: …" whether or not the save worked.</li>
+<li><strong>Staging so far, 18–24 Sep:</strong> 9 sessions started, 8 children drawn and 1 row saved (Axiom query A1). The database can't show that sessions were abandoned, because there is no sessions table and no completion marker.</li>
+</ul>
+<h3>3.2 What one row is, and its keys</h3>
+<ul>
+<li><strong>One row is one subtest attempt, for one child, in one session.</strong> A full test is 14 rows.</li>
+<li><strong>Keys:</strong></li>
+<li>The primary key is a <code>uuid</code>.</li>
+<li><code>session_id</code> is free text generated in the app (<code>session-state.service.js:70</code>), with no table behind it.</li>
+<li>Nothing prevents the same (<code>session_id</code>, <code>subtest_key</code>) being saved twice.</li>
+<li><code>coach_user_id</code> is linked to <code>users</code>.</li>
+<li><code>student_id</code> is linked to <code>students</code> with ON DELETE SET NULL, but <strong>it is always empty</strong>. The column comment still says <em>"always NULL in this build"</em> (<code>migration:44</code>), even though the roster commit made the id available.</li>
+<li>There is no class, school or grade column.</li>
+<li>The instrument's own item names are kept in <code>item_answers[].field_name</code>, and <code>item_bank_version</code> is stored. Both are good.</li>
+</ul>
+<h3>3.3 Can it hold AI marks next to coach marks, per item? No.</h3>
+<ul>
+<li><strong>A database rule blocks AI scores entirely.</strong> <code>rumi_auto_score_status</code> is fixed by a CHECK constraint to <code>'not_attempted_this_build'</code>, and that constraint is live (query Q2). No AI verdict can be stored until someone changes the table.</li>
+<li><strong>There are no AI or confidence columns</strong> at item or subtest level.</li>
+<li><strong>Grid subtests store only the coach's marks.</strong> That means the list of wrong items and where the child stopped. The individual item marks can be worked out from those, which is good, but there is no word-level table or timestamps.</li>
+<li><strong>The timing is approximate.</strong> <code>elapsed_seconds</code> is the time between the server receiving the Start tap and the Stop tap (<code>handler.js:574</code>, <code>:582</code>). It includes WhatsApp delivery delay, so it is not the child's actual reading time, and the rate per minute is calculated from it.</li>
+<li><strong>Audio is limited.</strong> At most one recording per subtest, and only for listening comprehension. There is none for the timed reading (ORF) or letter tasks, which are exactly the ones the plan wants the AI to score. Those columns don't exist live, and no voice note has been captured (A1).</li>
+</ul>
+<p><strong>So it can't support the plan's calibration loop.</strong> That loop saves the computer's answer once, lets the coach's version record what changed item by item, and switches a subtask over only when agreement matches a second human. The existing <code>reading_assessments</code> table already has most of what that loop needs: <code>student_id</code> (linked), <code>aser_session_id</code> (linked), <code>audio_url</code>, <code>word_timestamps</code>, <code>errors</code>, <code>words_correct</code>, <code>wcpm</code>, and the paired <code>rumi_level</code>/<code>coach_level</code>/<code>rumi_coach_delta</code>/<code>coach_user_id</code> columns (query Q6). <code>numeracy_assessments</code> has the same paired columns plus a photo URL, although it has no <code>student_id</code> of its own.</p>
+<h3>3.4 Should an existing table have been used?</h3>
+<p><strong>Partly, yes.</strong> PLAN.html (<code>id="data"</code>) said <em>"We add no new tables for version 1, only a few columns"</em>. It mapped the session to <code>aser_sessions</code> and each reading window to <code>reading_assessments</code>, with numeracy in <code>numeracy_assessments</code>.</p>
+<ul>
+<li><strong>The migration's reason for a new table rests on a stale check.</strong> It says <code>aser_sessions</code> was <em>"NOT YET SHIPPED … confirmed live 2026-09-16: no matching migration file exists"</em> (<code>migration:16-19</code>). That checked for migration files, not the database. Live, <code>aser_sessions</code> exists with 84 rows, and the ASER flow on <code>origin/main</code> writes to it (Q4, plus the code search in the appendix).</li>
+<li><strong>The build does have a fair point about shape.</strong> The grid "wrong items + where the child stopped" format and the EGMA item-by-item format don't fit one-row-per-subject ASER rows well.</li>
+<li><strong>My verdict:</strong> keeping this table as a record of coach marks for the internal test is reasonable. It should not become the main EGRA store unless it gets:
+  1. <code>student_id</code> filled in,
+  2. a link to the draw,
+  3. a link to <code>aser_sessions</code>,
+  4. per-item AI verdict and confidence fields, with the CHECK pin lifted once validated scoring exists,
+  5. its audio columns.</li>
+</ul>
+<p>Otherwise it should be merged into the PLAN's mapping.</p>
+<h3>3.5 Children's personal data</h3>
+<ul>
+<li><strong>The child's full name is stored as free text</strong> (<code>student_identifier</code>) on every one of the 14 rows per child, while the proper <code>student_id</code> column goes unused. Store the id and leave the name null for drawn children.</li>
+<li><strong>Every <code>/egra</code> pulls every ICT child's name</strong> (<code>roster.service.js:59</code>, <code>students ( id, student_name, roll_number, is_active )</code>), even though the names are only used to count children. Select just <code>id, is_active</code>.</li>
+<li><strong>Teacher phone numbers are copied into session memory</strong> (<code>pendingClasses</code> includes <code>phoneNumber</code>, <code>roster.service.js:80</code>, <code>handler.js:489</code>). They aren't needed there.</li>
+<li><strong>The recording file name has no child name</strong> (<code>egra-egma-ict-test/voicenotes/&lt;session_id&gt;/&lt;subtest_key&gt;.ogg</code>, <code>handler.js:778</code>). That is good.</li>
+</ul>
+<h3>3.6 Access control: needs fixing before real children are tested</h3>
+<ul>
+<li><strong>Row-level security is off</strong> on <code>egra_egma_ict_test_attempts</code> (<code>relrowsecurity = f</code>, query Q9).</li>
+<li><strong>The public <code>anon</code> and <code>authenticated</code> roles have full rights</strong> on it (<code>arwdDxtm</code>). That means anyone holding the project's public anon key could read children's names from this table, and insert or delete rows.</li>
+<li><strong>By contrast, <code>students</code> and <code>reading_assessments</code> have row-level security on</strong>, so the same grants there are harmless.</li>
+<li><strong><code>aser_sessions</code> has the same exposure</strong> (row-level security off), but that predates this build.</li>
+<li>The fix is one statement per table: <code>ALTER TABLE … ENABLE ROW LEVEL SECURITY;</code>. The bot uses the <code>service_role</code> key, which bypasses row-level security, so the bot keeps working.</li>
+</ul>
+<hr />
+<h2>4. What was done well</h2>
+<ul>
+<li><strong>The draw is server-side and uniform within a class, and it uses the real roster.</strong> It keeps only active children, drops empty classes, and shows the live active count rather than the stale <code>student_count</code> (the test at <code>handler.test.js</code> asserts "2 students", not 9). That is a real improvement on a typed name.</li>
+<li><strong>The draw logs the child's id, not the name.</strong> That log line is the only reason this review could reconstruct the staging redraws at all.</li>
+<li><strong>It never dead-ends.</strong> A roster failure, an empty class or a failed voice upload all fall back to a working path (<code>roster.service.js:29-33</code>, <code>handler.js:654-666</code>, <code>:780-784</code>).</li>
+<li><strong>The build is honest about its own weak point.</strong> TESTING.md flags the class-choice bias itself, and says plainly that it hasn't been checked against live WhatsApp.</li>
+<li><strong>The migration is careful:</strong></li>
+<li>it can be re-run safely and has a reversal step;</li>
+<li>it snapshots <code>region</code> at test time;</li>
+<li>it stores <code>item_bank_version</code> and the instrument's own item field names;</li>
+<li>it reserves <code>student_id</code> with ON DELETE SET NULL;</li>
+<li>the CHECK constraint that stops an unvalidated AI score posing as the real score is a principled safety choice;</li>
+<li>the indexes are valid (query Q2).</li>
+<li><strong>The audio fields are sent only when present</strong>, so a partial migration doesn't break the other subtests. It just doesn't protect the listening row (§3.1).</li>
+<li><strong>The grid scoring keeps enough to recover each item's mark</strong> (wrong-item list plus stopping point), which is what a later comparison with AI scoring needs.</li>
+</ul>
+<hr />
+<h2>Appendix: queries run (read-only, counts only)</h2>
+<p>All queries ran via <code>.claude/skills/database-analysis/bin/rumidb</code> as <code>analyst2</code>.</p>
+<p><strong>Q1: tables and columns</strong></p>
+<pre><code class="language-sql">SELECT table_name FROM information_schema.tables WHERE table_schema='public'
+  AND (table_name ILIKE '%student%' OR table_name ILIKE '%egra%' OR table_name ILIKE '%aser%' OR ...);
+-- aser_results_flat(VIEW), aser_sessions, attendance_records, attendance_sessions,
+-- egra_egma_ict_test_attempts, numeracy_assessments, reading_assessments, student_lists, students, ...
+SELECT column_name FROM information_schema.columns WHERE table_name='egra_egma_ict_test_attempts';
+-- 23 columns; no audio_url / audio_whatsapp_media_id / audio_recorded_at
+-- students: no gender, no date of birth, no attendance, no grade column (grade is on student_lists)
+</code></pre>
+<p><strong>Q2: attempts table contents and constraints</strong></p>
+<pre><code class="language-sql">SELECT count(*), count(DISTINCT session_id), count(student_id), count(student_identifier) FROM egra_egma_ict_test_attempts;
+-- 1 | 1 | 0 | 1   (subtest listening_comprehension_urd, region ict, 2026-09-18 06:30 UTC)
+SELECT conname, pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid='public.egra_egma_ict_test_attempts'::regclass;
+-- CHECK (rumi_auto_score_status = 'not_attempted_this_build'); student_id FK students ON DELETE SET NULL; ...
+SELECT indexrelid::regclass, indisvalid FROM pg_index WHERE indrelid='public.egra_egma_ict_test_attempts'::regclass;
+-- pkey, _session, _coach: all valid
+</code></pre>
+<p><strong>Q3: is the saved row a drawn child?</strong> (count only)</p>
+<pre><code class="language-sql">SELECT count(*) FILTER (WHERE EXISTS (SELECT 1 FROM students s WHERE s.student_name = a.student_identifier)),
+       count(*) FILTER (WHERE a.student_id IS NULL) FROM egra_egma_ict_test_attempts a;
+-- 1 | 1  -&gt; the name matches a roster child; the student_id was dropped
+</code></pre>
+<p><strong>Q4: existing ASER tables</strong></p>
+<pre><code class="language-sql">SELECT count(*), count(student_id) FROM aser_sessions;          -- 84 | 0 (all status in_progress, 0 with school_id)
+SELECT count(*), count(student_id) FROM reading_assessments;    -- 937 | 78
+SELECT count(*) FROM numeracy_assessments;                      -- 113 (98 linked to aser_session_id)
+</code></pre>
+<p><strong>Q5: the pool the roster service draws from</strong> (users.region in ict/islamabad/federal)</p>
+<pre><code class="language-sql">-- 6 teachers (5 federal, 1 ict), 8 lists, 41 students, all 41 active; 0 inactive lists;
+-- academic_year: 2025-2026 = 1 list (1 child), 2026-2027 = 7 lists (40 children)
+-- per-list active sizes: 0, 1, 1, 2, 7, 9, 9, 12; grades present: 1, 2, 4, 5 (no grade 3)
+-- roll_number: 0 missing, 0 duplicates within a list; same-name children in ICT lists: 0
+</code></pre>
+<p><strong>Q6: whole database, for context</strong></p>
+<pre><code class="language-sql">-- student_lists 375: 158 empty, 134 with 1–4 active, 48 with 5–14, 35 with 15 or more; median active (non-empty) = 2
+-- students 2,750: 2,592 active; 1 active child without a roll number; 0 lists with duplicate roll numbers
+-- 25 lists have at least two active children with an identical name (23 of them with 2–3)
+</code></pre>
+<p><strong>Q7: link from teacher to school</strong></p>
+<pre><code class="language-sql">SELECT count(*), count(school_id) FROM (SELECT DISTINCT u.id, u.school_id FROM users u
+  JOIN student_lists sl ON sl.user_id=u.id WHERE u.region IN ('ict','islamabad','federal')) u;   -- 6 | 0
+</code></pre>
+<p><strong>Q8: attendance (possible check on absences)</strong></p>
+<pre><code class="language-sql">-- attendance_sessions: 161 total, 10 in the last 30 days (9 lists), 11 ever in ICT scope
+</code></pre>
+<p><strong>Q9: row-level security and grants</strong></p>
+<pre><code class="language-sql">SELECT relname, relrowsecurity FROM pg_class WHERE relname IN (...);
+-- egra_egma_ict_test_attempts f | aser_sessions f | students t | student_lists t | reading_assessments t
+SELECT has_table_privilege('anon','public.egra_egma_ict_test_attempts','SELECT');   -- t (also INSERT t)
+-- relacl: {anon=arwdDxtm/postgres, authenticated=arwdDxtm/postgres}
+</code></pre>
+<p><strong>A1: Axiom <code>digital-coach-logs</code>, service <code>digital-coach-staging</code>, last 20 days</strong></p>
+<pre><code>event startswith &quot;egra_egma_ict_test&quot; | summarize count() by event
+-- session_started 9 · student_selected_from_roster 8 · listening_flow_completed 4 · subtest_recorded 1
+-- no voice_note_captured, no persist_failed
+</code></pre>
+<p><strong>A2: draws by class</strong> (ids hashed)</p>
+<pre><code>-- 2 tester accounts drew. The class with 2 active children was drawn 5 times (one child 4 times).
+-- The class with 1 active child was drawn twice (same child).
+</code></pre>
+<p><strong>A3: redraws</strong></p>
+<pre><code>msg contains &quot;/cancel&quot;  (staging)
+-- 2026-09-18 12:32:26 /cancel -&gt; 12:32:31 session_started -&gt; 12:32:46 draw
+-- 2026-09-18 12:36:36 /cancel -&gt; 12:36:46 session_started -&gt; 12:36:56 draw
+-- 2026-09-19 04:48:33 /cancel -&gt; 04:48:48 session_started -&gt; 04:48:53 draw
+-- none of these draws led to a saved row
+</code></pre>
+<p><strong>Code search</strong></p>
+<pre><code>git grep -l aser_sessions origin/main -- '*.js'   -&gt; aser-flow.handler.js, aser-assessment.service.js, aser-roster.service.js (+ tests)
+git grep -l aser_sessions origin/staging -- '*.js' -&gt; none (the ASER flow is on main, not staging)
+student-selection.service.js: identical on origin/main and origin/staging
+</code></pre>
+<p><strong>Transcript</strong> (<code>meetings/probe2_soniox_alignment_call.mp3.md</code>): lines 55–72 (1247–1888s), 128–140 (3052–3181s), 150–166 (3523–3842s) and 188–209 (4203–4470s). The speaker labels come from automatic diarisation. Where the label and the addressee disagree (e.g. 3788s is addressed as Ahwaz at 3842s), I cite the timestamp rather than a name.</p></div></div></body></html>

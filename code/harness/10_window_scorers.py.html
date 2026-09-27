@@ -142,4 +142,4 @@ if __name__ == &#x27;__main__&#x27;:
         g = g.assign(enum_correct=pd.to_numeric(g.enum_correct)); diff = g.machine_correct - g.enum_correct; bd_ = g.baseline_correct - g.enum_correct
         prec = g.tp.sum() / max(1, g.tp.sum() + g.fp.sum()); rec = g.tp.sum() / max(1, g.tp.sum() + g.fn.sum())
         print(f&quot;  {sub:10s} n={len(g):3d} count r={g.machine_correct.corr(g.enum_correct):.2f} MAE={diff.abs().mean():.1f} bias={diff.mean():+.1f} within±5={100 * (diff.abs() &lt;= 5).mean():.0f}% | per-word precision={prec:.2f} recall={rec:.2f} | Levenshtein baseline on same windows: r={g.baseline_correct.corr(g.enum_correct):.2f} MAE={bd_.abs().mean():.1f}&quot;)
-</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-16 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-27 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

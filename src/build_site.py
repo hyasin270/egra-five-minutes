@@ -170,6 +170,10 @@ def build():
     fj = os.path.join(ROOT, 'harness', 'flow', 'egra-review-flow.json')
     if os.path.exists(fj):
         os.makedirs(os.path.join(OUT, 'harness', 'flow'), exist_ok=True); shutil.copy(fj, os.path.join(OUT, 'harness', 'flow', 'egra-review-flow.json'))
+    rv = os.path.join(ROOT, 'review-staging-build', 'site')
+    if os.path.isdir(rv):  # the staging-build review, published as its own page under /staging-review/
+        dst = os.path.join(OUT, 'staging-review')
+        shutil.copytree(rv, dst, ignore=shutil.ignore_patterns('.git'), dirs_exist_ok=True)
     write(os.path.join(OUT, '.nojekyll'), '')
     print('built', OUT)
 

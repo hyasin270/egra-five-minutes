@@ -1,0 +1,358 @@
+<!doctype html><html lang="en"><head><title>Design · EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap"><div class="crumbs"><a href="index.html">← EGRA Test Build Review</a> · Design</div><div class="md"><h1>EGRA/EGMA ICT test build: design review (child cards, Listening Flow, coach messages)</h1>
+<p><strong>Reviewed:</strong> 2026-09-27 · <strong>Bead:</strong> bd-ak1go · <strong>Build:</strong> main-bot <code>staging</code> @ <code>554c6a8d</code> (the snapshot handler in <code>../src/</code> is byte-identical to staging head)
+<strong>Scope:</strong> everything a coach or child <em>sees</em>: the 7 stimulus images, the Listening Comprehension WhatsApp Flow, and every coach-facing string in <code>src/shared/handlers/egra-egma-ict-test.handler.js</code>.
+<strong>Method:</strong> downloaded all 7 real images, looked at each one full-size, and measured glyph heights in pixels, converted to millimetres on a 6.1" phone (64.9 × 140.7 mm screen). I rendered the Flow and the coach's chat as phone mockups using the real strings, and checked staging logs (Axiom) for what actually happened when testers ran it. Nothing in git, R2, Meta or Railway was changed. R2 access was GET-only.</p>
+<hr />
+<h2>The short version</h2>
+<ol>
+<li><strong>Blocker: no stimulus image has ever reached a coach.</strong> All 7 image URLs point at R2's private storage address, which refuses anonymous downloads (HTTP 400). The bot downloads by URL without credentials, so every send fails. Staging logs show 3 of 3 attempts failing, and the handler then carries on as if the send had worked.</li>
+<li><strong>The failure is silent and takes the instructions with it.</strong> The fallback to plain text only runs when <em>no</em> URL exists, not when the send fails. The coach gets "Ready? ▶️ Start" with no grid, no 60-second rule and no discontinue rule.</li>
+<li><strong>The images themselves are well made (clean, correct Unicode, correct Nastaliq, correct right-to-left order) but they are designed as a score sheet, not a child's card.</strong> Every item carries a printed number (1., 2., … 100.). A real EGRA child card has no numbers; numbers belong only on the assessor's sheet.</li>
+<li><strong>Oral Reading Fluency is shown as 68 numbered word boxes, not as a story.</strong> The child is no longer reading connected text, so this is not an ORF measure. In English, full stops and commas get their own numbered boxes, and the scorer counts each one as a correctly read word. That adds up to 8 words to every English ORF score (+13% for a child who finishes).</li>
+<li><strong>At phone size the print is small.</strong> English ORF words are about 2 mm tall even with the phone turned sideways (about 8-point print) and 1.1 mm upright. English letter-grid capitals are 3.5 mm. On a printed A4 card, each of the 10 columns gets about 27 mm; on the phone it gets about 6 mm.</li>
+<li><strong>One phone cannot be both the child's card and the coach's score sheet.</strong> The coach has to hold the phone up to the child, keep track of which item numbers were wrong (up to 100), and tap Start and Stop on the same screen.</li>
+<li><strong>Everything the coach reads is English-only,</strong> hardcoded in the handler rather than routed through the <code>ux-strings</code> catalog. ICT coaches are Urdu-first.</li>
+<li><strong>Two instructions are wrong for the reading subtests.</strong> "You will read out each item to the child" and "(or read it out per the item type)" would make a coach read the letters and words aloud <em>for</em> the child, which invalidates those subtests.</li>
+<li><strong>The coach never sees an answer key.</strong> <code>correct_answer_note</code> exists for every question but no code shows it. Three EGMA items ask "How many bananas are there?" about pictures that were never made, and the coach is not told this.</li>
+<li><strong>The Listening Flow is within Meta's limits but has problems.</strong> The steps are in the wrong order: the child answers <em>before</em> the recording starts. Item-bank typos ("On what did did Sara…", "WHo walked…") appear verbatim. The heading mixes literal text with a <code>${data…}</code> binding, which Meta's spec says needs backticks.</li>
+</ol>
+<hr />
+<h2>1. Blocker: the images never arrive</h2>
+<p><strong>What happens.</strong> <code>sendGridSubtestIntro</code> (handler.js:151-163) and <code>sendVoiceNoteRequest</code> (handler.js:274-276) call <code>WhatsAppService.sendImageFromUrl(url, …)</code>. On staging, that function does a plain <code>axios.get(imageUrl)</code> with no credentials, then uploads the bytes to Meta (<code>shared/services/whatsapp.service.js</code> on <code>origin/staging</code>, <code>sendImageFromUrl</code> at ~line 1117). The URLs in <code>src/shared/config/egra-egma-grid-images.json:3-7</code> and <code>egra-egma-passage-images.json:3-4</code> are all <code>https://58a6fb2a…r2.cloudflarestorage.com/digital-coach-audio/…</code>. That is R2's private S3 API address, not a public one.</p>
+<p><strong>Evidence.</strong>
+- <code>curl</code> of all 7 URLs returned <code>400 &lt;Code&gt;InvalidArgument&lt;/Code&gt;&lt;Message&gt;Authorization&lt;/Message&gt;</code>.
+- Staging Axiom, 15–27 Sep: the only 3 EGRA image sends (19, 21 and 24 Sep, all <code>listening_comprehension_urd.png</code>) each log <code>Fetching image from URL for WhatsApp upload</code> → <code>❌ Error in sendImageFromUrl</code> → <code>whatsapp.message.failed "Request failed with status code 400"</code>. They then log <code>egra_egma_ict_test.listening_flow_completed</code> and send the voice-note request. The traces are <code>corr-1789793344332-r6dner1ty</code>, <code>corr-1790017018281-ap2iptcms</code> and <code>corr-1790233612977-s9fje057m</code>.
+- No grid-image send appears in staging logs at all in that window, so no tester has yet seen a letter/word/ORF card on a phone.</p>
+<p><strong>Why tests are green.</strong> Both handler test files replace the send with an always-successful fake: <code>shared/handlers/__tests__/egra-egma-ict-test.handler.test.js:15</code> (<code>sendImageFromUrl: jest.fn().mockResolvedValue(true)</code>) and <code>tests/egra-egma-listening-flow-completion-routing.test.js:33</code>. The URL test (<code>grid-image-urls.test.js:13-15</code>) only checks that each URL is a string starting with <code>https://</code>.</p>
+<p><strong>What the coach sees.</strong> <a href="img/chat_3_grid_as_delivered.png"><code>img/chat_3_grid_as_delivered.png</code></a> compared with <a href="img/chat_3_grid_as_intended.png"><code>img/chat_3_grid_as_intended.png</code></a>, and <a href="img/chat_2_after_flow.png"><code>img/chat_2_after_flow.png</code></a> (the passage never arrives).</p>
+<p><strong>Fix direction.</strong> The code already has the right tools: <code>getPresignedUrl()</code> (<code>shared/storage/r2.js:545</code>) or <code>downloadFromR2()</code> (<code>r2.js:366</code>). Separately, check the <code>true/false</code> that <code>sendImageFromUrl</code> returns (handler.js:163, :276) and send the text fallback when it is <code>false</code>.</p>
+<hr />
+<h2>2. The child's cards (stimulus images)</h2>
+<p>I looked at all 7 at full resolution (copies in <code>img/</code>, ≤1600 px viewing copies in <code>img/view/</code>).</p>
+<h3>2a. What is right</h3>
+<ul>
+<li><strong>Content matches the item bank.</strong> Spot-checked against <code>src/shared/data/egra-egma-real-items.json</code>:</li>
+<li>English letters: rows 1, 9 and 10.</li>
+<li>Urdu letters: rows 1, 2, 4 and 10.</li>
+<li>Urdu words: rows 1, 2 and 5.</li>
+<li>English and Urdu ORF: all tokens.</li>
+<li>Every item is present and in order, and nothing is cropped (100 / 100 / 50 / 68 / 60).</li>
+<li><strong>Urdu is correct.</strong> Nastaliq joining is right in every word checked (کھڑکی، مچھلی، گھڑی، چائے، بچہ). Isolated letters render correctly (ؤ ئ ں ے ہ آ ء). The right-to-left order is correct, with item 1 top-right and 10 top-left.</li>
+<li><strong>Black on white, crisp, small files.</strong> Rendered at 2× and 120–220 KB each, far under WhatsApp's 5 MB image limit.</li>
+</ul>
+<h3>2b. Item numbers are printed on the child's card</h3>
+<p>Every cell has a grey "N." label (grid-image.service.js:67, <code>.num</code> style :115-126). In a real EGRA the child's card is plain letters or words, and only the assessor's sheet is numbered. Numbers on the child's card distract a beginning reader, invite the child to read the numbers aloud, and make the page look like a test. They are also the reason the cells are tall and narrow (see 2d). The bidi fix that keeps "1." from flipping to ".1" (grid-image.service.js:120-125) is careful work, but the labels should not be on this card at all.</p>
+<h3>2c. Oral Reading Fluency is not a passage any more</h3>
+<p><code>orf_eng.png</code> and <code>orf_urd.png</code> put each word in its own numbered box, 10 per row (<code>img/orf_eng.png</code>, <code>img/orf_urd.png</code>). ORF measures reading a connected story. A box-per-word grid turns it into a word-list task: the child loses the sentence flow, and the results cannot be compared with ORF norms or with the paper instrument.</p>
+<p>In English, punctuation is tokenised separately: boxes 7, 14, 23, 36, 41 (","), 54, 62 and 68 are just "." or ",". The item bank has <code>token_count: 68</code> against <code>word_count_excl_punctuation: 60</code>. The handler uses 68 as the item count (item-bank.service.js:50), and the scorer counts every attempted box that is not marked wrong as a correct item (rate-scorer.js:54: <code>correct = attempted - incorrect</code>). <strong>So a child who reads all 60 English words correctly scores 68 per minute, not 60.</strong> Urdu keeps "۔" attached to the word (60 tokens = 60 words), so the two languages are not scored the same way.</p>
+<p><strong>Recommendation:</strong> render ORF as a normal paragraph, left-aligned for English and right-aligned for Urdu, in large type with no numbers. Put the numbered word list only on the coach's side. Score against the 60 words.</p>
+<h3>2d. Size at phone distance</h3>
+<p>Measured from the real PNGs on a 6.1" phone, using WhatsApp's full-screen viewer (the image is fitted to the screen). The in-chat preview is smaller still.</p>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>Image shape</th>
+<th>Best way to hold the phone</th>
+<th>Letter / word height on screen</th>
+<th>Roughly like printed text of</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Letters, English</td>
+<td>920×1652, tall</td>
+<td>upright (sideways makes it smaller)</td>
+<td>capitals <strong>3.5 mm</strong>, lower-case x-height 2.6 mm</td>
+<td>~14 pt</td>
+</tr>
+<tr>
+<td>Letters, Urdu</td>
+<td>1368×2672, tall</td>
+<td>upright</td>
+<td>median <strong>3.3 mm</strong> (1.4–5.0)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Words, Urdu</td>
+<td>1880×1222, wide</td>
+<td>sideways</td>
+<td>median <strong>4.3 mm</strong> (2.8 mm upright)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ORF, English</td>
+<td>1754×954, wide</td>
+<td>sideways</td>
+<td>capitals <strong>2.0 mm</strong> (1.1 mm upright)</td>
+<td>~8 pt (~4 pt upright)</td>
+</tr>
+<tr>
+<td>ORF, Urdu</td>
+<td>2254×1332, wide</td>
+<td>sideways</td>
+<td>median <strong>3.6 mm</strong> (2.1 mm upright)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Item-number labels</td>
+<td>—</td>
+<td>—</td>
+<td>1.3 mm (letters), 0.7 mm (ORF)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="img/viewer_letter_id_urd.png"><code>img/viewer_letter_id_urd.png</code></a>, <a href="img/viewer_orf_eng_portrait.png"><code>img/viewer_orf_eng_portrait.png</code></a> and <a href="img/viewer_orf_eng_landscape.png"><code>img/viewer_orf_eng_landscape.png</code></a>. These PNGs are drawn at 2× so they look bigger on a monitor than on a real phone; the millimetres above are the true sizes.</p>
+<p>The letter grids are tall because each cell stacks a number above the letter, and Nastaliq's tall line height adds more. A 10×10 card with no numbers, laid out wide, would roughly double the letter size on the same screen. The English ORF card is the worst: an 8-year-old reading 2 mm text against a clock is measuring eyesight and phone size as much as reading.</p>
+<h3>2e. Smaller issues on the cards</h3>
+<ul>
+<li><strong>Capital I vs lower-case l.</strong> English letter item 82 is capital "I", which in Arial/system sans is a bare vertical bar identical to lower-case "l" (<a href="img/crops/letter_eng_row9.png"><code>img/crops/letter_eng_row9.png</code></a>). A child who says "l" is reading what they see. Use a school-style font where I and l differ (for example Andika, which is built for early literacy), or confirm the paper card's font. The two-storey "a" in Arial is also not the "a" most Grade 1 books teach.</li>
+<li><strong>Wide Urdu letters touch the cell borders.</strong> Measured per cell: the long top stroke of ک (items 4, 47, 72) and گ (14, 54, 100) runs into the box edge. These 6 of 100 cells have no clearance; ے, ض and ص come close (<a href="img/crops/letter_urd_row10.png"><code>img/crops/letter_urd_row10.png</code></a> shows item 100). It is legible, but it looks cramped. More cell padding would fix it.</li>
+<li><strong>Urdu listening passage.</strong> The English header "(FOR ENUMERATOR: READ THE FOLLOWING PASSAGE)" falls back to a condensed serif inside the Nastaliq image (<code>img/view/listening_comprehension_urd.png</code>). It is coach-facing and readable, but it looks unfinished; drop the line or render it in Urdu.</li>
+<li><strong>Stale comment.</strong> handler.js:165-167 says ORF uses the text fallback "by design", but ORF now has images.</li>
+</ul>
+<h3>2f. The bigger design question: one phone, two jobs</h3>
+<p>The grid caption tells the coach to "Show this to the child … then tap ▶️ Start" (handler.js:162). With one phone, the coach has to:
+1. open the image full-screen and turn it to the child,
+2. come back to the chat to tap Start (the child now sees the chat, not the card),
+3. watch the clock, because nothing stops at 60 s,
+4. remember the numbers of every wrong item while not looking at the screen, and
+5. type them in afterwards ("Which item numbers did the child get WRONG? … e.g. 3,7,15", handler.js:197).</p>
+<p>Paper EGRA and Tangerine both split this: the child reads from a printed card with no numbers, and the assessor marks a numbered copy. <strong>Recommendation:</strong> a printed, laminated child card set (letters, words, ORF story, EGMA numbers), with the phone as the coach's numbered marking sheet only. If the phone must be the child's card, the images need to lose the numbers and be laid out for the phone turned sideways, and the coach needs a separate way to record errors.</p>
+<hr />
+<h2>3. The Listening Comprehension Flow</h2>
+<p><strong>Renders</strong> (Meta Flow chrome, real text from <code>docs/flows/egra-egma-listening-comprehension-flow.json</code> and the item bank, filled exactly as <code>sendListeningComprehensionFlow</code> does at handler.js:238-256):
+<a href="img/flow_read_passage_urd.png"><code>img/flow_read_passage_urd.png</code></a>, <a href="img/flow_ask_questions_urd.png"><code>img/flow_ask_questions_urd.png</code></a>, <a href="img/flow_read_passage_eng.png"><code>img/flow_read_passage_eng.png</code></a>, <a href="img/flow_ask_questions_eng.png"><code>img/flow_ask_questions_eng.png</code></a>. The chat message that opens it is at the bottom of <a href="img/chat_1_start.png"><code>img/chat_1_start.png</code></a>. Every screen fits without scrolling.</p>
+<p><strong>Live status.</strong> Staging has <code>EGRA_EGMA_LISTENING_FLOW_ID</code> set (<code>181656…</code>), and the logs show 3 real submissions, so this Flow is published and in use. That goes beyond TESTING.md:153, which says it was never registered. I could not pull the published Flow JSON from Meta to diff it against the repo file, because that needs the staging WhatsApp token and was blocked.</p>
+<h3>3a. Meta constraints: all fine except one</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Component types for version 6.3 (TextHeading, TextSubheading, TextBody, TextCaption, Footer)</td>
+<td>valid</td>
+</tr>
+<tr>
+<td>One Footer per screen</td>
+<td>yes (flow.json:62, :127)</td>
+</tr>
+<tr>
+<td>Footer labels ≤35</td>
+<td>"Next — go to questions" 22, "Ready to record" 15</td>
+</tr>
+<tr>
+<td>TextHeading/Subheading ≤80</td>
+<td>33 / 19 / 7 / 9</td>
+</tr>
+<tr>
+<td>TextCaption ≤409</td>
+<td>243</td>
+</tr>
+<tr>
+<td>Whole passage in one TextBody ≤4096</td>
+<td>Urdu 307, English 360 characters; questions 205 / 223</td>
+</tr>
+<tr>
+<td>Audio assumed inside the Flow</td>
+<td>no. The Flow only confirms, and the voice note happens in chat (flow.json:8 states this correctly)</td>
+</tr>
+<tr>
+<td><strong>Mixed literal text + binding</strong></td>
+<td>flow.json:47 <code>"Listening Comprehension — ${data.language_label}"</code>. Meta's Flow JSON rule (as documented, e.g. <a href="https://github.com/gokapso/agent-skills/blob/master/skills/integrate-whatsapp/references/whatsapp-flows-spec.md">Kapso's Flow JSON spec summary</a>) is that <code>"Hello ${data.name}"</code> is invalid unless written as a backtick nested expression (v6.0+): <code>"`'Listening Comprehension — ' ${data.language_label}`"</code>. No other Flow in <code>docs/flows/</code> mixes the two. <strong>Unverified on a phone:</strong> check whether the heading shows "— Urdu" or the literal <code>${data.language_label}</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3>3b. Design problems in the Flow</h3>
+<ul>
+<li><strong>The steps are in the wrong order for the recording.</strong> Screen 2 says "Ask the child each question below, one at a time" (flow.json:113). The child answers while the Flow is open, and the coach cannot record a WhatsApp voice note while a Flow is on screen. Only after "Ready to record" does the bot ask for "a voice note of the child's actual spoken response" (handler.js:284). By then the answers have already been given, so the recording is either a second asking (a different measurement) or nothing. Once the Flow closes, the questions are no longer on screen: <code>sendVoiceNoteRequest</code> re-sends only the passage (which currently fails, section 1), not the questions. <strong>Fix:</strong> ask the coach to start the voice note first ("press and slide up to lock"), then read the passage twice and ask the questions from a list that stays visible in chat.</li>
+<li><strong>No answer key.</strong> The questions screen and the later marking buttons show only the question. <code>correct_answer_note</code> (for example "Correct answer: Sunday") is never displayed anywhere in production code. The screen already says "Do not show this list to the child", so it is the natural place to show accepted answers.</li>
+<li><strong>Typos reach the coach verbatim.</strong> "1. On what did did Sara wake up early?" and "3. WHo walked with Sara to the shop?" (<a href="img/flow_ask_questions_eng.png"><code>img/flow_ask_questions_eng.png</code></a>). The Flow's <code>__example__</code> (flow.json:27, :89) has the corrected wording, so anyone previewing in Flow Builder will not see the typo.</li>
+<li><strong>The same instruction twice.</strong> The passage data begins "(FOR ENUMERATOR: READ THE FOLLOWING PASSAGE)", right under "Read the passage below ALOUD to the child TWICE" (<code>img/flow_read_passage_*.png</code>).</li>
+<li><strong>"WhatsApp will ask you to (1) record…"</strong> (flow.json:125). It is Rumi, not WhatsApp, that asks.</li>
+<li><strong>English screens around an Urdu passage.</strong> One Flow serves both languages, but every label is hardcoded English. The labels could be passed in as <code>${data.*}</code> values so the Urdu run gets Urdu instructions.</li>
+</ul>
+<hr />
+<h2>4. Coach-facing messages</h2>
+<p>Chat mockups with the handler's exact strings (placeholder teacher and student names): <a href="img/chat_1_start.png"><code>img/chat_1_start.png</code></a> (/egra → intro → class list → pick → Flow message) and <a href="img/chat_2_after_flow.png"><code>img/chat_2_after_flow.png</code></a> (Flow sent → voice-note ask → voice note → "Item 1/6" marking).</p>
+<ul>
+<li><strong>Language.</strong> Every coach string is English and hardcoded in the handler (handler.js:124-132, 160-162, 180-202, 245-246, 284-285, 340-342, 477-479, 545, 798). The handler does not use <code>shared/config/ux-strings.js</code>, which is where other features now keep their en/ur strings. The questions are Urdu for the Urdu subtests, so a coach sees "Item 1/6:" in English above an Urdu question. Rule 20 (language protocol) applies before any translation work.</li>
+<li><strong>Instructions that would invalidate subtests.</strong></li>
+<li>The intro says "You will read out each item to the child" (handler.js:479). In the 5 reading subtests (letters, words, ORF) the child reads and the coach must not.</li>
+<li>The grid caption says "Show this to the child (or read it out per the item type)" (handler.js:162). The same problem, and "per the item type" is not something a coach can act on.</li>
+<li><strong>Timer and discontinue copy.</strong></li>
+<li>"(60s cap — please self-time this)" (handler.js:149) sits next to the bot's own "Timer running" (handler.js:186), but nothing stops or warns at 60 s, and the rate is computed over whatever time passes before Stop is tapped.</li>
+<li>The Discontinue button text says "0 correct on the first row of 10" for every grid subtest. The Urdu word list's own rule is "0-1 correct". Tapping Discontinue always records items 1–10 as wrong (handler.js:596), so a child who read 1 of 10 is stored as 0.</li>
+<li>ORF has no discontinue rule in the item bank but still gets the button.</li>
+<li><strong>EGMA has no child-facing stimulus at all.</strong> Items like "Choose the larger number: 11 or 16" or the 🔺🔵 pattern exist only in the coach's marking message, next to the ✅/❌ buttons. Three <code>represent</code> items ("How many bananas are there?", "What box has more apples?", "What number does the picture below show?") are flagged <code>needs_real_image</code> with a note that "the coach is shown the item's text description". But <code>sendCurrentQaItem</code> sends only <code>item.prompt</code> (handler.js:223-230), and no production code reads <code>correct_answer_note</code>, <code>placeholder_note</code> or <code>needs_real_image</code>. The coach gets a question about a picture that does not exist.</li>
+<li><strong>Error recovery wipes the session.</strong> Any error sends "❌ Something went wrong with the assessment. Please type /egra to restart." and clears state (handler.js:551-552, 613-614, 693-694). The coach loses everything done so far with that child.</li>
+<li><strong>Small copy points.</strong></li>
+<li>The list header says "Pick a class", but each row's title is the teacher's name (handler.js:115).</li>
+<li>"Recorded: 45/68 correct, 44.2 items/min" uses internal words ("items/min") and the 68 includes punctuation (section 2c).</li>
+<li>A randomly picked child who is absent has no "pick another child" option.</li>
+<li><strong>Length caps: all within limits</strong> (measured in code points):</li>
+<li>Buttons: ▶️ Start 8, ⏹ Stop 6, 🚫 Discontinue 13, ✅ Correct 9, ❌ Incorrect 11, ⏭ Pass 6 (cap 20).</li>
+<li>List: header "Pick a class" 12 / 60, footer 36 / 60, button "Select class" 12 / 20, section "Classes" 7 / 24, row "Type a name instead" 19 / 24, its description 52 / 72.</li>
+<li>Flow message: header "📋 Listening Comprehension" 25 / 60, CTA "Start" 5.</li>
+<li>Dynamic row titles and descriptions are cut to 24 / 72 by <code>truncateForWhatsAppRow</code> (handler.js:95-98). That counts UTF-16 units, which is safe for Urdu names and only over-trims emoji.</li>
+<li><strong>Gender-neutral: yes.</strong> The copy says "the child", "their answer", "you, the coach". The only she/her are in the stories (Sara, Ayesha), which is content, not how we address anyone.</li>
+<li><strong>Emoji: functional, not decorative.</strong> Emoji are used on buttons and as subtest markers (📋 📖 🎙️). There are no emoji sign-offs. "⏹" (U+23F9, sent without the emoji variation selector) rendered as a plain black square in my mockup render; worth checking on a real Android phone, or just use the word "Stop".</li>
+</ul>
+<hr />
+<h2>5. What is done well</h2>
+<ul>
+<li><strong>Deterministic HTML→PNG instead of AI-generated stimulus</strong> (grid-image.service.js:7-10). This is the right call: one mis-drawn letter would corrupt a test item, and the Urdu came out correct.</li>
+<li><strong>Embedded Nastaliq font as a base64 data URI</strong> (grid-image.service.js:17-20, 71-77), so there is no network fetch and no silent font fallback. Every Urdu word and letter I checked is correctly shaped and joined.</li>
+<li><strong>Round-trip check:</strong> <code>extractItemsFromHtml</code> diffs the rendered HTML against the item bank before upload (grid-image.service.js:144-166).</li>
+<li><strong>Careful bidi handling</strong> of number labels inside right-to-left grids (grid-image.service.js:120-125). The technique is correct, even though the numbers should go.</li>
+<li><strong>Correct reading of Meta's limits:</strong> no audio inside the Flow, with the voice note in chat (flow.json:8). It is a static Flow with no endpoint, so there is no server to go down. "Do not show this screen to the child" is on both screens.</li>
+<li><strong>Honest scoring framing.</strong> "your own marking is the official score" and "no AI or audio auto-scoring is used" set the right expectation.</li>
+<li><strong>Button labels are short, clear and within limits,</strong> and the flow degrades to free-text name entry when the roster is empty.</li>
+<li><strong>Re-sending the passage after the Flow closes</strong> (bd-2712) is the right instinct. It just needs to work (section 1) and to include the questions (section 3b).</li>
+</ul>
+<hr />
+<h2>6. What to do, in order</h2>
+<ol>
+<li><strong>Make the images arrive.</strong> Presign or download with credentials (<code>r2.js:545</code> / <code>:366</code>), check the return value, and fall back to text on failure. Add a test that calls the real download step against a mocked HTTP 400, not a mocked <code>sendImageFromUrl → true</code>.</li>
+<li><strong>Remove the item numbers from child-facing cards.</strong> Render ORF as a paragraph, and score English ORF on 60 words, not 68 tokens.</li>
+<li><strong>Decide the child-card medium.</strong> Printed card plus phone as score sheet is recommended. If it stays on the phone, lay cards out for sideways viewing at roughly twice today's type size.</li>
+<li><strong>Fix the two "read it out" instructions</strong>, and show accepted answers to the coach for every question.</li>
+<li><strong>Reorder the Listening step</strong> (record first, then administer), keep the questions visible in chat, and fix the item-bank typos at the source.</li>
+<li><strong>Move all coach strings to the strings catalog with Urdu,</strong> following the language-protocol skill.</li>
+<li><strong>EGMA:</strong> make the child-facing number and pattern cards, or pull the 3 picture items until the pictures exist.</li>
+<li><strong>Smaller fixes:</strong>
+   - Discontinue copy per subtest.
+   - A 60-second reminder.
+   - A school font with a distinct I/l.
+   - Cell padding for wide Urdu letters.
+   - Backtick form for the Flow heading.
+   - "Rumi" rather than "WhatsApp" in the caption.</li>
+</ol>
+<hr />
+<h2>Files</h2>
+<p><strong>Images reviewed</strong> (downloaded from R2, read-only): <code>img/letter_id_eng.png</code>, <code>img/letter_id_urd.png</code>, <code>img/familiar_word_urd.png</code>, <code>img/orf_eng.png</code>, <code>img/orf_urd.png</code>, <code>img/listening_comprehension_eng.png</code>, <code>img/listening_comprehension_urd.png</code> (viewing copies in <code>img/view/</code>, zoomed crops in <code>img/crops/</code>).</p>
+<p><strong>Renders produced</strong> (all looked at): <a href="img/flow_read_passage_urd.png"><code>img/flow_read_passage_urd.png</code></a>, <a href="img/flow_ask_questions_urd.png"><code>img/flow_ask_questions_urd.png</code></a>, <a href="img/flow_read_passage_eng.png"><code>img/flow_read_passage_eng.png</code></a>, <a href="img/flow_ask_questions_eng.png"><code>img/flow_ask_questions_eng.png</code></a>, <a href="img/chat_1_start.png"><code>img/chat_1_start.png</code></a>, <a href="img/chat_2_after_flow.png"><code>img/chat_2_after_flow.png</code></a>, <a href="img/chat_3_grid_as_delivered.png"><code>img/chat_3_grid_as_delivered.png</code></a>, <a href="img/chat_3_grid_as_intended.png"><code>img/chat_3_grid_as_intended.png</code></a>, <a href="img/viewer_letter_id_urd.png"><code>img/viewer_letter_id_urd.png</code></a>, <a href="img/viewer_orf_eng_portrait.png"><code>img/viewer_orf_eng_portrait.png</code></a>, <a href="img/viewer_orf_eng_landscape.png"><code>img/viewer_orf_eng_landscape.png</code></a>.</p>
+<p><strong>Generator:</strong> <code>render_design_review.py</code> (re-run: <code>python3 render_design_review.py</code>; it uses the html-mockups chat rig; HTML intermediates are in <code>html/</code>).</p>
+<p><strong>Not verified:</strong>
+- The published Flow JSON on Meta (see 3a), so the heading binding is unconfirmed.
+- The in-chat image preview crop in <code>chat_3_grid_as_intended.png</code>, which is an approximation. The full-screen viewer renders are exact fits.</p></div></div></body></html>
