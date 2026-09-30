@@ -115,42 +115,58 @@
   body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
 </style></head><body><div class="wrap">
 <header>
-  <div class="eyebrow">Code and product review · 27 September 2026</div>
+  <div class="eyebrow">Code and product review · 27 September 2026 · rechecked 30 September</div>
   <h1>EGRA Test Build Review</h1>
   <p class="sub">Sabeena's EGRA/EGMA test flow on the main Rumi bot's staging server, read against the plan we wrote for a five-minute, coach-run, AI-checked child assessment. What is done, what is not, what falls short, and what was done well.</p>
-  <div class="meta"><span>Bot: main Rumi bot (hyasin270/whatsapp-ai-bot)</span><span>Branch: staging, 8 commits, 16–18 Sep</span><span>Not on production · not in the NIETE bot</span><span>Measured against: <a href="https://hyasin270.github.io/egra-five-minutes/">EGRA in Five Minutes</a></span></div>
+  <div class="meta"><span>Bot: main Rumi bot (hyasin270/whatsapp-ai-bot)</span><span>Branch: staging, 10 commits, 16–28 Sep</span><span>Not on production · not in the NIETE bot</span><span>Measured against: <a href="https://hyasin270.github.io/egra-five-minutes/">EGRA in Five Minutes</a></span></div>
   <nav class="toc">
-    <a href="#answer">The answer</a><a href="#fixnow">Fix first</a><a href="#goals">Goals vs build</a><a href="#well">Done well</a><a href="#done">Done / not done</a><a href="#time">Time per child</a><a href="#arch">Architecture</a><a href="#ux">Coach experience</a><a href="#design">Design</a><a href="#random">Randomization</a><a href="#next">What to do next</a><a href="#evidence">Evidence</a>
+    <a href="#update">What changed</a><a href="#answer">The answer</a><a href="#fixnow">Fix first</a><a href="#goals">Goals vs build</a><a href="#well">Done well</a><a href="#done">Done / not done</a><a href="#time">Time per child</a><a href="#arch">Architecture</a><a href="#ux">Coach experience</a><a href="#design">Design</a><a href="#random">Randomization</a><a href="#next">What to do next</a><a href="#evidence">Evidence</a>
   </nav>
 </header>
+
+<section id="update">
+  <h2>What changed since the review</h2>
+  <div class="prose">
+    <p>On 28 September Sabeena pushed two more commits, now deployed on staging. They fix three of the five "fix first" items and the two worst coach-experience problems:</p>
+    <ul>
+      <li><strong>Public access to the results tables is revoked.</strong> Row-level security is still off, so the grants are the only lock.</li>
+      <li><strong>Pictures now reach the coach.</strong> Links are signed before sending, and a failed send falls back to text. On 29 September five picture sends worked, with no errors.</li>
+      <li><strong>The voice-note columns now exist.</strong> This came one day late. On 28 September a coach's listening marks were lost to exactly the failure the review predicted.</li>
+      <li><strong>The listening-comprehension Flow is gone.</strong> The coach now reads the passage from a picture and marks the answers, and the voice note is optional and never blocks.</li>
+      <li><strong>Both stories now offer an optional voice note</strong>, which is the plan's direction.</li>
+      <li><strong>A drawn child must be confirmed.</strong> Backing out needs a reason (Absent or Other), and the reason is saved with the child's ID.</li>
+    </ul>
+    <p><strong>Still open:</strong> the letter formula, region-wide class access, the unsaved child ID on results, punctuation counted as words, numbered child cards, <code>/cancel</code> at typed prompts, the English-only coach text and missing answer key, and the untraced redraw through <code>/cancel</code>. The product-level gap from the plan is unchanged. One test session on 29 September took about <strong>19 minutes for the Urdu block alone</strong>, which supports the 22-minute estimate. Full detail: <a href="recheck_2026-09-30.html">the 30 September recheck</a>.</p>
+  </div>
+</section>
 
 <section id="answer">
   <h2>The answer in one minute</h2>
   <div class="prose">
-    <p><strong>Which bot.</strong> It is the main Rumi bot, not the NIETE bot. All eight commits are on the <code>staging</code> branch only, behind a switch that is on for staging and limited to Islamabad test accounts. Nothing has reached production.</p>
+    <p><strong>Which bot.</strong> It is the main Rumi bot, not the NIETE bot. All ten commits are on the <code>staging</code> branch only, behind a switch that is on for staging and limited to Islamabad test accounts. Nothing has reached production.</p>
     <p><strong>What it is.</strong> A careful, well-documented first build that puts almost the whole May 2026 enumerator test into WhatsApp chat. The coach taps Correct or Incorrect for every item, one message at a time. No AI is used anywhere, and a database rule stops an AI score from ever being stored.</p>
     <p><strong>How it compares with the plan.</strong> It builds a different product. The plan is a five-minute test: the coach records one voice note per block while the child reads from a printed card, Rumi pre-fills a checking form, and the coach corrects it. This build takes about 22 minutes per child, which is today's enumerator time, and the one-message-per-item pattern is the one the field team rejected on 11 September.</p>
-    <p><strong>Does it work today.</strong> Not end to end. The test pictures never reach the coach, and the one subtest with audio would lose the coach's marks when it saves. No real child has been assessed yet: across 9 staging sessions, one subtest result was ever saved.</p>
+    <p><strong>Does it work today.</strong> Better than on 27 September: pictures arrive and saves with audio work. One session has completed the Urdu block. No session has finished all 14 subtests. Of the 6 saved results, none is linked to the child's record.</p>
     <p><strong>What to keep.</strong> The item bank, the code-drawn stimulus pictures, the random draw from the real roster, the switch-and-region gate, and the chat-loop fix are all good foundations for the plan's version.</p>
   </div>
   <div class="tiles">
     <div class="tile hot"><div class="n">~22<small>min</small></div><div class="l">per child, estimated from the code. The target is 5.</div></div>
     <div class="tile hot"><div class="n">64<small>taps</small></div><div class="l">item-by-item marking taps per child, plus 11 typed answers</div></div>
-    <div class="tile"><div class="n">1<small>row</small></div><div class="l">subtest result ever saved, from 9 staging sessions by 3 testers</div></div>
-    <div class="tile hot"><div class="n">0 / 7</div><div class="l">stimulus pictures that can be delivered today</div></div>
+    <div class="tile hot"><div class="n">19<small>min</small></div><div class="l">for the Urdu block alone, in the one test session that finished it (29 Sep)</div></div>
+    <div class="tile"><div class="n">0 / 6</div><div class="l">saved results linked to the child's record</div></div>
   </div>
 </section>
 
 <section id="fixnow">
   <h2>Fix these first</h2>
-  <p class="prose">These are small fixes, and each one matters before a real child is tested. The first touches the database production shares, so it needs a go.</p>
+  <p class="prose">These are small fixes, and each one matters before a real child is tested. Status as of 30 September.</p>
   <div class="callout">
     <ol>
-      <li><strong>The results table is open to the public key.</strong> Row-level security is off, and the public <code>anon</code> and <code>authenticated</code> roles can read, insert and delete rows. The table lives in the database that production shares, and it already holds one child's name. Switching on row-level security fixes it; the bot uses the service key, so nothing breaks. <span class="pill coach">needs a go: production database</span></li>
-      <li><strong>No stimulus picture can be delivered.</strong> All seven picture links point at the private storage address, which refuses the download (HTTP 400). The three real attempts, on 19, 21 and 24 September, all failed. The code only falls back to text when no link exists, not when the send fails, so the coach gets a bare "Ready? Start" button with no letters, no story and no timing rules.</li>
-      <li><strong>The listening subtest would lose the coach's marks.</strong> The save always includes the voice-note fields, but those columns were never added to the live table. The database rejects the whole row, and the coach still sees "Assessment complete". It has not happened yet only because no tester got past the voice-note step.</li>
-      <li><strong>The letter score subtracts errors twice.</strong> The code computes (correct − incorrect) per minute, where "correct" already excludes errors. A child with 34 of 40 right scores 28, and a stopped child can score below zero. A test expects the negative number.</li>
-      <li><strong>Any Islamabad teacher can list every Islamabad class.</strong> Access is checked by region only, and 53 of the 56 Islamabad users are teachers. Any of them can type <code>/egra</code>, see every class and receive a random child's full name.</li>
+      <li><span class="pill ok">Fixed 28 Sep</span> <strong>The results table was open to the public key.</strong> The public <code>anon</code> and <code>authenticated</code> roles could read, insert and delete rows, in the database production shares, and the table held a child's name. That access is now revoked on both EGRA tables. Row-level security is still off; switching it on would add a second lock at no cost.</li>
+      <li><span class="pill ok">Fixed 28 Sep</span> <strong>No stimulus picture could be delivered.</strong> All seven picture links point at the private storage address, which refuses the download (HTTP 400). The three real attempts, on 19, 21 and 24 September, all failed. The code only falls back to text when no link exists, not when the send fails, so the coach got a bare "Ready? Start" button with no letters, no story and no timing rules. Links are now signed and a failed send falls back to text.</li>
+      <li><span class="pill gold">Fixed 28 Sep, after one loss</span> <strong>The listening subtest would lose the coach's marks.</strong> The save always included the voice-note fields, but those columns had never been added to the live table, so the database rejected the whole row while the coach was told "Assessment complete". It happened once, on 28 September at 08:19 UTC, before the columns were added that evening.</li>
+      <li><span class="pill coach">Open</span> <strong>The letter score subtracts errors twice.</strong> The code computes (correct − incorrect) per minute, where "correct" already excludes errors. A child with 34 of 40 right scores 28, and a stopped child can score below zero. A test expects the negative number.</li>
+      <li><span class="pill coach">Open</span> <strong>Any Islamabad teacher can list every Islamabad class.</strong> Access is checked by region only, and 53 of the 56 Islamabad users are teachers. Any of them can type <code>/egra</code>, see every class and receive a random child's full name.</li>
     </ol>
   </div>
 </section>
@@ -164,11 +180,11 @@
       <tr><td>Five minutes per child</td><td><span class="pill coach">Contradicts</span></td><td>About 22 minutes per child, the same as today's enumerator.</td></tr>
       <tr><td>Five children in 30 minutes per coach per day</td><td><span class="pill coach">Contradicts</span></td><td>About 110 minutes for five children.</td></tr>
       <tr><td>The coach records; Rumi pre-fills; the coach checks and corrects</td><td><span class="pill coach">Contradicts</span></td><td>The coach marks every item live. A database rule pins the AI-score field to "not attempted", so AI marks cannot be stored.</td></tr>
-      <tr><td>Keep the AI's answer, the coach's answer and the audio side by side</td><td><span class="pill">Not built</span></td><td>Only the coach's answer is kept. Audio is captured for one subtest, and that save currently fails.</td></tr>
+      <tr><td>Keep the AI's answer, the coach's answer and the audio side by side</td><td><span class="pill">Not built</span></td><td>Only the coach's answer is kept. An optional voice note is now offered for listening comprehension and both stories; none has been saved yet.</td></tr>
       <tr><td>The five-minute test (Urdu story + questions, first sounds, made-up words, English story, maths: numbers aloud, quick sums, photo of written sums)</td><td><span class="pill coach">Contradicts</span></td><td>Close to the reverse. It keeps what the plan drops (listening comprehension, 100-letter grids, 50-word list, patterns) and leaves out what the plan keeps. Only the two stories and their questions overlap.</td></tr>
       <tr><td>The child reads from a printed card; the phone only records</td><td><span class="pill coach">Contradicts</span></td><td>The child reads from the coach's phone, and the picture is the enumerator's numbered sheet.</td></tr>
-      <tr><td>A checking form in WhatsApp, pre-filled, in Urdu</td><td><span class="pill">Not built</span></td><td>The only Flow shows two read-only English instruction screens and collects nothing but "confirmed".</td></tr>
-      <tr><td>An algorithm picks the children; the coach does not choose</td><td><span class="pill gold">Partly</span></td><td>The child is random within a class, but the coach picks the class, the same child can be drawn twice, and cancelling lets the coach draw again. The draw is not recorded.</td></tr>
+      <tr><td>A checking form in WhatsApp, pre-filled, in Urdu</td><td><span class="pill">Not built</span></td><td>No Flow at all since 28 September: the instruction-only Flow was removed. Marking is still one chat message per item.</td></tr>
+      <tr><td>An algorithm picks the children; the coach does not choose</td><td><span class="pill gold">Partly</span></td><td>The child is random within a class, but the coach picks the class and the same child can be drawn again in a later session. Backing out now needs a saved reason; cancelling still redraws with no record.</td></tr>
       <tr><td>Results linked to the child, school and grade, so repeat tests show growth</td><td><span class="pill">Not built</span></td><td>The code knows the child's database ID but never saves it. No school or grade is saved.</td></tr>
       <tr><td>Reuse the existing assessment tables (no new tables)</td><td><span class="pill coach">Contradicts</span></td><td>A new table. The live database already has <code>aser_sessions</code> and <code>reading_assessments</code> with AI and coach columns, audio and word timings.</td></tr>
       <tr><td>Islamabad first, off by default until the time target is met</td><td><span class="pill ok">Built</span></td><td>Switch plus region gate; inert for everyone else, with tests.</td></tr>
@@ -186,6 +202,7 @@
     <div class="card"><h3>Pictures drawn by code, not AI</h3><p>Stimulus images are rendered from the exact item text, in a correctly embedded Nastaliq font, right to left, and checked back against the item bank. Using AI image generation for test items would have been wrong; this was the right call.</p></div>
     <div class="card"><h3>A real random draw</h3><p>The coach no longer types a name. The child is drawn on the server, uniformly, from the real roster. That is a genuine step toward "the coach does not choose".</p></div>
     <div class="card"><h3>Audio handled with discipline</h3><p>The voice note goes to our own private storage straight away, not left as a WhatsApp media ID that expires. Correctly, no audio is assumed inside the Flow.</p></div>
+    <div class="card"><h3>Quick, well-aimed fixes</h3><p>Within a day of the review, the three worst live problems were fixed, each traced in the logs first. Rethinking listening comprehension was right: there the coach reads the passage, so the recording belongs on the stories, where the child reads.</p></div>
     <div class="card"><h3>Careful routing, good debugging</h3><p>Flow completions are matched to the right session; the voice claim only fires in the right step. The chat-loop fix was traced in the logs to its real cause, with a failing test written first.</p></div>
   </div>
 </section>
@@ -202,9 +219,10 @@
         <li>Coach marking: timed grids by Start, Stop and typed wrong items; questions by Correct/Incorrect buttons</li>
         <li>Scoring code for rates per minute</li>
         <li>Seven stimulus pictures rendered and uploaded</li>
-        <li>A listening-comprehension Flow, published on the staging WhatsApp account</li>
-        <li>Voice-note capture for listening comprehension, saved to private storage</li>
-        <li>A results table, applied to the live database</li>
+        <li>Optional voice notes for listening comprehension and both stories, saved to private storage</li>
+        <li>A confirm step for the drawn child, with saved skip reasons</li>
+        <li>Signed picture links with a text fallback</li>
+        <li>Results and skips tables, applied live, with public access revoked</li>
         <li>A fix to stop general chat inventing a reading test</li>
         <li>132 tests, all passing</li>
       </ul>
@@ -219,7 +237,7 @@
         <li>An answer key on the coach's screen</li>
         <li>Urdu coach text, or use of the string catalog</li>
         <li>Pictures for three maths items that refer to pictures</li>
-        <li>Alternates for absent children, and a record of the draw</li>
+        <li>Named alternates, and a record of every draw (skips are recorded; tested children are not linked)</li>
         <li>Saving the child's ID, school and grade</li>
         <li>Any result for the coach beyond a text list, or for the teacher</li>
         <li>A test with a real child</li>
@@ -263,11 +281,11 @@
   <div class="prose">
     <p>The code is organised sensibly: small single-purpose services, a gate, a state machine in one handler, and switches that keep it inert. The problems are in the edges: what happens when a send or save fails, what the tests fake, and a few formulas.</p>
     <ul>
-      <li><strong>Failures are silent.</strong> A failed picture send and a failed save are both ignored. The coach is told everything worked, and the lost data cannot be recovered from the logs.</li>
+      <li><strong>Failed saves are silent.</strong> A failed picture send now falls back to text. A failed save is still logged and ignored: the coach is told everything worked, and the marks cannot be recovered. This is how the 28 September listening marks were lost.</li>
       <li><strong>The tests cannot see the real failures.</strong> WhatsApp sends and database saves are faked to always succeed, and picture links are only checked for their shape. The voice-routing test searches the source text, and the Flow-response test covers a function nothing in production calls. All 132 tests pass while the build cannot complete a child.</li>
       <li><strong>Scoring does not follow the instrument.</strong> Beyond the letter formula: the English story counts full stops and commas as words (+13% for a child who finishes); there is no 60-second cap; the Discontinue button marks the first ten items wrong on every grid, including the stories, which have no such rule; comprehension has no "not asked" option and is asked even when the child read nothing.</li>
       <li><strong>Answers can land on the wrong question.</strong> Correct/Incorrect buttons do not say which item they belong to, so a double tap or a tap on an older message is recorded against the current item.</li>
-      <li><strong>Coaches can get stuck.</strong> <code>/cancel</code> becomes the child's name at the name prompt and "not a number" at the typed prompts. Other commands are swallowed for up to an hour. The voice note cannot be skipped.</li>
+      <li><strong>Coaches can get stuck.</strong> <code>/cancel</code> becomes the child's name at the name prompt, "not a number" at the typed prompts, and the skip reason at the reason prompt. Other commands are swallowed for up to an hour. (The voice note is now optional, which removed the worst trap.)</li>
       <li><strong>Children's audio and names can leak into general chat.</strong> A voice note sent outside the exact voice-note step goes through the normal pipeline: transcription, the conversations table, and the chat model.</li>
       <li><strong>A shared prompt was changed for every region.</strong> The chat-loop fix edits the general-chat prompt all regions use. It is a good fix for Pakistan, but it points Palestine teachers to a <code>/reading test</code> that is disabled there, and Tanzania teachers to the English test.</li>
       <li><strong>Data hygiene.</strong> One real tester phone number is committed in the test file. The roster query pulls every Islamabad child's name just to count them.</li>
@@ -282,15 +300,15 @@
       <li><strong>Everything the coach reads is in English</strong>, hard-coded, including the Flow. Islamabad coaches work in Urdu, and our checking-form draft and the observation form are Urdu.</li>
       <li><strong>Two instructions would invalidate the reading subtests.</strong> "You will read out each item to the child" and "or read it out per the item type" would have the coach read letters and words aloud for the child.</li>
       <li><strong>No answer key is shown.</strong> Every item has one in the item bank, but no code sends it, so each coach decides what counts as right.</li>
-      <li><strong>The listening steps are in the wrong order.</strong> The child answers inside the Flow, and only afterwards is the coach asked to record "the child's response". The recording either repeats the questions or holds nothing useful.</li>
+      <li><span class="pill ok">Fixed 28 Sep</span> <strong>The listening steps were in the wrong order</strong>: the child answered inside the Flow before any recording. The Flow is gone; the coach reads the passage from a picture and the voice note is optional.</li>
       <li><strong>No sense of progress.</strong> The coach sees "Item 3/8" but never "subtest 6 of 14" or how much of the session is left, and gets no "child 2 of 5".</li>
       <li><strong>The end result is a text list</strong> of raw per-subtest scores, only if all 14 subtests are finished. There is no level, no benchmark, nothing for the teacher and no class view.</li>
     </ul>
   </div>
   <div class="cols3">
     <figure><img src="img/chat_1_start.png" alt="Coach chat at the start of a session"><figcaption>The start: the coach picks a class and a child is drawn. All text in English.</figcaption></figure>
-    <figure><img src="img/flow_ask_questions_eng.png" alt="The listening comprehension Flow's question screen"><figcaption>The Flow's second screen: questions shown verbatim, including item-bank typos, before any recording.</figcaption></figure>
-    <figure><img src="img/chat_3_grid_as_delivered.png" alt="What the coach receives when the grid picture fails"><figcaption>What arrives today when a grid starts: no picture, no rules, just "Ready? Start". The dashed note marks where the picture should have been.</figcaption></figure>
+    <figure><img src="img/flow_ask_questions_eng.png" alt="The listening comprehension Flow's question screen, since removed"><figcaption>The Flow's second screen as it was until 28 September (now removed). The item-bank typos it showed are still in the chat questions.</figcaption></figure>
+    <figure><img src="img/chat_3_grid_as_delivered.png" alt="What the coach received when the grid picture failed"><figcaption>What arrived until 28 September when a grid started: no picture, no rules, just "Ready? Start". Fixed by signed links and a text fallback.</figcaption></figure>
   </div>
 </section>
 
@@ -309,7 +327,7 @@
   <div class="cols3">
     <figure><img src="img/viewer_orf_eng_portrait.png" alt="The English story grid at true size on a phone held upright"><figcaption>The same story at true size on a 6.1-inch phone held upright.</figcaption></figure>
     <figure><img src="img/crops/letter_urd_row2.png" alt="One row of the Urdu letter grid" style="border-radius:4px"><figcaption>A row of the Urdu letter grid: correct Nastaliq and order, but with item numbers the child should not see.</figcaption></figure>
-    <figure><img src="img/flow_read_passage_urd.png" alt="The listening comprehension Flow's passage screen in Urdu"><figcaption>The Flow's passage screen. It fits Meta's limits and correctly assumes no audio inside the Flow.</figcaption></figure>
+    <figure><img src="img/flow_read_passage_urd.png" alt="The listening comprehension Flow's passage screen in Urdu, since removed"><figcaption>The Flow's passage screen, removed on 28 September. The passage now arrives as a picture for the coach to read aloud.</figcaption></figure>
   </div>
 </section>
 
@@ -325,9 +343,9 @@
       <tr><td>Who chooses the class?</td><td>The coach, from a list of every Islamabad class, capped at 9 rows in no set order</td><td>A coach can always pick the strongest class. The author flagged this herself.</td></tr>
       <tr><td>How is the child chosen?</td><td>One child per tap, uniformly at random, on the server</td><td>Good: the coach cannot type a name in the normal path.</td></tr>
       <tr><td>Can a child be drawn twice?</td><td>Yes. Each child is a separate draw</td><td>Five draws from a class of 9 repeat a child 74% of the time; 62% for a class of 12.</td></tr>
-      <tr><td>Can the coach redraw?</td><td>Yes. <code>/cancel</code> then <code>/egra</code> gives a fresh draw, and it happened twice on 18 Sep</td><td>A coach can keep drawing until they like the child. Nothing records it.</td></tr>
-      <tr><td>Absent children?</td><td>No alternates and no reason codes; "Type a name instead" skips the draw</td><td>Absent children are usually weaker. Quiet replacement pushes results up by an unknown amount.</td></tr>
-      <tr><td>Is the draw recorded?</td><td>No. The child's ID stays in session memory and is never saved</td><td>Nobody can check afterwards who was drawn against who was tested.</td></tr>
+      <tr><td>Can the coach redraw?</td><td>Since 28 Sep the drawn child must be confirmed; "Different student" asks for a reason (Absent or Other, any text) and saves it. <code>/cancel</code> then <code>/egra</code> still redraws with no record</td><td>Redraws through the button are now visible to a supervisor. The <code>/cancel</code> route and free-text "Other" still let a coach choose.</td></tr>
+      <tr><td>Absent children?</td><td>Two reason codes (Absent, Other) and a re-pick that skips them within the session; no named alternates; "Type a name instead" still skips the draw, and an exhausted class falls back to typing a name</td><td>Absent children are usually weaker. Quiet replacement pushes results up by an unknown amount.</td></tr>
+      <tr><td>Is the draw recorded?</td><td>Skipped children are saved with their ID. Tested children are not: 0 of 6 results carry the child's ID</td><td>Nobody can check afterwards who was drawn against who was tested.</td></tr>
       <tr><td>Repeat testing across visits?</td><td>No memory of who was tested before</td><td>Growth over time needs the same child linked across tests.</td></tr>
       <tr><td>How big is the pool?</td><td>7 classes, 41 children (class sizes 1 to 12), no grade 3 class</td><td>No class can reach the call's 15-per-class benchmark. The Islamabad sections named on the call are not in this database yet.</td></tr>
     </tbody>
@@ -349,7 +367,7 @@
 <section id="next">
   <h2>What to do next, in order</h2>
   <ol class="steps prose">
-    <li><div><strong>Make staging safe and honest (days, not weeks).</strong> Switch on row-level security (needs a go). Send pictures through a signed link or from memory, check the send result and fall back to text. Add the audio columns or stop sending them. Fix the letter formula and the punctuation count. Limit the class list to the coach's own schools. Make <code>/cancel</code> work everywhere. Update TESTING.md, which still says the Flow and table are not live.</div></li>
+    <li><div><strong>Finish the small fixes.</strong> Done on 28 September: public access revoked, signed pictures with a fallback, audio columns, the Flow removed, TESTING.md updated. Still to do: save <code>student_id</code> on every result, fix the letter formula and the punctuation count, limit the class list to the coach's own schools, make <code>/cancel</code> work at every prompt and record it as a skip, tell the coach when a save fails, and switch on row-level security as a second lock.</div></li>
     <li><div><strong>Settle the five-minute test and the Urdu instrument choices before building more</strong> (plan decisions D1 and D3). The plan leaves D3, the Urdu choices, to Sabeena and Sameer, and says the marker cannot be built until they are fixed.</div></li>
     <li><div><strong>Cut the battery to the plan's blocks</strong>, reusing her item bank and answer keys. Print child cards without numbers, with stories as connected text.</div></li>
     <li><div><strong>Swap item-by-item marking for record-then-check.</strong> One voice note per block, then one checking Flow per child with the answer keys shown, reusing the plan's draft Flow and the NIETE observation pattern. This helps even before any AI: 64 messages and 11 typed answers become three form screens. Then add AI pre-fill as the evaluation recommends.</div></li>
@@ -363,15 +381,16 @@
 <section id="evidence">
   <h2>Evidence</h2>
   <div class="prose">
-    <p>Four reviewers worked in parallel on a frozen copy of the 42 changed files at staging head <code>554c6a8d</code>. Every headline claim on this page was then checked again against the code, the live database (read-only, counts only), the staging logs or Meta.</p>
+    <p>Four reviewers worked in parallel on a frozen copy of the 42 changed files at staging head <code>554c6a8d</code> on 27 September; the two later commits were rechecked directly on 30 September. Every headline claim on this page was then checked again against the code, the live database (read-only, counts only), the staging logs or Meta.</p>
   </div>
   <div class="grid3">
-    <div class="card"><h3><a href="live.html">Live state on staging</a></h3><p class="k">Deploy, switches, Flow status, table, rows and usage, with how each was checked.</p></div>
+    <div class="card"><h3><a href="recheck_2026-09-30.html">Recheck, 30 September</a></h3><p class="k">The two new commits, the status of every finding, usage since the review, and the test run.</p></div>
+    <div class="card"><h3><a href="live.html">Live state on staging (27 Sep)</a></h3><p class="k">Deploy, switches, Flow status, table, rows and usage, with how each was checked.</p></div>
     <div class="card"><h3><a href="architecture.html">Architecture and correctness</a></h3><p class="k">Blockers, serious and minor findings with file and line, test run, what is unverified.</p></div>
     <div class="card"><h3><a href="plan_ux.html">Plan conformance and coach experience</a></h3><p class="k">33-row conformance table, the message-by-message time estimate, the battery, and the strategic read.</p></div>
     <div class="card"><h3><a href="randomization_data.html">Randomization and data</a></h3><p class="k">The draw against the call, the full proposed design with fields, the power arithmetic, and the data model.</p></div>
     <div class="card"><h3><a href="design.html">Design</a></h3><p class="k">Stimulus images measured at phone size, the Flow rendered, and every coach-facing string checked.</p></div>
-    <div class="card"><h3>Commits reviewed</h3><p class="k">783116cc · d31fd846 · 6757dcf6 · b1a2513e · 5fd2da1e · 3c024544 · 1901c5a3 · e81dbc03, all 16–18 Sep, staging only. No later commit touches these files.</p></div>
+    <div class="card"><h3>Commits reviewed</h3><p class="k">783116cc · d31fd846 · 6757dcf6 · b1a2513e · 5fd2da1e · 3c024544 · 1901c5a3 · e81dbc03 (16–18 Sep), then 8050efa6 and 6f59e3f6 (28 Sep). All staging only; staging head e98a45cc.</p></div>
   </div>
   <p class="prose" style="font-size:13px;color:var(--muted);margin-top:28px">Children's names, phone numbers and database IDs are left out of this page. Full-size stimulus images and the code snapshot are kept in the team's project folder.</p>
 </section>

@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><title>Recheck, 30 September · EGRA Test Build Review</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&display=swap"><style>
+  :root{
+    --navy:#001F3F; --coral:#F06E42; --gold:#F5B301;
+    --bg:#F9FAFB; --surface:#FFFFFF; --ink:#1D2025; --ink-2:#4B5568; --muted:#6B7590;
+    --line:#D9DEE8; --line-soft:#E9EDF4; --tint:#EEF2F9; --coral-tint:#FDEDE6; --gold-tint:#FFF6D6; --ok-tint:#E6F7EC;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --heading:#001F3F; --gold-text:#8a6200; --ok-text:#1a7f3f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+      --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --navy:#8FB0FF; --bg:#0B1226; --surface:#111A36; --ink:#E6EAF4; --ink-2:#B9C2D6; --muted:#8A95B0;
+    --line:#2A365C; --line-soft:#1C2747; --tint:#16214A; --coral-tint:#3A2118; --gold-tint:#3A2E0A; --ok-tint:#0F2E1C; --heading:#E6EAF4; --gold-text:#F5B301; --ok-text:#5fd68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 80px}
+  a{color:var(--navy)}
+  .wrap{max-width:1040px;margin:0 auto}
+  .prose{max-width:68ch}
+  h1,h2,h3{color:var(--heading);font-weight:700;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+  h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08}
+  h2{font-size:24px;margin-top:64px;padding-top:18px;border-top:3px solid var(--coral);display:inline-block}
+  h3{font-size:17px;margin-top:28px}
+  p{margin:12px 0}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  header{padding-block:48px 8px;border-bottom:1px solid var(--line)}
+  header .sub{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:14px}
+  header .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-size:13px;color:var(--muted)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin-top:26px}
+  nav.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px solid transparent}
+  nav.toc a:hover{border-color:var(--coral)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+  .tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+  .tile .n{font-family:var(--serif);font-style:italic;font-size:40px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+  .tile .n small{font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-left:4px}
+  .tile .l{font-size:13px;color:var(--ink-2);margin-top:8px}
+  .tile.hot .n{color:var(--coral)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line-soft)}
+  th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tablewrap{overflow-x:auto;margin:16px 0}
+  .tablewrap table{margin:0;min-width:640px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+  .pill.audio{background:var(--tint)} .pill.coach{background:var(--coral-tint);border-color:transparent;color:var(--coral)} .pill.gold{background:var(--gold-tint);border-color:transparent;color:var(--gold-text)} .pill.ok{background:var(--ok-tint);border-color:transparent;color:var(--ok-text)}
+  .callout{border-left:3px solid var(--coral);background:var(--surface);padding:14px 18px;margin:20px 0}
+  .callout.quiet{border-color:var(--line)}
+  .callout.push{border-color:var(--gold)}
+  .callout.ex{border-color:var(--navy);background:var(--tint)}
+  .quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.35;color:var(--heading);margin:26px 0;max-width:60ch}
+  .quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:13px;color:var(--muted);margin-top:8px}
+  figure{margin:24px 0}
+  figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+  figcaption{font-size:13px;color:var(--muted);margin-top:8px;max-width:70ch}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--tint);padding:1px 5px;border-radius:3px}
+  dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:8px 18px;margin:16px 0;font-size:14.5px}
+  dl.gloss dt{font-weight:700;color:var(--heading)}
+  dl.gloss dd{margin:0;color:var(--ink-2)}
+  @media (max-width:520px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:8px} }
+  .card{background:var(--surface);border:1px solid var(--line);padding:14px 16px}
+  .card h3{margin-top:0;font-size:15px}
+  .card .k{font-size:12.5px;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  .steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .steps li::before{content:counter(s);font-family:var(--serif);font-style:italic;font-size:26px;color:var(--coral);line-height:1}
+  .phone .bar{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
+  .phone .screen-title{font-weight:700;color:var(--heading);font-size:14px;margin:6px 0 4px}
+  .phone .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);gap:8px}
+  .phone .row .k{color:var(--ink-2)}
+  .phone .row .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .phone .row .v.ai{color:var(--navy)}
+  .phone .words{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0}
+  .phone .w{border:1px solid var(--line);padding:2px 7px;border-radius:4px;font-size:12px}
+  .phone .w.miss{background:var(--coral-tint);border-color:var(--coral);color:var(--coral);text-decoration:line-through}
+  .phone .w.fix{background:var(--gold-tint);border-color:var(--gold)}
+  .phone .btn{margin-top:10px;background:var(--navy);color:#fff;text-align:center;padding:9px;border-radius:8px;font-weight:600}
+  :root[data-theme="dark"] .phone .btn{color:#0B1226}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .phase .when{font-weight:700;color:var(--heading)}
+  .phase .when small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+  .phase h3{margin-top:0}
+  .decision{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft)}
+  .decision .tag{font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums;min-width:40px}
+  .files{font-size:13.5px;columns:2;column-gap:28px}
+  .files li{break-inside:avoid}
+  .bar{height:10px;background:var(--line-soft);border-radius:3px;position:relative;min-width:120px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:3px}
+  @media (max-width:520px){ .phase{grid-template-columns:1fr} .files{columns:1} h2{margin-top:44px} }
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0}
+  .cols3 figure{margin:0}
+  .cols3 img{width:100%;border:1px solid var(--line);border-radius:18px;display:block}
+  .cols3 figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  @media (max-width:760px){.cols3{grid-template-columns:1fr}}
+</style><style>
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+  .crumbs{font-size:13px;margin-top:28px}
+  .md img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  .md h1{margin-top:28px}
+  .md h2{display:block}
+  .md table{display:block;overflow-x:auto}
+  .md pre{overflow-x:auto;background:var(--tint);padding:12px;font-size:13px}
+  .md blockquote{border-left:3px solid var(--line);margin:12px 0;padding:2px 14px;color:var(--ink-2)}
+  a{color:var(--navy)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+</style></head><body><div class="wrap"><div class="crumbs"><a href="index.html">← EGRA Test Build Review</a> · Recheck, 30 September</div><div class="md"><h1>Recheck, 30 September 2026</h1>
+<p><strong>What changed:</strong> two EGRA commits by Sabeena, both merged to <code>staging</code> on 28–29 Sep and deployed (staging deploy <code>bb604d5e</code>, SUCCESS 29 Sep 19:03 +02:00). Staging head is now <code>e98a45cc</code>. Nothing EGRA-related is on <code>main</code>.</p>
+<ul>
+<li><code>8050efa6</code> — presign the picture links before sending, and fall back to text if the send fails (bd-2816).</li>
+<li><code>6f59e3f6</code> — drop the listening-comprehension Flow; show the passage to the coach as a picture; add an optional, non-blocking voice note for listening comprehension <strong>and</strong> the two stories; add a "Testing <em>name</em> — ready?" confirm step with a reason when the coach backs out (Absent / Other), saved to a new table; exclude skipped children from the re-pick; apply the pending migrations and revoke public access (bd-2818).</li>
+</ul>
+<p>Unchanged since the review: <code>rate-scorer.js</code>, <code>results.service.js</code>, <code>access-gate.js</code>, <code>item-bank.service.js</code>, <code>egra-egma-real-items.json</code>, the grid and passage image services, <code>input-parser.js</code>.</p>
+<h2>Status of every "fix first" item</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>Status 30 Sep</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Results table open to the public key</td>
+<td><strong>Fixed.</strong> <code>anon</code> and <code>authenticated</code> now have no SELECT, INSERT or DELETE on <code>egra_egma_ict_test_attempts</code> or the new <code>egra_egma_ict_test_student_skips</code>. Row-level security is still off on both, so the protection rests on the grants alone.</td>
+<td><code>has_table_privilege(...)</code> = false for all six checks; <code>pg_class.relrowsecurity</code> = false</td>
+</tr>
+<tr>
+<td>2</td>
+<td>No picture could be delivered</td>
+<td><strong>Fixed.</strong> Links are presigned before sending; a failed send falls back to the text version. On 29 Sep, 5 presigned sends and 0 <code>sendImageFromUrl</code> errors (28 Sep, before the fix: 3 errors).</td>
+<td><code>handler.js:205-213</code>, <code>:284-290</code>; Axiom 28–29 Sep</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Listening save would lose the coach's marks</td>
+<td><strong>Fixed, but it happened once first.</strong> On 28 Sep 08:19 UTC a voice note was captured and the save failed: <em>"Could not find the 'audio_recorded_at' column"</em>. Those marks are gone. The audio columns now exist.</td>
+<td>Axiom <code>persist_failed</code>; <code>information_schema.columns</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Letter score subtracts errors twice</td>
+<td><strong>Open.</strong> Unchanged: <code>(correct - incorrect) / elapsedMinutes</code>.</td>
+<td><code>rate-scorer.js</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Any Islamabad teacher can list every Islamabad class</td>
+<td><strong>Open.</strong> Access gate and roster query unchanged (region only).</td>
+<td><code>access-gate.js</code>, <code>roster.service.js</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Other findings</h2>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Status 30 Sep</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listening steps in the wrong order (child answered before the recording)</td>
+<td><strong>Fixed.</strong> The Flow is gone; the coach reads the passage from a picture and marks the answers; the voice note is optional.</td>
+</tr>
+<tr>
+<td>Voice note mandatory, coach can get stuck</td>
+<td><strong>Fixed.</strong> The voice note is optional and never blocks.</td>
+</tr>
+<tr>
+<td>Stories not recorded</td>
+<td><strong>Improved.</strong> An optional voice note is offered for both stories (the plan's direction). Untested with a real child: the same phone must show the story, run Start/Stop and record. No audio has been saved yet (<code>audio_url</code> set on 0 rows).</td>
+</tr>
+<tr>
+<td>Child's database ID never saved on results</td>
+<td><strong>Open.</strong> 0 of 6 rows have <code>student_id</code>, including the 29 Sep session whose confirm event logged the child's ID. Skips, by contrast, do save <code>student_id</code>.</td>
+</tr>
+<tr>
+<td>Redraw leaves no trace</td>
+<td><strong>Partly fixed.</strong> Backing out now needs a reason, saved with the child's ID (0 skips so far). But the button reads "Different student", "Other" accepts any text, and <code>/cancel</code> then <code>/egra</code> at the confirm step still gives a fresh draw with no record. When the class runs out, it falls back to typing a name.</td>
+</tr>
+<tr>
+<td>Coach picks the class; draw is with replacement across sessions</td>
+<td><strong>Open.</strong> Exclusion covers skipped children within one session only.</td>
+</tr>
+<tr>
+<td><code>/cancel</code> fails at the name and typed-number prompts</td>
+<td><strong>Open.</strong> Only the default branch handles it; at the skip-reason prompt <code>/cancel</code> becomes the reason text.</td>
+</tr>
+<tr>
+<td>English story counts punctuation as words</td>
+<td><strong>Open.</strong> Item bank unchanged.</td>
+</tr>
+<tr>
+<td>Item numbers on the child's card; stories as word boxes</td>
+<td><strong>Open.</strong> Images unchanged.</td>
+</tr>
+<tr>
+<td>Answer key not shown to the coach</td>
+<td><strong>Open.</strong></td>
+</tr>
+<tr>
+<td>Coach text in English; "You will read out each item to the child"</td>
+<td><strong>Open.</strong> The intro line is unchanged.</td>
+</tr>
+<tr>
+<td>Answer buttons carry no item number</td>
+<td><strong>Open.</strong></td>
+</tr>
+<tr>
+<td>TESTING.md out of date</td>
+<td><strong>Fixed</strong> for the Flow and migrations.</td>
+</tr>
+<tr>
+<td><code>EGRA_EGMA_LISTENING_FLOW_ID</code> still set on staging</td>
+<td>Dead setting now; harmless, worth removing.</td>
+</tr>
+</tbody>
+</table>
+<h2>Usage since the review</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>What happened</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>28 Sep</td>
+<td>3 listening Flows completed (old code). 1 voice note captured; its save failed (above).</td>
+</tr>
+<tr>
+<td>29 Sep</td>
+<td>1 session: child confirmed at 05:06 UTC, then the whole Urdu block saved: listening comprehension 05:07, letters 05:09, words 05:12, story 05:13, reading comprehension 05:26. The session stopped there. <strong>The Urdu block alone took about 19 minutes</strong> (whether a child was present is not recorded).</td>
+</tr>
+<tr>
+<td>Total rows</td>
+<td>6 subtest rows, 2 sessions, 0 with <code>student_id</code>, 0 with audio. 0 skips. 0 sessions completed.</td>
+</tr>
+</tbody>
+</table>
+<h2>Tests</h2>
+<p>At staging head, 132 of 132 tests pass in 14 suites. The chat-loop suite needs a dummy <code>OPENAI_API_KEY</code> to load (a test-setup gap, not a failure). On this machine the run also needs <code>NODE_OPTIONS=--no-experimental-webstorage</code> (Node 25).</p>
+<h2>A process note</h2>
+<p>The commit applied three migrations to the shared Supabase database directly from the agent's session ("the assumed 'no outbound DB migration path from this sandbox' blocker was checked and found not current"). They were additive and they closed the exposure, but the shared database is also production's, and root rule 7 asks for an explicit go on production database writes.</p></div></div></body></html>

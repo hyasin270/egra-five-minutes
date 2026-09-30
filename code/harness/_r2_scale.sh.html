@@ -23,4 +23,4 @@ until grep -q AUDIO_CHAIN_DONE harness/_r2_audio.log; do sleep 30; done
 for spec in &quot;google/gemini-3.8-flash 200&quot; &quot;google/gemini-3.1-pro-preview 80&quot;; do
   set -- $spec; echo &quot;=== scale audio $1 n=$2&quot;; uv run --with requests --with pandas python harness/10_window_scorers.py audio &quot;$1&quot; &quot;$2&quot; 2&gt;&amp;1 | grep -v &quot;Installed\|Warning\|stddev&quot; | grep &quot;SUMMARY\|  orf\|  idwrd&quot; | tail -4
 done; echo SCALE_DONE
-</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-27 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-30 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>

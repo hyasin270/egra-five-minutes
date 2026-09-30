@@ -165,4 +165,4 @@ if __name__ == &#x27;__main__&#x27;:
     for sub, dd in d.groupby(&#x27;sub&#x27;):
         diff = dd.soniox_correct - dd.enum_correct
         print(f&quot;{&#x27;soniox-diff&#x27;:14s} {sub:10s} n={len(dd):3d} correct-count r={dd.soniox_correct.corr(dd.enum_correct):.2f} MAE={diff.abs().mean():.1f} bias={diff.mean():+.1f} within±3={100 * (diff.abs() &lt;= 3).mean():.0f}%&quot;)
-</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-27 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
+</code></pre><footer>Part of the EGRA-in-five-minutes plan · Taleemabad / Rumi · built 2026-09-30 · <a href="https://github.com/hyasin270/egra-five-minutes">repository</a></footer></div></body></html>
